@@ -26,9 +26,7 @@ import java.util.stream.Collectors;
 import static javax.swing.SwingConstants.CENTER;
 import static mycellar.ProgramConstants.FONT_DIALOG_BIG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMSTOMOVE;
 import static mycellar.general.ResourceErrorKey.ERROR_STILLITEMSONLINE;
 import static mycellar.general.ResourceErrorKey.ERROR_WRONGLINENUMBER;
@@ -48,8 +46,8 @@ import static mycellar.general.ResourceKey.MOVE_TOLINE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 13/03/25
+ * @version 4.6
+ * @since 18/03/25
  */
 
 public final class MoveLine extends JDialog {
@@ -119,7 +117,7 @@ public final class MoveLine extends JDialog {
     ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
     int nNbBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nOldSelected);
     if (nNbBottle == 0) {
-      Erreur.showSimpleErreur(this, getErrorWithProperty(ERROR_NOITEMSTOMOVE, LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError(ERROR_NOITEMSTOMOVE));
       return;
     }
     int nOldColumnCount = complexPlace.getColumnCountAt(nNumLieu, nOldSelected);
@@ -130,7 +128,7 @@ public final class MoveLine extends JDialog {
     }
     int nBottle = complexPlace.getNbCaseUseInLine(nNumLieu, nNewSelected);
     if (nBottle > 0) {
-      Erreur.showSimpleErreur(this, getErrorWithProperty(ERROR_STILLITEMSONLINE, LabelProperty.PLURAL));
+      Erreur.showSimpleErreur(this, getError(ERROR_STILLITEMSONLINE));
       return;
     }
     List<MyCellarObject> notMoved = new ArrayList<>();
@@ -150,10 +148,10 @@ public final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      Erreur.showSimpleErreur(this, getErrorWithProperty(MOVELINE_UNABLETOMOVE, LabelProperty.PLURAL), value);
+      Erreur.showSimpleErreur(this, getError(MOVELINE_UNABLETOMOVE), value);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
-      label_end.setText(getLabelWithProperty(MOVELINE_ITEMSMOVED, LabelProperty.THE_PLURAL.withCapital()), true);
+      label_end.setText(getLabel(MOVELINE_ITEMSMOVED), true);
     }
     ProgramPanels.updateAllPanelsForUpdatingPlaces();
     ProgramPanels.updateCellOrganizerPanel(true);

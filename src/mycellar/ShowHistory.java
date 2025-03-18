@@ -10,7 +10,6 @@ import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.DateCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -40,11 +39,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_1LINESELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
@@ -77,8 +73,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 14/03/25
+ * @version 5.9
+ * @since 18/03/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -218,22 +214,20 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (nonExit) {
-        Erreur.showInformationMessage(getLabelWithProperty(SHOWHISTORY_CANTRESTORENONDELETED, LabelProperty.PLURAL));
+        Erreur.showInformationMessage(getLabel(SHOWHISTORY_CANTRESTORENONDELETED));
         return;
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showInformationMessage(getLabelWithProperty(SHOWFILE_NOBOTTLETORESTORE, LabelProperty.SINGLE), getLabelWithProperty(SHOWFILE_SELECTTORESTORE, LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getLabel(SHOWFILE_NOBOTTLETORESTORE), getLabel(SHOWFILE_SELECTTORESTORE));
       } else {
-        String erreur_txt1, erreur_txt2;
+        String message;
         if (toRestoreList.size() == 1) {
-          erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
-          erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
+          message = String.format("%s %s", getError(ERROR_1ITEMSELECTED), getLabel(SHOWFILE_RESTOREONE));
         } else {
-          erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, toRestoreList.size());
-          erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
+          message = String.format("%s %s", getError(ERROR_NITEMSSELECTED, toRestoreList.size()), getLabel(SHOWFILE_RESTORESEVERAL));
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION),
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
@@ -295,16 +289,14 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           Erreur.showInformationMessage(getError(ERROR_NOLINESELECTED), getError(ERROR_SELECTLINESTODELETE));
           Debug("ERROR: No lines selected");
         } else {
-          String erreur_txt1, erreur_txt2;
+          String message;
           if (toDeleteList.size() == 1) {
-            erreur_txt1 = getError(ERROR_1LINESELECTED);
-            erreur_txt2 = getError(ERROR_DELETEIT);
+            message = String.format("%s %s", getError(ERROR_1LINESELECTED), getError(ERROR_DELETEIT));
           } else {
-            erreur_txt1 = getError(ERROR_NLINESELECTED, toDeleteList.size());
-            erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
+            message = String.format("%s %s", getError(ERROR_NLINESELECTED, toDeleteList.size()), getError(ERROR_CONFIRMNDELETE));
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION),
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION),
               JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {

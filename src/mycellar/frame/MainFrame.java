@@ -91,7 +91,6 @@ import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
 import static mycellar.general.ResourceErrorKey.ERROR_LOADINGFILE;

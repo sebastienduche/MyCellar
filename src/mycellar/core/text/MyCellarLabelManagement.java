@@ -40,7 +40,7 @@ public class MyCellarLabelManagement {
     component.setText(getLabel(labelKey.getLabelType(), labelKey.getResource(), labelKey.getLabelProperty(), labelKey.getValue()));
   }
 
-  public static String getLabel(LabelType type, IResource resource, LabelProperty labelProperty, String labelValue) {
+  private static String getLabel(LabelType type, IResource resource, LabelProperty labelProperty, String labelValue) {
     if (type == null || resource == null) {
       return "";
     }
@@ -109,6 +109,7 @@ public class MyCellarLabelManagement {
     return getError((ResourceErrorKey) key);
   }
 
+  @Deprecated(since = "version80")
   public static String getErrorWithProperty(IResource key, LabelProperty labelProperty, Object... parameters) {
     return MessageFormat.format(getErrorWithProperty(key, labelProperty), parameters);
   }
@@ -128,10 +129,6 @@ public class MyCellarLabelManagement {
       JOptionPane.showMessageDialog(null, "Missing Error '" + key.getKey() + "'", "Error", JOptionPane.ERROR_MESSAGE);
       return key.getKey();
     }
-  }
-
-  private static String getLabelForType(LabelProperty labelProperty) {
-    return getLabelForType(Program.getProgramType(), labelProperty);
   }
 
   public static String getLabelForType(ProgramType programType, LabelProperty labelProperty) {

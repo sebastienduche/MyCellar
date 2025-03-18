@@ -77,9 +77,7 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
@@ -127,8 +125,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.0
- * @since 14/03/25
+ * @version 25.1
+ * @since 18/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -308,16 +306,16 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTODELETE, LabelProperty.SINGLE), getErrorWithProperty(ERROR_PLEASESELECT, LabelProperty.THE_PLURAL));
+        Erreur.showInformationMessage(getError(ERROR_NOITEMTODELETE), getError(ERROR_PLEASESELECT));
         return;
       }
       String erreur_txt1;
       String erreur_txt2;
       if (listToDelete.size() == 1) {
-        erreur_txt1 = getErrorWithProperty(ERROR_1ITEMSELECTED, LabelProperty.SINGLE);
+        erreur_txt1 = getError(ERROR_1ITEMSELECTED);
         erreur_txt2 = getError(ERROR_CONFIRM1DELETE);
       } else {
-        erreur_txt1 = getErrorWithProperty(ERROR_NITEMSSELECTED, LabelProperty.PLURAL, listToDelete.size());
+        erreur_txt1 = getError(ERROR_NITEMSSELECTED, listToDelete.size());
         erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
       int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -339,9 +337,9 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           ProgramPanels.updateCellOrganizerPanel(false);
 
           if (listToDelete.size() == 1) {
-            resultInfoLabel.setText(getLabelWithProperty(SEARCH_1ITEMDELETED, LabelProperty.SINGLE));
+            resultInfoLabel.setText(getLabel(SEARCH_1ITEMDELETED));
           } else {
-            resultInfoLabel.setText(getLabelWithProperty(SEARCH_NITEMDELETED, LabelProperty.PLURAL, listToDelete.size()));
+            resultInfoLabel.setText(getLabel(SEARCH_NITEMDELETED, listToDelete.size()));
           }
         });
       }
@@ -455,7 +453,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
-          Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOITEMTOMODIFY, LabelProperty.SINGLE), getErrorWithProperty(ERROR_SELECTITEMTOMODIFY, LabelProperty.THE_PLURAL));
+          Erreur.showInformationMessage(getError(ERROR_NOITEMTOMODIFY), getError(ERROR_SELECTITEMTOMODIFY));
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);
@@ -501,7 +499,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     updateLabelObjectNumber(true);
     if (alreadyFoundItems) {
       if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_INFO, false)) {
-        Erreur.showInformationMessageWithKey(getErrorWithProperty(ERROR_DONTADDTWICE, LabelProperty.A_SINGLE), MyCellarSettings.DONT_SHOW_INFO);
+        Erreur.showInformationMessageWithKey(getError(ERROR_DONTADDTWICE), MyCellarSettings.DONT_SHOW_INFO);
       }
     }
     alreadyFoundItems = false;
@@ -568,7 +566,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     } else {
       countLabel.setText(DASH);
     }
-    objectFoundCountLabels.setText(getLabelWithProperty(SEARCH_BOTTLEFOUND, new LabelProperty(searchTableModel.getRowCount() > 1).withCapital()));
+    objectFoundCountLabels.setText(getLabel(SEARCH_BOTTLEFOUND));
   }
 
   private void searchByPlace() {
@@ -602,7 +600,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
         resultInfoLabel.setText(getLabel(SEARCH_FAILED));
-        Erreur.showSimpleErreur(getErrorWithProperty(ERROR_NOITEMFOUND, LabelProperty.SINGLE)); //Aucun objet trouve
+        Erreur.showSimpleErreur(getError(ERROR_NOITEMFOUND)); //Aucun objet trouve
         modifyButton.setEnabled(false);
         deleteButton.setEnabled(false);
       } else {
@@ -795,7 +793,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     final List<MyCellarObject> list = searchTableModel.getSelectedObjects();
 
     if (list.isEmpty()) {
-      Erreur.showInformationMessage(getErrorWithProperty(ERROR_NOWINESELECTED, LabelProperty.SINGLE));
+      Erreur.showInformationMessage(getError(ERROR_NOWINESELECTED));
       return;
     }
     new OpenWorkSheetAction(list).actionPerformed(null);

@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 
@@ -9,8 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.CREATESTORAGE_SIMPLESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
 import static mycellar.general.ResourceKey.MAIN_STORAGE;
 import static mycellar.general.ResourceKey.STORAGE_NBLINE;
@@ -25,15 +24,15 @@ import static mycellar.general.ResourceKey.STORAGE_NUMBEROF;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 14/03/25
+ * @version 2.5
+ * @since 18/03/25
  */
 class TableauValues extends AbstractTableModel {
-  public static final int STATE = 0;
+  static final int STATE = 0;
   private final String[] columnNames = new String[]{"",
       getLabel(MAIN_STORAGE),
       getLabel(STORAGE_NUMBERLINES),
-      getLabelWithProperty(STORAGE_NUMBEROF, LabelProperty.PLURAL)};
+      getLabel(STORAGE_NUMBEROF)};
 
   private final List<AbstractPlace> list = new LinkedList<>();
   private final List<Boolean> listBoolean = new LinkedList<>();
@@ -60,21 +59,21 @@ class TableauValues extends AbstractTableModel {
         if (rangement.isSimplePlace()) {
           return getLabel(CREATESTORAGE_SIMPLESTORAGE);
         }
-        int nombre_ligne = 0;
+        int countLine = 0;
         for (int k = 0; k < rangement.getPartCount(); k++) {
-          nombre_ligne += ((ComplexPlace) rangement).getLineCountAt(k);
+          countLine += ((ComplexPlace) rangement).getLineCountAt(k);
         }
-        return getLabel(nombre_ligne > 1 ? STORAGE_NBLINES : STORAGE_NBLINE, nombre_ligne);
+        return getLabel(countLine > 1 ? STORAGE_NBLINES : STORAGE_NBLINE, countLine);
       case 3:
-        int nombre_vin = 0;
+        int total = 0;
         if (rangement.isSimplePlace()) {
-          nombre_vin = rangement.getTotalCountCellUsed();
+          total = rangement.getTotalCountCellUsed();
         } else {
           for (int k = 0; k < rangement.getPartCount(); k++) {
-            nombre_vin += rangement.getCountCellUsed(k);
+            total += rangement.getCountCellUsed(k);
           }
         }
-        return getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nombre_vin > 1), nombre_vin);
+        return getLabel(total > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, total);
     }
     return "";
   }

@@ -38,7 +38,6 @@ import static mycellar.core.text.LabelProperty.THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKTRANSFORMTO4DIGITSYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMSAVE;
@@ -63,8 +62,8 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 14/03/25
+ * @version 2.3
+ * @since 18/03/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -245,7 +244,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
-      name.setSelectedItem(getLabelWithProperty(ADDVIN_NBITEMSSELECTED, LabelProperty.PLURAL, itemCount));
+      name.setSelectedItem(getLabel(ADDVIN_NBITEMSSELECTED, itemCount));
       name.setEnabled(false);
       if (Program.isMusicType()) {
         composer.setEnabled(false);

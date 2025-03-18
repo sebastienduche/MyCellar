@@ -53,7 +53,6 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETESTORAGE;
@@ -64,6 +63,7 @@ import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMS;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMSIN;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
 import static mycellar.general.ResourceKey.MAIN_STATE;
 import static mycellar.general.ResourceKey.MAIN_STORAGE;
@@ -85,8 +85,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.0
- * @since 14/03/25
+ * @version 11.1
+ * @since 18/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -187,9 +187,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         label_final.setText(getLabel(PLACEMANAGEMENT_EMPTYPLACE));
       } else {
         if (nb_case_use_total == 1) {
-          label_final.setText(getLabelWithProperty(DELETEPLACE_STILL1ITEM, LabelProperty.SINGLE));
+          label_final.setText(getLabel(DELETEPLACE_STILL1ITEM));
         } else {
-          label_final.setText(getLabelWithProperty(DELETEPLACE_STILLNITEMS, LabelProperty.PLURAL, nb_case_use_total));
+          label_final.setText(getLabel(DELETEPLACE_STILLNITEMS, nb_case_use_total));
         }
       }
       table.updateUI();
@@ -223,9 +223,9 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         String nom = abstractPlace.getName();
         String error;
         if (nb_case_use_total == 1) {
-          error = getLabelWithProperty(DELETEPLACE_STILL1ITEMIN, LabelProperty.SINGLE, nom);
+          error = getLabel(DELETEPLACE_STILL1ITEMIN, nom);
         } else {
-          error = getLabelWithProperty(DELETEPLACE_STILLNITEMSIN, LabelProperty.PLURAL, nb_case_use_total, nom);
+          error = getLabel(DELETEPLACE_STILLNITEMSIN, nb_case_use_total, nom);
         }
         // Delete place and objects in the place
         String errorPart2 = getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS, LabelProperty.THE_PLURAL);
@@ -420,7 +420,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNbWineLabel() {
-      return getLabelWithProperty(MAIN_SEVERALITEMS, new LabelProperty(nbWine > 1), nbWine);
+      return getLabel(nbWine > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, nbWine);
     }
   }
 

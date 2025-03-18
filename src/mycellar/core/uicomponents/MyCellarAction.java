@@ -3,13 +3,11 @@ package mycellar.core.uicomponents;
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
 import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.IResource;
 import mycellar.general.ResourceKey;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -28,7 +26,7 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   private final LabelKey labelKey;
 
-  private IResource descriptionResource;
+  private IResource resource;
 
   private boolean withText = true;
 
@@ -56,11 +54,11 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
   @Override
   public void setText(String text) {
     putValue(NAME, withText ? text : "");
-    putValue(SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionResource, null, null));
+    putValue(SHORT_DESCRIPTION, getLabel(resource));
   }
 
   protected void setDescriptionLabel(ResourceKey key) {
-    descriptionResource = key;
+    resource = key;
   }
 
   protected void setWithText(boolean withText) {

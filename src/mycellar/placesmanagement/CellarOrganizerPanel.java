@@ -88,8 +88,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.5
- * @since 14/03/25
+ * @version 6.6
+ * @since 18/03/25
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -282,7 +282,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (stock.getComponentCount() > 0) {
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(MANAGESTOCK_CONFIRMLOST, LabelProperty.PLURAL), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(MANAGESTOCK_CONFIRMLOST), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         return false;
       }
       if (stock.getComponentCount() > 0) {
@@ -363,7 +363,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private class MoveAction extends AbstractAction {
 
     private MoveAction() {
-      super(getLabelWithProperty(MANAGESTOCK_MOVEALL, LabelProperty.PLURAL));
+      super(getLabel(MANAGESTOCK_MOVEALL));
     }
 
     @Override
@@ -389,8 +389,8 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
 
 
 final class RangementCell extends JPanel {
-  public static final int WIDTH_SIMPLE_PLACE = 400;
-  public static final int WIDTH_COMPLEX_PLACE = 100;
+  private static final int WIDTH_SIMPLE_PLACE = 400;
+  private static final int WIDTH_COMPLEX_PLACE = 100;
   private final boolean stock;
   private final JToggleButton select = new JToggleButton();
   private final int placeNum;
@@ -559,7 +559,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     add(new PanelCloseButton() {
       @Override
       public void perform() {
-        String mess = getLabelWithProperty(MAIN_DELETEWINE, LabelProperty.THE_SINGLE, myCellarObject.getNom());
+        String mess = MyCellarLabelManagement.getLabel(MAIN_DELETEWINE, myCellarObject.getNom());
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), mess, MyCellarLabelManagement.getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           Component parent = MyCellarObjectDraggingLabel.this.getParent();
           if (parent instanceof RangementCell rangementCell) {

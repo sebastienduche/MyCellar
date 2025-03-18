@@ -28,9 +28,11 @@ import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.ADDVIN_COLOR;
 import static mycellar.general.ResourceKey.ADDVIN_NBITEMSTOADD;
+import static mycellar.general.ResourceKey.ADDVIN_STILL1TOADD;
 import static mycellar.general.ResourceKey.ADDVIN_STILLNTOADD;
 import static mycellar.general.ResourceKey.MAIN_MATURITY;
 import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
@@ -46,8 +48,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 14/03/25
+ * @version 1.6
+ * @since 18/03/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -296,7 +298,7 @@ public final class PanelWineAttribute extends JPanel {
 
   public void setStillNbItems(int count) {
     nbItems.setValue(count);
-    labelStillToAdd.setText(getLabelWithProperty(ADDVIN_STILLNTOADD, new LabelProperty(count > 1), count));
+    labelStillToAdd.setText(getLabel(count > 1 ? ADDVIN_STILLNTOADD : ADDVIN_STILL1TOADD, count));
   }
 
   public void seNbItemsEnabled(boolean b) {

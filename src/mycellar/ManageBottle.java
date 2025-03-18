@@ -10,7 +10,6 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
@@ -30,11 +29,8 @@ import java.awt.Color;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
 import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONINCOMPLETED;
@@ -54,8 +50,8 @@ import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEMODIFICATIONS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 14/03/25
+ * @version 10.8
+ * @since 18/03/25
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -268,7 +264,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
-    end.setText(getLabelWithProperty(ADDVIN_1ITEMMODIFIED, LabelProperty.SINGLE), true);
+    end.setText(getLabel(ADDVIN_1ITEMMODIFIED), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
@@ -287,7 +283,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message , getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
-        end.setText(getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE));
+        end.setText(getLabel(ADDVIN_1ITEMADDED));
       } else {
         return false;
       }
@@ -320,7 +316,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelPlace.isModified();
     modified |= panelVignobles.isModified();
 
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, OF_THE_SINGLE) + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_MODIFICATIONINCOMPLETED) + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

@@ -40,7 +40,6 @@ import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONADDNITEMIN;
@@ -851,15 +850,15 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             listVin.updateList(listBottleInModification);
           }
           if (listBottleInModification.size() == 1) {
-            end.setText(getLabelWithProperty(ADDVIN_1ITEMMODIFIED, LabelProperty.SINGLE), true);
+            end.setText(getLabel(ADDVIN_1ITEMMODIFIED), true);
           } else {
-            end.setText(getLabelWithProperty(ADDVIN_NITEMMODIFIED, LabelProperty.PLURAL, listBottleInModification.size()));
+            end.setText(getLabel(ADDVIN_NITEMMODIFIED, listBottleInModification.size()));
           }
         } else {
           if (result.getNbItemsAdded() == 0) {
-            end.setText(getLabelWithProperty(ADDVIN_1ITEMADDED, LabelProperty.SINGLE), true);
+            end.setText(getLabel(ADDVIN_1ITEMADDED), true);
           } else {
-            end.setText(getLabelWithProperty(ADDVIN_NITEMADDED, LabelProperty.PLURAL, result.getNbItemsAdded()));
+            end.setText(getLabel(ADDVIN_NITEMADDED, result.getNbItemsAdded()));
           }
           panelGeneral.setTypeDefault();
         }

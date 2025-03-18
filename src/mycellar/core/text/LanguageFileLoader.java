@@ -23,8 +23,8 @@ import java.util.ResourceBundle.Control;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 07/03/25
+ * @version 1.4
+ * @since 18/03/25
  */
 public final class LanguageFileLoader {
 
@@ -33,6 +33,7 @@ public final class LanguageFileLoader {
   private static final String CODE_LANG = "CodeLang";
   private Language language;
   private ResourceBundle bundleTitle;
+  private ResourceBundle bundleWine;
   private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
@@ -43,6 +44,10 @@ public final class LanguageFileLoader {
 
   public ResourceBundle getBundleTitle() {
     return bundleTitle;
+  }
+
+  public ResourceBundle getBundleWine() {
+    return bundleWine;
   }
 
   public ResourceBundle getBundleError() {
@@ -64,7 +69,19 @@ public final class LanguageFileLoader {
       } catch (MissingResourceException ignored) {
       }
     }
-    return INSTANCE.bundleTitle.getString(id);
+    if (INSTANCE.bundleTitle.containsKey(id)) {
+      return INSTANCE.bundleTitle.getString(id);
+    }
+    if (Program.isWineType()) {
+      if (INSTANCE.bundleWine == null) {
+        Debug("ERROR: Wine' map not intialized!");
+        return "";
+      }
+      if (INSTANCE.bundleWine.containsKey(id)) {
+        return INSTANCE.bundleWine.getString(id);
+      }
+    }
+    return "";
   }
 
   static String getError(String id) {
@@ -128,6 +145,7 @@ public final class LanguageFileLoader {
       locale = Locale.ENGLISH;
     }
     bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
+    bundleWine = ResourceBundle.getBundle("wine", locale, new UTF8Control());
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
     bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());

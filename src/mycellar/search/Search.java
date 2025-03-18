@@ -22,7 +22,6 @@ import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -133,7 +132,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   @Serial
   private static final long serialVersionUID = 8497660112193602839L;
   private final SearchTableModel searchTableModel = new SearchTableModel();
-  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel(SEARCH_BOTTLEFOUND, LabelProperty.PLURAL.withCapital(), "");
+  private final MyCellarLabel objectFoundCountLabels = new MyCellarLabel(SEARCH_BOTTLEFOUND,"");
   private final MyCellarSimpleLabel countLabel = new MyCellarSimpleLabel(DASH);
   private final MyCellarButton deleteButton = new MyCellarButton(MAIN_DELETE, DELETE);
   private final MyCellarButton exportButton = new MyCellarButton(SEARCH_EXPORT, EXPORT);
@@ -265,7 +264,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       add(scrollPane, "grow, wrap, span 2");
       add(addToWorksheetButton, "alignx left, aligny top");
       add(selectAllCheck, "wrap, alignx right, aligny top");
-      add(new MyCellarLabel(SEARCH_SELECTROWS, LabelProperty.SINGLE, ""), "wrap, span 2, alignx center");
+      add(new MyCellarLabel(SEARCH_SELECTROWS, ""), "wrap, span 2, alignx center");
       add(resultInfoLabel, "wrap, span 2, alignx center");
       add(modifyButton, "split, span 2, align center");
       add(deleteButton, "wrap");

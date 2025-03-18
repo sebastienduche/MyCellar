@@ -7,7 +7,6 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.bottle.BottleColor;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyFormattedTextField;
 import mycellar.core.uicomponents.JModifyTextField;
@@ -29,7 +28,6 @@ import static mycellar.ProgramConstants.CHAR_COMMA;
 import static mycellar.ProgramConstants.CHAR_DOT;
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.ADDVIN_COLOR;
 import static mycellar.general.ResourceKey.ADDVIN_NBITEMSTOADD;
 import static mycellar.general.ResourceKey.ADDVIN_STILL1TOADD;
@@ -88,7 +86,7 @@ public final class PanelWineAttribute extends JPanel {
     add(new MyCellarLabel(MAIN_PRICE), "wrap");
     add(price, "width min(100,45%), split 2");
     add(new MyCellarSimpleLabel(Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO)), "gapleft 5px");
-    add(new MyCellarLabel(MAIN_NUMBEROFITEMS, LabelProperty.PLURAL, ""), "split, span 2");
+    add(new MyCellarLabel(MAIN_NUMBEROFITEMS), "split, span 2");
     add(nbItems, "width min(50,10%)");
     add(labelStillToAdd, "wrap");
     add(new MyCellarLabel(MYCELLARMANAGEBOTTLES_STATUS));
@@ -141,7 +139,7 @@ public final class PanelWineAttribute extends JPanel {
   }
 
   public void initValues() {
-    nbItems.setToolTipText(getLabelWithProperty(ADDVIN_NBITEMSTOADD, LabelProperty.PLURAL));
+    nbItems.setToolTipText(getLabel(ADDVIN_NBITEMSTOADD));
     nbItems.setValue(1);
     labelStillToAdd.setForeground(Color.red);
     nbItems.addChangeListener((e) -> {

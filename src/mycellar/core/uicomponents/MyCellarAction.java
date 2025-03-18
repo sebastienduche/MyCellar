@@ -2,7 +2,6 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.IResource;
 import mycellar.general.ResourceKey;
@@ -30,21 +29,17 @@ public abstract class MyCellarAction extends AbstractAction implements IMyCellar
 
   private boolean withText = true;
 
-  public MyCellarAction(ResourceKey key, LabelProperty textLabelProperty) {
-    labelKey = new LabelKey(key, textLabelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-  }
-
-  public MyCellarAction(ResourceKey key, LabelProperty textLabelProperty, Icon icon) {
-    super("", icon);
-    labelKey = new LabelKey(key, textLabelProperty);
+  public MyCellarAction(ResourceKey key) {
+    labelKey = new LabelKey(key);
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
   public MyCellarAction(ResourceKey key, Icon icon) {
-    this(key, LabelProperty.SINGLE, icon);
+    super("", icon);
+    labelKey = new LabelKey(key);
+    updateText();
+    MyCellarLabelManagement.add(this);
   }
 
   LabelKey getLabelKey() {

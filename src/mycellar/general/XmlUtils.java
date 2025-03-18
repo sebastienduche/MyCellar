@@ -31,14 +31,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
 import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
@@ -49,8 +47,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.5
- * @since 14/03/25
+ * @version 4.6
+ * @since 18/03/25
  */
 
 public class XmlUtils {
@@ -282,7 +280,7 @@ public class XmlUtils {
               Element vin_name = doc.createElement(VIN_1);
               vin.appendChild(vin_name);
               if (preview) {
-                vin_name.setTextContent(getLabelWithProperty(MYXMLDOM_ITEMHERE, LabelProperty.A_SINGLE.withCapital()));
+                vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
               } else {
                 IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
                 if (b != null)

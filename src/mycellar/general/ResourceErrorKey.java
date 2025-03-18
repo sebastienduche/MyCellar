@@ -109,6 +109,7 @@ public enum ResourceErrorKey implements IResource {
   ERROR_NOITEMFOUND("Error.NoItemFound"),
   ERROR_CANTMODIFYSTORAGE("Error.cantModifyStorage"),
   ERROR_MODIFICATIONINCOMPLETED("Error.modificationIncompleted"),
+  ERROR_MODIFICATIONSINCOMPLETED("Error.modificationIncompleted"),
   ERROR_ENTERNAME("Error.enterName"),
   ERROR_STILLITEMSONLINE("Error.stillItemsOnLine"),
   ERROR_PLEASESELECT("Error.pleaseSelect"),

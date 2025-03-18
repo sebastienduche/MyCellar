@@ -7,7 +7,6 @@ import mycellar.actions.ChooseCellAction;
 import mycellar.core.IPlacePosition;
 import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.ADDVIN_CHOOSECELL;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 import static mycellar.general.ResourceKey.MAIN_STORAGE;
@@ -55,8 +53,8 @@ import static mycellar.general.ResourceKey.STORAGE_PREVIEW;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 13/03/25
+ * @version 4.4
+ * @since 18/03/25
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
   @Serial
@@ -78,10 +76,10 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
   private final MyCellarSimpleLabel previousLineLabel = new MyCellarSimpleLabel(); // Pour la Modification
   private final MyCellarSimpleLabel previousColumnLabel = new MyCellarSimpleLabel(); // Pour la Modification
 
-  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(SEARCH_ALLBOTTLESINPLACE, LabelProperty.PLURAL);
-  private final String labelAllObjectsInPlace = getLabelWithProperty(SEARCH_ALLBOTTLESINPLACE, LabelProperty.PLURAL);
-  private final String labelAllObjectsInPart = getLabelWithProperty(SEARCH_ALLBOTTLESINPART, LabelProperty.PLURAL);
-  private final String labelAllObjectsInLine = getLabelWithProperty(SEARCH_ALLBOTTLESINLINE, LabelProperty.PLURAL);
+  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(SEARCH_ALLBOTTLESINPLACE);
+  private final String labelAllObjectsInPlace = getLabel(SEARCH_ALLBOTTLESINPLACE);
+  private final String labelAllObjectsInPart = getLabel(SEARCH_ALLBOTTLESINPART);
+  private final String labelAllObjectsInLine = getLabel(SEARCH_ALLBOTTLESINLINE);
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;

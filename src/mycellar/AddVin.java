@@ -36,9 +36,7 @@ import java.util.Objects;
 
 import static javax.swing.SwingConstants.CENTER;
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
-import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
@@ -227,7 +225,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       Debug("ERROR: Unable to move multiple objects to a Complex place");
       end.setText("");
       String nomRangement = complexPlace.getName();
-      Erreur.showSimpleErreur(getErrorWithProperty(ERROR_UNABLETOMOVENITEMSIN, PLURAL, nomRangement), getError(ERROR_SELECTSIMPLESTORAGE));
+      Erreur.showSimpleErreur(getError(ERROR_UNABLETOMOVENITEMSIN, nomRangement), getError(ERROR_SELECTSIMPLESTORAGE));
       enableAll(true);
       return result;
     }
@@ -281,7 +279,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           if (nb_free_space > countStillToAdd) {
             nb_free_space = countStillToAdd;
           }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(ERROR_QUESTIONADDNITEMSNEXT, PLURAL, nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_QUESTIONADDNITEMSNEXT, nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
             Debug("Putting multiple bottle in chosen place");
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;
@@ -355,7 +353,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (countStillToAdd > 1) {
       if (!Program.hasOnlyOnePlace()) {
         Debug("Adding multiple objects in the same place?");
-        String message = getErrorWithProperty(ERROR_QUESTIONADDNITEMIN, LabelProperty.PLURAL, countStillToAdd, simplePlace.getName());
+        String message = getError(ERROR_QUESTIONADDNITEMIN, countStillToAdd, simplePlace.getName());
         if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
           //Add several bottles in Caisse
           Debug("Adding multiple objects in the same place: YES");

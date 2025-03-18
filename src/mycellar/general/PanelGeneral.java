@@ -32,17 +32,14 @@ import java.io.Serial;
 import java.util.LinkedList;
 
 import static mycellar.ProgramConstants.SPACE;
-import static mycellar.core.text.LabelProperty.OF_THE_PLURAL;
-import static mycellar.core.text.LabelProperty.OF_THE_SINGLE;
-import static mycellar.core.text.LabelProperty.THE_SINGLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKTRANSFORMTO4DIGITSYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMSAVE;
 import static mycellar.general.ResourceErrorKey.ERROR_ITEMNOTYETADDED;
 import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceErrorKey.ERROR_MODIFICATIONSINCOMPLETED;
 import static mycellar.general.ResourceErrorKey.ERROR_UNCHECKTRANSFORMTO4DIGITSYEAR;
 import static mycellar.general.ResourceKey.ADDVIN_ITEMMODIFIED;
 import static mycellar.general.ResourceKey.ADDVIN_NBITEMSSELECTED;
@@ -67,7 +64,7 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
-  private final MyCellarLabel labelModified = new MyCellarLabel(ADDVIN_ITEMMODIFIED, LabelProperty.SINGLE, "");
+  private final MyCellarLabel labelModified = new MyCellarLabel(ADDVIN_ITEMMODIFIED);
   private final MyCellarButton manageContenance = new MyCellarButton(PARAMETER_CAPACITIESMANAGEMENT);
   private final JModifyTextField year = new JModifyTextField();
   private final JModifyComboBox<String> type = new JModifyComboBox<>();
@@ -446,9 +443,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     if (isModified()/*!name.getText().isEmpty()*/) {
       String label;
       if (modify) {
-        label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+        label = getError(name.isEnabled() ? ERROR_MODIFICATIONINCOMPLETED : ERROR_MODIFICATIONSINCOMPLETED);
       } else {
-        label = getErrorWithProperty(ERROR_ITEMNOTYETADDED, THE_SINGLE.withCapital());
+        label = getError(ERROR_ITEMNOTYETADDED);
       }
       Debug("Message: Confirm to Quit?");
       if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
@@ -463,9 +460,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     if (isModified()) {
       String label;
       if (modify) {
-        label = getErrorWithProperty(ERROR_MODIFICATIONINCOMPLETED, name.isEnabled() ? OF_THE_SINGLE : OF_THE_PLURAL);
+        label = getError(name.isEnabled() ? ERROR_MODIFICATIONINCOMPLETED : ERROR_MODIFICATIONSINCOMPLETED);
       } else {
-        label = getErrorWithProperty(ERROR_ITEMNOTYETADDED, THE_SINGLE.withCapital());
+        label = getError(ERROR_ITEMNOTYETADDED);
       }
       Debug("Message: Confirm to Quit?");
       if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMSAVE), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {

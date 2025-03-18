@@ -2,7 +2,6 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.IResource;
 import mycellar.general.ResourceKey;
@@ -18,8 +17,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 14/03/25
+ * @version 1.4
+ * @since 18/03/25
  */
 
 public final class MyCellarCheckBox extends JCheckBox implements IMyCellarComponent {
@@ -41,13 +40,6 @@ public final class MyCellarCheckBox extends JCheckBox implements IMyCellarCompon
   public MyCellarCheckBox(IResource key, boolean selected) {
     super("", selected);
     labelKey = new LabelKey(key);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarCheckBox(IResource key, LabelProperty labelProperty) {
-    labelKey = new LabelKey(key, labelProperty);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

@@ -3,7 +3,6 @@ package mycellar.search;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
 import static mycellar.general.ResourceKey.MAIN_ITEM;
 import static mycellar.general.ResourceKey.MAIN_STORAGE;
@@ -28,8 +26,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 14/03/25
+ * @version 3.9
+ * @since 18/03/25
  */
 class SearchTableModel extends AbstractTableModel {
 
@@ -38,7 +36,7 @@ class SearchTableModel extends AbstractTableModel {
   static final int ETAT = 0;
   static final int SHOW = 7;
   private final List<String> columnNames = List.of("",
-      getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+      getLabel(MAIN_ITEM),
       getLabel(MAIN_YEAR),
       getLabel(MAIN_STORAGE),
       getLabel(MYCELLARFIELDS_NUMPLACE),

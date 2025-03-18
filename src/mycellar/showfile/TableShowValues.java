@@ -5,7 +5,6 @@ import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -21,9 +20,7 @@ import java.util.List;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_CANTMODIFYSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
@@ -50,8 +47,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.5
- * @since 08/03/25
+ * @version 6.6
+ * @since 18/03/25
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -69,7 +66,7 @@ class TableShowValues extends AbstractTableModel {
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
   private final String[] columnNames = {"",
-      getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+      getLabel(MAIN_ITEM),
       getLabel(MAIN_YEAR), getLabel(MAIN_CAPACITYORSUPPORT),
       getLabel(MAIN_STORAGE),
       getLabel(MYCELLARFIELDS_NUMPLACE),
@@ -250,7 +247,7 @@ class TableShowValues extends AbstractTableModel {
             if (rangement.isSimplePlace()) {
               Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getErrorWithProperty(ERROR_CANTMODIFYSTORAGE, LabelProperty.THE_SINGLE), getError(ERROR_ERROR), JOptionPane.YES_NO_OPTION)) {
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_CANTMODIFYSTORAGE), getError(ERROR_ERROR), JOptionPane.YES_NO_OPTION)) {
                 LinkedList<MyCellarObject> list = new LinkedList<>();
                 list.add(b);
                 Program.modifyBottles(list);

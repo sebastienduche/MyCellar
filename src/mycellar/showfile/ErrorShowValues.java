@@ -24,9 +24,7 @@ import java.util.List;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
@@ -43,6 +41,7 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
 import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
 import static mycellar.general.ResourceKey.SHOWFILE_ADDED;
+import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
 
 
 /**
@@ -52,8 +51,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_ADDED;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 14/03/25
+ * @version 3.8
+ * @since 18/03/25
  */
 
 public class ErrorShowValues extends TableShowValues {
@@ -89,14 +88,14 @@ public class ErrorShowValues extends TableShowValues {
   private static final int NBCOL = 11;
   private final String[] columnNames = new String[]{"",
       getLabel(ERRORSHOWVALUES_ERROR),
-      getLabelWithProperty(MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+      getLabel(MAIN_ITEM),
       getLabel(MAIN_YEAR),
       getLabel(MAIN_CAPACITYORSUPPORT),
       getLabel(MAIN_STORAGE),
       getLabel(MYCELLARFIELDS_NUMPLACE),
       getLabel(MYCELLARFIELDS_LINE),
       getLabel(MYCELLARFIELDS_COLUMN),
-      getLabel(ResourceKey.SHOWFILE_STATUS), ""};
+      getLabel(SHOWFILE_STATUS), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -182,11 +181,11 @@ public class ErrorShowValues extends TableShowValues {
             fireTableRowsUpdated(row, row);
           } else {
             status[row] = Boolean.FALSE;
-            Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_ERRORADDINGBOTTLE, LabelProperty.THE_SINGLE));
+            Erreur.showSimpleErreur(getError(SHOWFILE_ERRORADDINGBOTTLE));
           }
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(getErrorWithProperty(SHOWFILE_ERRORADDINGBOTTLE, LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getError(SHOWFILE_ERRORADDINGBOTTLE));
         }
         break;
       case NAME:

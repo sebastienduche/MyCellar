@@ -22,7 +22,6 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 import mycellar.core.storage.ListeBouteille;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.text.Language;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarAction;
@@ -101,30 +100,32 @@ import static mycellar.general.ResourceKey.EXPORT;
 import static mycellar.general.ResourceKey.HISTORY;
 import static mycellar.general.ResourceKey.IMPORT;
 import static mycellar.general.ResourceKey.IMPORT_TITLE;
+import static mycellar.general.ResourceKey.IMPORT_TITLEMENU;
 import static mycellar.general.ResourceKey.MAIN_ABOUT;
-import static mycellar.general.ResourceKey.MAIN_ADD;
+import static mycellar.general.ResourceKey.MAIN_ADDMENU;
 import static mycellar.general.ResourceKey.MAIN_CHECKUPDATE;
 import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
 import static mycellar.general.ResourceKey.MAIN_CLOSE;
 import static mycellar.general.ResourceKey.MAIN_COPY;
 import static mycellar.general.ResourceKey.MAIN_CREATETABLE;
 import static mycellar.general.ResourceKey.MAIN_CUT;
-import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_DELETEMENU;
 import static mycellar.general.ResourceKey.MAIN_DELETESTORAGE;
 import static mycellar.general.ResourceKey.MAIN_EDIT;
 import static mycellar.general.ResourceKey.MAIN_EXIT;
-import static mycellar.general.ResourceKey.MAIN_EXPORT;
 import static mycellar.general.ResourceKey.MAIN_EXPORTFILE;
+import static mycellar.general.ResourceKey.MAIN_EXPORTMENU;
 import static mycellar.general.ResourceKey.MAIN_EXPORTXMLPLACES;
 import static mycellar.general.ResourceKey.MAIN_FILE;
 import static mycellar.general.ResourceKey.MAIN_FILECONTENT;
 import static mycellar.general.ResourceKey.MAIN_FILEEXPORT;
 import static mycellar.general.ResourceKey.MAIN_HELP;
 import static mycellar.general.ResourceKey.MAIN_HISTORY;
+import static mycellar.general.ResourceKey.MAIN_HISTORYMENU;
 import static mycellar.general.ResourceKey.MAIN_IMPORTXMLPLACES;
 import static mycellar.general.ResourceKey.MAIN_ITEM;
 import static mycellar.general.ResourceKey.MAIN_MANAGEPLACE;
-import static mycellar.general.ResourceKey.MAIN_MODIFY;
+import static mycellar.general.ResourceKey.MAIN_MODIFYMENU;
 import static mycellar.general.ResourceKey.MAIN_MODIFYSTORAGE;
 import static mycellar.general.ResourceKey.MAIN_NEW;
 import static mycellar.general.ResourceKey.MAIN_OPEN;
@@ -132,6 +133,7 @@ import static mycellar.general.ResourceKey.MAIN_PASTE;
 import static mycellar.general.ResourceKey.MAIN_SAVE;
 import static mycellar.general.ResourceKey.MAIN_SAVEAS;
 import static mycellar.general.ResourceKey.MAIN_SETTINGS;
+import static mycellar.general.ResourceKey.MAIN_SETTINGSMENU;
 import static mycellar.general.ResourceKey.MAIN_SHOWFILE;
 import static mycellar.general.ResourceKey.MAIN_SHOWTRASH;
 import static mycellar.general.ResourceKey.MAIN_STATISTICS;
@@ -144,15 +146,18 @@ import static mycellar.general.ResourceKey.MAIN_TABSEARCHSIMPLE;
 import static mycellar.general.ResourceKey.MAIN_TOOLS;
 import static mycellar.general.ResourceKey.MAIN_UPDATEAVAILABLE;
 import static mycellar.general.ResourceKey.MAIN_VINEYARDMANAGEMENT;
+import static mycellar.general.ResourceKey.MAIN_VINEYARDMANAGEMENTMENU;
 import static mycellar.general.ResourceKey.MAIN_WHATSNEW;
 import static mycellar.general.ResourceKey.MAIN_XMLEXPORT;
 import static mycellar.general.ResourceKey.MODIF;
 import static mycellar.general.ResourceKey.MONTHVERSION;
 import static mycellar.general.ResourceKey.MOVELINE_TITLE;
+import static mycellar.general.ResourceKey.MOVELINE_TITLEMENU;
 import static mycellar.general.ResourceKey.MYCELLAR;
 import static mycellar.general.ResourceKey.NEW;
 import static mycellar.general.ResourceKey.PARAMETERS_TYPELABEL;
 import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
+import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENTMENU;
 import static mycellar.general.ResourceKey.PROGRAM_DEFAULTPLACE;
 import static mycellar.general.ResourceKey.QUITTER;
 import static mycellar.general.ResourceKey.RECHERCHE;
@@ -161,6 +166,7 @@ import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
 import static mycellar.general.ResourceKey.START_KEY;
 import static mycellar.general.ResourceKey.START_MODIFIED;
 import static mycellar.general.ResourceKey.START_MODIFYPARAMETER;
+import static mycellar.general.ResourceKey.START_MODIFYPARAMETERMENU;
 import static mycellar.general.ResourceKey.START_NEWVERSION;
 import static mycellar.general.ResourceKey.START_NOUPDATE;
 import static mycellar.general.ResourceKey.START_PARAMETERTOMODIFY;
@@ -973,7 +979,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class CutAction extends MyCellarAction {
 
     private CutAction(boolean withText) {
-      super(MAIN_CUT, LabelProperty.SINGLE, MyCellarImage.CUT);
+      super(MAIN_CUT, MyCellarImage.CUT);
       setDescriptionLabel(MAIN_CUT);
       setWithText(withText);
     }
@@ -989,7 +995,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class CopyAction extends MyCellarAction {
 
     private CopyAction(boolean withText) {
-      super(MAIN_COPY, LabelProperty.SINGLE, MyCellarImage.COPY);
+      super(MAIN_COPY, MyCellarImage.COPY);
       setDescriptionLabel(MAIN_COPY);
       setWithText(withText);
     }
@@ -1005,7 +1011,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class PasteAction extends MyCellarAction {
 
     private PasteAction(boolean withText) {
-      super(MAIN_PASTE, LabelProperty.SINGLE, MyCellarImage.PASTE);
+      super(MAIN_PASTE, MyCellarImage.PASTE);
       setDescriptionLabel(MAIN_PASTE);
       setWithText(withText);
     }
@@ -1053,7 +1059,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   final class OpenAction extends MyCellarAction {
 
     private OpenAction(boolean withText) {
-      super(MAIN_OPEN, LabelProperty.SINGLE, MyCellarImage.OPEN);
+      super(MAIN_OPEN, MyCellarImage.OPEN);
       setDescriptionLabel(MAIN_OPEN);
       setWithText(withText);
     }
@@ -1172,7 +1178,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class AddPlaceAction extends MyCellarAction {
 
     private AddPlaceAction() {
-      super(MAIN_ADD, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.PLACE);
+      super(MAIN_ADDMENU, MyCellarImage.PLACE);
       setDescriptionLabel(CREATESTORAGE_TITLE);
     }
 
@@ -1185,7 +1191,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class DeletePlaceAction extends MyCellarAction {
 
     private DeletePlaceAction() {
-      super(MAIN_DELETE, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.DELPLACE);
+      super(MAIN_DELETEMENU, MyCellarImage.DELPLACE);
       setDescriptionLabel(MAIN_DELETESTORAGE);
     }
 
@@ -1198,7 +1204,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class PlaceMoveLineAction extends MyCellarAction {
 
     private PlaceMoveLineAction() {
-      super(MOVELINE_TITLE, LabelProperty.SINGLE_FOR_ACTION);
+      super(MOVELINE_TITLEMENU);
       setDescriptionLabel(MOVELINE_TITLE);
     }
 
@@ -1211,7 +1217,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ModifyPlaceAction extends MyCellarAction {
 
     private ModifyPlaceAction() {
-      super(MAIN_MODIFY, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.MODIFYPLACE);
+      super(MAIN_MODIFYMENU, MyCellarImage.MODIFYPLACE);
       setDescriptionLabel(MAIN_MODIFYSTORAGE);
     }
 
@@ -1252,7 +1258,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ImportFileAction extends MyCellarAction {
 
     private ImportFileAction() {
-      super(IMPORT_TITLE, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.IMPORT);
+      super(IMPORT_TITLEMENU, MyCellarImage.IMPORT);
       setDescriptionLabel(IMPORT_TITLE);
     }
 
@@ -1265,7 +1271,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ExportFileAction extends MyCellarAction {
 
     private ExportFileAction() {
-      super(MAIN_EXPORT, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.EXPORT);
+      super(MAIN_EXPORTMENU, MyCellarImage.EXPORT);
       setDescriptionLabel(MAIN_FILEEXPORT);
     }
 
@@ -1293,7 +1299,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static class ShowHistoryAction extends MyCellarAction {
 
     private ShowHistoryAction() {
-      super(MAIN_HISTORY, LabelProperty.SINGLE_FOR_ACTION);
+      super(MAIN_HISTORYMENU);
     }
 
     @Override
@@ -1307,7 +1313,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   class VignoblesAction extends MyCellarAction {
 
     private VignoblesAction() {
-      super(MAIN_VINEYARDMANAGEMENT, LabelProperty.SINGLE_FOR_ACTION);
+      super(MAIN_VINEYARDMANAGEMENTMENU);
     }
 
     @Override
@@ -1319,7 +1325,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static class CapacityAction extends MyCellarAction {
 
     private CapacityAction() {
-      super(PARAMETER_CAPACITIESMANAGEMENT, LabelProperty.SINGLE_FOR_ACTION);
+      super(PARAMETER_CAPACITIESMANAGEMENTMENU);
     }
 
     @Override
@@ -1373,7 +1379,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class ParametersAction extends MyCellarAction {
 
     private ParametersAction() {
-      super(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION, MyCellarImage.PARAMETER);
+      super(MAIN_SETTINGSMENU, MyCellarImage.PARAMETER);
     }
 
     @Override
@@ -1385,7 +1391,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
   static final class SetConfigAction extends MyCellarAction {
 
     private SetConfigAction() {
-      super(START_MODIFYPARAMETER, LabelProperty.SINGLE_FOR_ACTION);
+      super(START_MODIFYPARAMETERMENU);
     }
 
     @Override

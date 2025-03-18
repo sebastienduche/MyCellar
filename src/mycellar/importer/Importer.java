@@ -21,7 +21,6 @@ import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -78,7 +77,6 @@ import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.IMPORT_COMBO_COUNT;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR017;
 import static mycellar.general.ResourceErrorKey.ERROR018;
@@ -141,8 +139,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.6
- * @since 14/03/25
+ * @version 16.7
+ * @since 18/03/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -475,7 +473,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.NAME) == null) {
         resetLabelProgress();
         Debug("ERROR: No column for wine name");
-        Erreur.showSimpleErreur(getErrorWithProperty(ERROR_NOCOLUMNSELECTEDFORNAME, LabelProperty.OF_THE_SINGLE), getErrorWithProperty(ERROR143, LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(getError(ERROR_NOCOLUMNSELECTEDFORNAME), getError(ERROR143));
         importe.setEnabled(true);
         return;
       }

@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
@@ -14,7 +13,6 @@ import java.util.List;
 import static java.util.List.of;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERCOLUMNNUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERLINENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNAME;
@@ -35,8 +33,8 @@ import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_INVALIDPATH;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 13/03/25
+ * @version 3.4
+ * @since 18/03/25
  */
 
 public final class MyCellarControl {
@@ -44,7 +42,7 @@ public final class MyCellarControl {
   public static boolean hasInvalidObjectName(String name) {
     if (isNullOrEmpty(name)) {
       Debug("ERROR: Wrong Name");
-      Erreur.showSimpleErreur(getErrorWithProperty(ERROR_ENTERNAME, LabelProperty.OF_THE_SINGLE));
+      Erreur.showSimpleErreur(getError(ERROR_ENTERNAME));
       return true;
     }
     return false;

@@ -65,7 +65,7 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
     tc.setMaxWidth(25);
     final MyCellarLabel labelDefault = new MyCellarLabel(CAPACITYPANEL_DEFAULT);
     final MyCellarButton add = new MyCellarButton(MAIN_ADD, MyCellarImage.ADD);
-    final MyCellarLabel info = new MyCellarLabel(CAPACITYPANEL_MODIFYINFO, LabelProperty.THE_PLURAL.withCapital(), "");
+    final MyCellarLabel info = new MyCellarLabel(CAPACITYPANEL_MODIFYINFO);
     setLayout(new MigLayout("", "grow", "30px[][][grow]20px[]30px[]"));
     add(info, "wrap");
     add(add, "wrap");

@@ -3,7 +3,6 @@ package mycellar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -30,8 +29,8 @@ import static mycellar.general.ResourceKey.LISTVIN_SELECTITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 13/03/25
+ * @version 4.8
+ * @since 18/03/25
  */
 final class ListVin extends JPanel {
   private final ListValues listValues;
@@ -70,10 +69,10 @@ final class ListVin extends JPanel {
       }
     });
 
-    MyCellarLabel selectItemsLabel = new MyCellarLabel(LISTVIN_SELECTITEMS, LabelProperty.THE_PLURAL, "");
+    MyCellarLabel selectItemsLabel = new MyCellarLabel(LISTVIN_SELECTITEMS);
 
     setLayout(new MigLayout("", "grow", "[grow][]"));
-    MyCellarLabel listProblemsLabel = new MyCellarLabel(LISTVIN_LISTPROBLEMS, LabelProperty.PLURAL, "");
+    MyCellarLabel listProblemsLabel = new MyCellarLabel(LISTVIN_LISTPROBLEMS);
     listProblemsLabel.setForeground(Color.red);
     listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
     listProblemsLabel.setHorizontalAlignment(CENTER);

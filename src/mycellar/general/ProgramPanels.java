@@ -21,7 +21,6 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JButtonTabComponent;
 import mycellar.frame.MainFrame;
 import mycellar.importer.Importer;
@@ -77,7 +76,7 @@ import static mycellar.ScreenType.SHOW_WORKSHEET;
 import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
  * Titre : Cave &agrave; vin
@@ -86,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 14/03/25
+ * @version 2.2
+ * @since 18/03/25
  */
 public class ProgramPanels {
 
@@ -491,7 +490,7 @@ public class ProgramPanels {
             iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
           }
         } catch (IllegalArgumentException e) {
-          addTab(getLabelWithProperty(key, LabelProperty.SINGLE), icon, component);
+          addTab(getLabel(key), icon, component);
         }
       }
     }.execute();

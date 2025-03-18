@@ -8,12 +8,10 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.UpdateViewType;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.History;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
-import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.Part;
@@ -66,9 +64,8 @@ import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 import static mycellar.general.ResourceKey.MAIN_NV;
 import static mycellar.general.ResourceKey.MAIN_OTHER;
-import static mycellar.general.ResourceKey.MAIN_SETTINGS;
+import static mycellar.general.ResourceKey.MAIN_SETTINGSMENU;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
-import static mycellar.general.ResourceKey.MAIN_STORAGE;
 import static mycellar.general.ResourceKey.STATS_1SHELVE;
 import static mycellar.general.ResourceKey.STATS_ALLBRACKETS;
 import static mycellar.general.ResourceKey.STATS_ALLSTORAGES;
@@ -117,7 +114,7 @@ import static mycellar.general.ResourceKey.STATS_YEARS;
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private static final int PRICE_BRACKET_DEFAULT = 50;
-  private final MyCellarLabel comboLabel = new MyCellarLabel(MAIN_STORAGE, LabelProperty.SINGLE.withDoubleQuote(), "");
+  private final MyCellarLabel comboLabel = new MyCellarLabel(STATS_STORAGE);
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel moy = new MyCellarSimpleLabel();
   private final MyCellarComboBox<StatsEnum> listStatsType = new MyCellarComboBox<>();
@@ -127,7 +124,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
   private final JScrollPane scroll;
   private final PanelChart panelChart = new PanelChart();
   private final JPanel panelOther = new JPanel();
-  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
+  private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGSMENU);
   private final List<StatData> listPrice = new LinkedList<>();
   private final List<StatData> listYear = new LinkedList<>();
   private final List<StatData> listHistory = new LinkedList<>();
@@ -501,7 +498,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     if (partCount == 1) {
       list_num_empl = new MyCellarLabel(STATS_1SHELVE);
     } else {
-      list_num_empl = new MyCellarLabel(STATS_NSHELVES, LabelProperty.SINGLE, Integer.toString(partCount));
+      list_num_empl = new MyCellarLabel(STATS_NSHELVES, Integer.toString(partCount));
     }
     panel.add(list_num_empl);
     panel.add(new MyCellarSimpleLabel(getLabel(nbCaseUseAll > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, nbCaseUseAll)), "span 2, align right, wrap");
@@ -530,8 +527,8 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
 
   private void displayNbBottlePlace(AbstractPlace abstractPlace) {
     for (int j = 0; j < abstractPlace.getPartCount(); j++) {
-      panel.add(new MyCellarLabel(STATS_SHELVENUMBER, LabelProperty.SINGLE, Integer.toString(j + 1)));
-      panel.add(new MyCellarLabel(MAIN_SEVERALITEMS, new LabelProperty(abstractPlace.getTotalCountCellUsed() > 1), Integer.toString(abstractPlace.getCountCellUsed(j))), "span 2, align right, wrap");
+      panel.add(new MyCellarLabel(STATS_SHELVENUMBER, Integer.toString(j + 1)));
+      panel.add(new MyCellarLabel(abstractPlace.getTotalCountCellUsed() > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, Integer.toString(abstractPlace.getCountCellUsed(j))), "span 2, align right, wrap");
     }
   }
 

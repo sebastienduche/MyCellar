@@ -9,7 +9,6 @@ import mycellar.core.IMyCellarObject;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
-import mycellar.core.text.LabelProperty;
 import mycellar.general.IResource;
 import mycellar.general.ResourceKey;
 
@@ -18,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.ADDVIN_COLOR;
 import static mycellar.general.ResourceKey.MAIN_ALBUM;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
@@ -54,12 +53,12 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 17/03/25
+ * @version 3.2
+ * @since 18/03/25
  */
 
 public enum MyCellarFields {
-  NAME(0, MAIN_ITEM, LabelProperty.SINGLE.withCapital()),
+  NAME(0, MAIN_ITEM),
   YEAR(1, MAIN_YEAR),
   TYPE(2, MAIN_CAPACITYORSUPPORT),
   PLACE(3, MAIN_STORAGE),
@@ -108,18 +107,10 @@ public enum MyCellarFields {
   );
   private final int index;
   private final IResource keyLabel;
-  private final LabelProperty labelProperty;
 
   MyCellarFields(int index, IResource keyLabel) {
     this.index = index;
     this.keyLabel = keyLabel;
-    labelProperty = null;
-  }
-
-  MyCellarFields(int index, IResource keyLabel, LabelProperty labelProperty) {
-    this.index = index;
-    this.keyLabel = keyLabel;
-    this.labelProperty = labelProperty;
   }
 
   public int getIndex() {
@@ -303,6 +294,6 @@ public enum MyCellarFields {
     if (isNullOrEmpty(keyLabel.getKey())) {
       return "";
     }
-    return getLabelWithProperty(keyLabel, labelProperty);
+    return getLabel(keyLabel);
   }
 }

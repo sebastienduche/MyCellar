@@ -2,7 +2,6 @@ package mycellar.actions;
 
 import mycellar.MyCellarImage;
 import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.WorksheetPanel;
@@ -24,7 +23,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
   }
 
   public OpenWorkSheetAction(List<MyCellarObject> list) {
-    super(SHOWFILE_WORKSHEET, LabelProperty.SINGLE, MyCellarImage.WORK);
+    super(SHOWFILE_WORKSHEET, MyCellarImage.WORK);
     setDescriptionLabel(SHOWFILE_WORKSHEET);
     myCellarObjects = list != null ? list : Collections.emptyList();
   }

@@ -5,7 +5,6 @@ import mycellar.Program;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -36,8 +35,8 @@ import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 12/03/25
+ * @version 3.4
+ * @since 18/03/25
  */
 public final class PanelInfos extends JPanel {
 
@@ -76,7 +75,7 @@ public final class PanelInfos extends JPanel {
 
 final class PanelStats extends JPanel {
 
-  private final MyCellarLabel bottles = new MyCellarLabel(MAIN_NUMBEROFITEMS, LabelProperty.PLURAL, "");
+  private final MyCellarLabel bottles = new MyCellarLabel(MAIN_NUMBEROFITEMS);
   private final MyCellarLabel cellarValue = new MyCellarLabel(MAIN_GLOBALVALUE);
   private final MyCellarSimpleLabel bottlesNb = new MyCellarSimpleLabel();
   private final MyCellarSimpleLabel cellarTotal = new MyCellarSimpleLabel();

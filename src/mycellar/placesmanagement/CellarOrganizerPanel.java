@@ -67,9 +67,7 @@ import java.util.List;
 
 import static mycellar.ProgramConstants.TEMP_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelWithProperty;
 import static mycellar.general.ResourceErrorKey.MANAGESTOCK_CONFIRMLOST;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETEWINE;
@@ -99,7 +97,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
   private final List<JPanel[][]> places = new LinkedList<>();
   private final JPanel placePanel = new JPanel();
   private final LinkedList<AbstractPlace> complexPlaces = new LinkedList<>();
-  private final MyCellarButton moveAllButton = new MyCellarButton(MANAGESTOCK_MOVEALL, LabelProperty.PLURAL, new MoveAction());
+  private final MyCellarButton moveAllButton = new MyCellarButton(MANAGESTOCK_MOVEALL, new MoveAction());
   private final boolean cellChooser;
   private LabelTransferHandler labelTransferHandler;
   private MyCellarComboBox<AbstractPlace> abstractPlaceCombo;
@@ -260,9 +258,9 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
     add(moveAllButton, "gapleft 10px, wrap");
     moveAllButton.setEnabled(false);
     if (cellChooser) {
-      add(new MyCellarLabel(MANAGEPLACE_CHOOSECELL, LabelProperty.THE_SINGLE, ""), "wrap");
+      add(new MyCellarLabel(MANAGEPLACE_CHOOSECELL), "wrap");
     } else {
-      add(new MyCellarLabel(MANAGEPLACE_STOCKDESCRIPTION, LabelProperty.PLURAL, ""), "wrap");
+      add(new MyCellarLabel(MANAGEPLACE_STOCKDESCRIPTION), "wrap");
     }
     add(new JScrollPane(placePanel), "grow");
     if (!cellChooser) {

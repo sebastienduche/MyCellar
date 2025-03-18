@@ -10,7 +10,6 @@ import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
@@ -23,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 import static mycellar.ProgramConstants.HISTORY_XML;
 import static mycellar.ProgramConstants.WORKSHEET_XML;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMDELETIONALLHISTORY;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETECHECKEDHISTORY;
@@ -40,8 +38,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.1
- * @since 08/03/25
+ * @version 8.2
+ * @since 18/03/25
  */
 
 public class SerializedStorage implements Storage {
@@ -225,8 +223,8 @@ public class SerializedStorage implements Storage {
       case ADD -> getError(ERROR_QUESTIONDELETEENTEREDHISTORY);
       case MODIFY -> getError(ERROR_QUESTIONDELETEMODIFIEDHISTORY);
       case DEL -> getError(ERROR_QUESTIONDELETEEXITEDHISTORY);
-      case VALIDATED -> getErrorWithProperty(ERROR_QUESTIONDELETEVALIDATEDHISTORY, LabelProperty.OF_THE_PLURAL);
-      case TOCHECK -> getErrorWithProperty(ERROR_QUESTIONDELETECHECKEDHISTORY, LabelProperty.OF_THE_PLURAL);
+      case VALIDATED -> getError(ERROR_QUESTIONDELETEVALIDATEDHISTORY);
+      case TOCHECK -> getError(ERROR_QUESTIONDELETECHECKEDHISTORY);
     };
 
     if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, sValue, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {

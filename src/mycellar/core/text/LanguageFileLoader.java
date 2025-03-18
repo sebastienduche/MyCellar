@@ -75,7 +75,8 @@ public final class LanguageFileLoader {
       }
     }
     if (INSTANCE.bundleTitle.containsKey(id)) {
-      return INSTANCE.bundleTitle.getString(id);
+      String string = INSTANCE.bundleTitle.getString(id);
+      return string;
     }
     if (Program.isWineType()) {
       if (INSTANCE.bundleWine == null) {
@@ -103,7 +104,8 @@ public final class LanguageFileLoader {
         return "";
       }
       if (INSTANCE.bundleWineError.containsKey(id)) {
-        return INSTANCE.bundleWineError.getString(id);
+        String string = INSTANCE.bundleWineError.getString(id);
+        return string;
       }
     }
     return "";

@@ -49,7 +49,6 @@ import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.MyCellarSettings.CREATE_TAB_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.core.text.MyCellarLabelManagement.getErrorWithProperty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR087;
 import static mycellar.general.ResourceErrorKey.ERROR127;
@@ -73,7 +72,7 @@ import static mycellar.general.ResourceKey.MAIN_CREATE;
 import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
 import static mycellar.general.ResourceKey.MAIN_PARAMETERS;
 import static mycellar.general.ResourceKey.MAIN_SELECTALL;
-import static mycellar.general.ResourceKey.MAIN_SETTINGS;
+import static mycellar.general.ResourceKey.MAIN_SETTINGSMENU;
 import static mycellar.general.ResourceKey.OUVRIR;
 
 /**
@@ -83,8 +82,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 9.9
- * @since 17/03/25
+ * @version 10.0
+ * @since 18/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -97,7 +96,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
   private final char createChar = getLabel(CREER).charAt(0);
   private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
   private final MyCellarCheckBox selectAll = new MyCellarCheckBox(MAIN_SELECTALL);
-  private final MyCellarButton m_jcb_options = new MyCellarButton(MAIN_SETTINGS, LabelProperty.SINGLE_FOR_ACTION);
+  private final MyCellarButton m_jcb_options = new MyCellarButton(MAIN_SETTINGSMENU);
   private final JTable table;
   private boolean updateView;
   private UpdateViewType updateViewType;
@@ -299,10 +298,10 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
         String erreur_txt1, erreur_txt2;
         if (caisseCount == 1) {
           erreur_txt1 = getError(ERROR_SIMPLESTORAGESELECTED);
-          erreur_txt2 = getErrorWithProperty(ERROR_LISTOFITEMSINSTORAGEGENERATED, LabelProperty.PLURAL);
+          erreur_txt2 = getError(ERROR_LISTOFITEMSINSTORAGEGENERATED);
         } else {
           erreur_txt1 = getError(ERROR127); //"Vous avez selectionne des rangements de type Caisse
-          erreur_txt2 = getErrorWithProperty(ERROR128, LabelProperty.PLURAL); //"Une liste des vins de ces rangements a ete generee.
+          erreur_txt2 = getError(ERROR128); //"Une liste des vins de ces rangements a ete generee.
         }
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }

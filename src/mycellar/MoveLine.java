@@ -5,7 +5,6 @@ import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -78,7 +77,7 @@ public final class MoveLine extends JDialog {
     cancel.addActionListener(e -> dispose());
 
     add(titre, "align center, span 3, wrap");
-    add(new MyCellarLabel(MOVELINE_MOVEFROMLINE, LabelProperty.PLURAL, ""), "span 3, wrap");
+    add(new MyCellarLabel(MOVELINE_MOVEFROMLINE), "span 3, wrap");
     add(panelPlace, "wrap");
     add(label_new_line, "wrap");
     add(new_line_cbx, "wrap");

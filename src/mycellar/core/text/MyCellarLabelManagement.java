@@ -69,6 +69,7 @@ public class MyCellarLabelManagement {
     return MessageFormat.format(getLabelFromCode(id.getKey(), true), parameters);
   }
 
+  @Deprecated(since = "version80")
   public static String getLabelWithProperty(IResource key, LabelProperty labelProperty) {
     if (labelProperty == null) {
       return getLabel(key);
@@ -84,6 +85,7 @@ public class MyCellarLabelManagement {
     return label;
   }
 
+  @Deprecated(since = "version80")
   public static String getLabelWithProperty(IResource key, LabelProperty labelProperty, Object... parameters) {
     return MessageFormat.format(getLabelWithProperty(key, labelProperty), parameters);
   }

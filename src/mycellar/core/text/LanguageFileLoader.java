@@ -34,6 +34,7 @@ public final class LanguageFileLoader {
   private Language language;
   private ResourceBundle bundleTitle;
   private ResourceBundle bundleWine;
+  private ResourceBundle bundleWineError;
   private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
@@ -50,6 +51,10 @@ public final class LanguageFileLoader {
     return bundleWine;
   }
 
+  public ResourceBundle getBundleWineError() {
+    return bundleWineError;
+  }
+
   public ResourceBundle getBundleError() {
     return bundleError;
   }
@@ -60,7 +65,7 @@ public final class LanguageFileLoader {
 
   static String getLabel(String id) {
     if (INSTANCE.bundleTitle == null) {
-      Debug("ERROR: Labels' map not intialized!");
+      Debug("ERROR: 'Label' map not intialized!");
       return "";
     }
     if (Program.isMusicType()) {
@@ -74,7 +79,7 @@ public final class LanguageFileLoader {
     }
     if (Program.isWineType()) {
       if (INSTANCE.bundleWine == null) {
-        Debug("ERROR: Wine' map not intialized!");
+        Debug("ERROR: 'Wine' map not intialized!");
         return "";
       }
       if (INSTANCE.bundleWine.containsKey(id)) {
@@ -86,15 +91,27 @@ public final class LanguageFileLoader {
 
   static String getError(String id) {
     if (INSTANCE.bundleError == null) {
-      Debug("ERROR: Errors' map not intialized!");
+      Debug("ERROR: 'Error' map not intialized!");
       return "";
     }
-    return INSTANCE.bundleError.getString(id);
+    if (INSTANCE.bundleError.containsKey(id)) {
+      return INSTANCE.bundleError.getString(id);
+    }
+    if (Program.isWineType()) {
+      if (INSTANCE.bundleWineError == null) {
+        Debug("ERROR: 'Wine Error' map not intialized!");
+        return "";
+      }
+      if (INSTANCE.bundleWineError.containsKey(id)) {
+        return INSTANCE.bundleWineError.getString(id);
+      }
+    }
+    return "";
   }
 
   public static int getLanguageIndex(String language) {
     if (INSTANCE.bundleLanguage == null) {
-      Debug("ERROR: Language' map not intialized!");
+      Debug("ERROR: 'Language' map not intialized!");
       return -1;
     }
     int i = 1;
@@ -115,7 +132,7 @@ public final class LanguageFileLoader {
   public static List<String> getLanguages() {
     ArrayList<String> list = new ArrayList<>();
     if (INSTANCE.bundleLanguage == null) {
-      Debug("ERROR: Language' map not intialized!");
+      Debug("ERROR: 'Language' map not intialized!");
       return list;
     }
     int i = 1;
@@ -147,6 +164,7 @@ public final class LanguageFileLoader {
     bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
     bundleWine = ResourceBundle.getBundle("wine", locale, new UTF8Control());
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
+    bundleWineError = ResourceBundle.getBundle("wineError", locale, new UTF8Control());
     bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }

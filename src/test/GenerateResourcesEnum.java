@@ -55,6 +55,15 @@ public class GenerateResourcesEnum {
             }
           }
       );
+      LanguageFileLoader.getInstance().getBundleWineError().keySet().forEach(
+          s -> {
+            try {
+              writer.write(s.toUpperCase().replace('.', '_') + "(\"" + s + "\"),\n");
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          }
+      );
       writer.write("EMPTY(\"\")\n");
       writer.write(";\n");
       writer.write("private final String key;\n\n");

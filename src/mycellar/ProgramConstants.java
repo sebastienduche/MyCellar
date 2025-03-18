@@ -60,7 +60,6 @@ public final class ProgramConstants {
   public static final String NORMAL = "75cl";
   public static final String HALF = "37.5cl";
   public static final int IMPORT_COMBO_COUNT = 18;
-  public static final String KEY_TYPE = "<KEY>";
   public static final String COUNTRY_LABEL_KEY = "Country.";
   public static final String INFOS_VERSION = " 2025 v";
   static final String PREVIEW_XML = "preview.xml";

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.MissingResourceException;
 
 import static mycellar.ProgramConstants.DOUBLE_DOT;
-import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.THREE_DOTS;
 
@@ -75,7 +74,6 @@ public class MyCellarLabelManagement {
       return getLabel(key);
     }
     String label = getLabel(key);
-    label = label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
     if (labelProperty.isThreeDashes()) {
       label += THREE_DOTS;
     }
@@ -102,13 +100,13 @@ public class MyCellarLabelManagement {
     }
   }
 
+  @Deprecated(since = "version80")
   public static String getErrorWithProperty(IResource key, LabelProperty labelProperty) {
     assert key instanceof ResourceErrorKey;
     if (labelProperty == null) {
       return getError((ResourceErrorKey) key);
     }
-    String label = getError((ResourceErrorKey) key);
-    return label.replaceAll(KEY_TYPE, getLabelForType(labelProperty));
+    return getError((ResourceErrorKey) key);
   }
 
   public static String getErrorWithProperty(IResource key, LabelProperty labelProperty, Object... parameters) {

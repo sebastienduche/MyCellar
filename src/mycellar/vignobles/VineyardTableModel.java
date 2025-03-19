@@ -1,5 +1,6 @@
 package mycellar.vignobles;
 
+import mycellar.Erreur;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
 import mycellar.frame.MainFrame;
@@ -13,7 +14,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONIGP;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_DELAPPELLATIONQUESTION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEAPPELLATION;
 
@@ -24,8 +24,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEAPPELLATION
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 14/03/25
+ * @version 1.9
+ * @since 19/03/25
  */
 
 class VineyardTableModel extends DefaultTableModel {
@@ -92,7 +92,7 @@ class VineyardTableModel extends DefaultTableModel {
           return;
         }
 
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_DELAPPELLATIONQUESTION, name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION != Erreur.showAskConfirmationMessage(getLabel(VINEYARDPANEL_DELAPPELLATIONQUESTION, name))) {
           return;
         }
         CountryVignobleController.setModified();

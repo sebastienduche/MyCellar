@@ -14,6 +14,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR032;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DONTSHOWNEXTTIME;
 
 
@@ -24,8 +25,8 @@ import static mycellar.general.ResourceKey.MAIN_DONTSHOWNEXTTIME;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 17/03/25
+ * @version 3.3
+ * @since 19/03/25
  */
 public class Erreur {
 
@@ -51,6 +52,10 @@ public class Erreur {
    */
   public static void showInformationMessage(String text) {
     JOptionPane.showMessageDialog(MainFrame.getInstance(), text, getError(ERROR032), JOptionPane.INFORMATION_MESSAGE);
+  }
+
+  public static int showAskConfirmationMessage(String message) {
+    return JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION);
   }
 
   /**

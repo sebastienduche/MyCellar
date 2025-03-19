@@ -13,7 +13,6 @@ import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.frame.MainFrame;
 import mycellar.general.ProgramPanels;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -37,7 +36,6 @@ import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONREPLACEIT;
 import static mycellar.general.ResourceKey.ADDVIN_1ITEMADDED;
 import static mycellar.general.ResourceKey.ADDVIN_1ITEMMODIFIED;
 import static mycellar.general.ResourceKey.ADDVIN_ENTERCHANGES;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEEXITMODIFICATIONS;
 import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEMODIFICATIONS;
 
@@ -279,7 +277,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
       String message = String.format("%s\n%s",getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee()), getError(ERROR_QUESTIONREPLACEIT));
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message , getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
         end.setText(getLabel(ADDVIN_1ITEMADDED));
@@ -316,7 +314,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     modified |= panelVignobles.isModified();
 
     String message = String.format("%s %s", getError(ERROR_MODIFICATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT));
-    if (modified && JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+    if (modified && JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(message)) {
       Debug("Don't Quit.");
       addButton.setEnabled(true);
       cancelButton.setEnabled(true);

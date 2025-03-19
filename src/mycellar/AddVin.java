@@ -56,7 +56,6 @@ import static mycellar.general.ResourceKey.ADDVIN_NITEMADDED;
 import static mycellar.general.ResourceKey.ADDVIN_NITEMMODIFIED;
 import static mycellar.general.ResourceKey.ADDVIN_NOTSAVED;
 import static mycellar.general.ResourceKey.MAIN_ADD;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CANCEL;
 import static mycellar.general.ResourceKey.MAIN_MODIFY;
 import static mycellar.general.ResourceKey.MAIN_TABADD;
@@ -69,8 +68,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.9
- * @since 18/03/25
+ * @version 33.0
+ * @since 19/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -278,7 +277,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           if (nb_free_space > countStillToAdd) {
             nb_free_space = countStillToAdd;
           }
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_QUESTIONADDNITEMSNEXT, nb_free_space), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+          if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(getError(ERROR_QUESTIONADDNITEMSNEXT, nb_free_space))) {
             Debug("Putting multiple bottle in chosen place");
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;
@@ -316,7 +315,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     } else { // La case n'est pas vide
       Debug("WARNING: Not an empty place, Replace?");
       String message = getError(ERROR_ALREADYINSTORAGE, myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()) + "\n" + getError(ERROR_QUESTIONREPLACEIT);
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         replaceWine(newMyCellarObject, myCellarObjectFound);
         end.setText(isModify ? getLabel(ADDVIN_1ITEMMODIFIED) : getLabel(ADDVIN_1ITEMADDED), true);
         result.setAdded(true);
@@ -353,7 +352,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       if (!Program.hasOnlyOnePlace()) {
         Debug("Adding multiple objects in the same place?");
         String message = getError(ERROR_QUESTIONADDNITEMIN, countStillToAdd, simplePlace.getName());
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           //Add several bottles in Caisse
           Debug("Adding multiple objects in the same place: YES");
 

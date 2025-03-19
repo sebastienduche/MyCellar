@@ -59,7 +59,6 @@ import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEM;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEMIN;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMS;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMSIN;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
@@ -214,7 +213,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       if (nb_case_use_total == 0) {
         String name = abstractPlace.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, getError(ERROR_QUESTIONDELETESTORAGE, name), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(getError(ERROR_QUESTIONDELETESTORAGE, name))) {
           removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
@@ -228,12 +227,12 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
         // Delete place and objects in the place
         String message = String.format("%s %s", error, getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS));
         Debug("MESSAGE: Delete this place " + name + " and all object(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
+              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
               for (MyCellarObject b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {

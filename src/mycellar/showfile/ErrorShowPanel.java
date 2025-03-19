@@ -1,6 +1,7 @@
 package mycellar.showfile;
 
 
+import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
@@ -15,7 +16,6 @@ import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.TabEvent;
-import mycellar.frame.MainFrame;
 import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.MAIN_ADD;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_STORAGETOCREATE;
 import static mycellar.general.ResourceKey.SHOWFILE_QUITERRORS;
@@ -45,8 +44,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_RELOADERRORS;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.5
- * @since 13/03/25
+ * @version 0.6
+ * @since 19/03/25
  */
 
 public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -134,7 +133,7 @@ public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListene
   @Override
   public boolean tabWillClose(TabEvent event) {
     if (Program.getErrors().stream().anyMatch(MyCellarError::isNotSolved)) {
-      return JOptionPane.NO_OPTION != JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(SHOWFILE_QUITERRORS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION);
+      return JOptionPane.NO_OPTION != Erreur.showAskConfirmationMessage(getLabel(SHOWFILE_QUITERRORS));
     }
     PlaceUtils.putTabStock();
     return true;

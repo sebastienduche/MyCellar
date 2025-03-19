@@ -92,7 +92,6 @@ import static mycellar.general.ResourceErrorKey.SHOWFILE_INEXISTINGBOTTLE;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
 import static mycellar.general.ResourceKey.HISTORY_TOCHECK;
 import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
 import static mycellar.general.ResourceKey.MAIN_CHOOSEDURATION;
 import static mycellar.general.ResourceKey.MAIN_COLUMNS;
@@ -662,7 +661,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
         }
         String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           for (MyCellarObject b : toDeleteList) {
             Program.getStorage().addHistory(HistoryState.DEL, b);
             final AbstractPlace rangement = b.getAbstractPlace();
@@ -719,7 +718,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
       }
       String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
         for (MyCellarObject b : toRestoreList) {
           Program.getTrash().remove(b);
@@ -853,7 +852,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         if (abstractPlace != null && abstractPlace.isSimplePlace()) {
           Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
         } else {
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_CANTMODIFYSTORAGE), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(getError(ERROR_CANTMODIFYSTORAGE))) {
             ProgramPanels.showBottle(b, true);
           }
         }

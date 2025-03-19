@@ -13,7 +13,6 @@ import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
@@ -56,7 +55,6 @@ import static mycellar.general.ResourceKey.HISTORY_MODIFIED;
 import static mycellar.general.ResourceKey.HISTORY_NONE;
 import static mycellar.general.ResourceKey.HISTORY_TOCHECK;
 import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.SHOWFILE_NOBOTTLETORESTORE;
 import static mycellar.general.ResourceKey.SHOWFILE_RESTORE;
@@ -73,8 +71,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 18/03/25
+ * @version 6.0
+ * @since 19/03/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -227,8 +225,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
         } else {
           message = String.format("%s %s", getError(ERROR_NITEMSSELECTED, toRestoreList.size()), getLabel(SHOWFILE_RESTORESEVERAL));
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
           for (MyCellarObject myCellarObject : toRestoreList) {
             if (myCellarObject.isInExistingPlace()) {
@@ -296,8 +293,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
             message = String.format("%s %s", getError(ERROR_NLINESELECTED, toDeleteList.size()), getError(ERROR_CONFIRMNDELETE));
           }
           Debug(toDeleteList.size() + " line(s) selected");
-          if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION),
-              JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+          if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
             Debug("Deleting lines...");
             for (History b : toDeleteList) {
               Program.getStorage().removeHistory(b);

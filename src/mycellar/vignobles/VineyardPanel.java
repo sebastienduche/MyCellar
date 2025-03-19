@@ -45,7 +45,6 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
 import static mycellar.general.ResourceErrorKey.VINEYARDPANEL_COUNTRYEXIST;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONS;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_ADDAPPELLATION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_ADDAPPELLATIONQUESTION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_ADDCOUNTRY;
@@ -69,8 +68,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEVIGNOBLE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 14/03/25
+ * @version 4.1
+ * @since 19/03/25
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -242,7 +241,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
           JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_UNABLEDELETEVIGNOBLE), getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
           return;
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_DELVIGNOBLEQUESTION, countryVignobleJaxb.getName()), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(getLabel(VINEYARDPANEL_DELVIGNOBLEQUESTION, countryVignobleJaxb.getName()))) {
           return;
         }
         comboVignoble.removeItemAt(comboVignoble.getSelectedIndex());
@@ -329,7 +328,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
             return;
           }
         }
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_DELCOUNTRYQUESTION, countryJaxb), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+        if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(getLabel(VINEYARDPANEL_DELCOUNTRYQUESTION, countryJaxb))) {
           return;
         }
         CountryVignobleController.deleteCountry(countryJaxb);

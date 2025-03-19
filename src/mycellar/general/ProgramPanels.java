@@ -48,6 +48,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static mycellar.ProgramConstants.STAR;
@@ -365,31 +366,31 @@ public class ProgramPanels {
 
   public static void deleteChooseCellPanel(IPlacePosition iPlace) {
     CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL0);
       UPDATABLE_PANELS.remove(CHOOSE_CELL0);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL1);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL1);
       UPDATABLE_PANELS.remove(CHOOSE_CELL1);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL2);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL2);
       UPDATABLE_PANELS.remove(CHOOSE_CELL2);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL3);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL3);
       UPDATABLE_PANELS.remove(CHOOSE_CELL3);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL4);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL4);
       UPDATABLE_PANELS.remove(CHOOSE_CELL4);
     }

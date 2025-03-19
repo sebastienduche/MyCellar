@@ -92,7 +92,6 @@ import static mycellar.general.ResourceKey.CREATESTORAGE_SIMPLESTORAGE;
 import static mycellar.general.ResourceKey.CREATESTORAGE_STORAGEMODIFIED;
 import static mycellar.general.ResourceKey.CREATESTORAGE_TYPELINES;
 import static mycellar.general.ResourceKey.IMPORT_STORAGENAME;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CREATE;
 import static mycellar.general.ResourceKey.MAIN_ITEM;
 import static mycellar.general.ResourceKey.MAIN_ITEMS;
@@ -391,7 +390,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt2 = getError(ERROR_QUESTIONCHANGESTORAGEITEMS);
         }
        String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           // Modify Name of place
           Program.getStorage().getAllList()
               .stream()
@@ -401,7 +400,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       } else if (simplePlace.getPartNumberIncrement() != partNumberIncrementSimplePlace) {
         // Le numero de la premiere partie a change, renumeroter
         String message = String.format("%s %s", getError(CREERRANGEMENT_UPDATEDBOTTLEPART, partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement()), getError(CREERRANGEMENT_ASKUPDATEBOTTLEPART));
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           //Modify start part number
           final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
@@ -529,7 +528,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt2 = getError(ERROR_QUESTIONCHANGESTORAGEITEMS);
         }
         String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           //Modify Name of place
           complexPlace.setName(nom);
           complexPlace.updatePlace(listPart);
@@ -714,18 +713,13 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   public boolean tabWillClose(TabEvent event) {
     if (modify) {
       if (nom_obj.isModified() || model.isModified()) {
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
-            String.format("%s %s", getError(ERROR_STORAGEMODIFICATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)),
-            getLabel(MAIN_ASKCONFIRMATION),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(String.format("%s %s", getError(ERROR_STORAGEMODIFICATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)))) {
           return false;
         }
       }
     } else {
       if (!toCleanString(nom_obj.getText()).isEmpty()) {
-        if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
-            String.format("%s %s", getError(ERROR_STORAGECREATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)),
-            getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(String.format("%s %s", getError(ERROR_STORAGECREATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)))) {
           return false;
         }
       }

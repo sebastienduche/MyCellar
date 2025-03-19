@@ -88,7 +88,6 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOWINESELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_PLEASESELECT;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTITEMTOMODIFY;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
 import static mycellar.general.ResourceKey.MAIN_MODIFY;
 import static mycellar.general.ResourceKey.MAIN_NV;
@@ -317,8 +316,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
       String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-      int resul = JOptionPane.showConfirmDialog(this, message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-      if (resul == JOptionPane.YES_OPTION) {
+      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         SwingUtilities.invokeLater(() -> {
           for (MyCellarObject myCellarObject : listToDelete) {
             searchTableModel.removeObject(myCellarObject);

@@ -20,7 +20,6 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.PopupListener;
-import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JOptionPane;
@@ -43,7 +42,6 @@ import static mycellar.general.ResourceKey.ADDVIN_ITEMMODIFIED;
 import static mycellar.general.ResourceKey.ADDVIN_NBITEMSSELECTED;
 import static mycellar.general.ResourceKey.ADDWINE_NOYEAR;
 import static mycellar.general.ResourceKey.MAIN_ARTIST;
-import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
 import static mycellar.general.ResourceKey.MAIN_COMPOSER;
 import static mycellar.general.ResourceKey.MAIN_NAME;
@@ -447,7 +445,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       }
       String message = String.format("%s %s", label, getError(ERROR_CONFIRMQUIT));
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(message)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -465,7 +463,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       }
       String message = String.format("%s %s", label, getError(ERROR_CONFIRMSAVE));
       Debug("Message: Confirm Save?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         Debug("Don't Quit.");
         return true;
       }

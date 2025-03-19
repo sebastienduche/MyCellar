@@ -7,9 +7,7 @@ import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
-import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -80,7 +78,7 @@ public class ErrorShowValues extends TableShowValues {
       return index;
     }
 
-    static Column fromIndex(int i) {
+    private static Column fromIndex(int i) {
       return Arrays.stream(values()).filter(column -> column.getIndex() == i).findFirst().orElse(null);
     }
   }
@@ -317,7 +315,7 @@ public class ErrorShowValues extends TableShowValues {
     }
   }
 
-  public void setErrors(List<MyCellarError> myCellarErrors) {
+  void setErrors(List<MyCellarError> myCellarErrors) {
     values = new Boolean[myCellarErrors.size()];
     status = new Boolean[myCellarErrors.size()];
     editable = new Boolean[myCellarErrors.size()];

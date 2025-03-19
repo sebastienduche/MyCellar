@@ -11,7 +11,6 @@ import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -50,7 +49,6 @@ import static mycellar.Program.open;
 import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
@@ -85,8 +83,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.1
- * @since 18/03/25
+ * @version 11.2
+ * @since 19/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -220,17 +218,17 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
           removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
-        String nom = abstractPlace.getName();
+        String name = abstractPlace.getName();
         String error;
         if (nb_case_use_total == 1) {
-          error = getLabel(DELETEPLACE_STILL1ITEMIN, nom);
+          error = getLabel(DELETEPLACE_STILL1ITEMIN, name);
         } else {
-          error = getLabel(DELETEPLACE_STILLNITEMSIN, nb_case_use_total, nom);
+          error = getLabel(DELETEPLACE_STILLNITEMSIN, nb_case_use_total, name);
         }
         // Delete place and objects in the place
-        String errorPart2 = getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS, LabelProperty.THE_PLURAL);
-        Debug("MESSAGE: Delete this place " + nom + " and all object(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String message = String.format("%s %s", error, getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS));
+        Debug("MESSAGE: Delete this place " + name + " and all object(s) (" + nb_case_use_total + ")?");
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {

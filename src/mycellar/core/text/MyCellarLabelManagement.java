@@ -1,11 +1,9 @@
 package mycellar.core.text;
 
 import mycellar.Program;
-import mycellar.ProgramType;
 import mycellar.core.IMyCellarComponent;
 import mycellar.general.IResource;
 import mycellar.general.ResourceErrorKey;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.JOptionPane;
 import java.text.MessageFormat;
@@ -21,8 +19,8 @@ import java.util.MissingResourceException;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 18/03/25
+ * @version 1.5
+ * @since 19/03/25
  */
 
 public class MyCellarLabelManagement {
@@ -94,26 +92,5 @@ public class MyCellarLabelManagement {
       JOptionPane.showMessageDialog(null, "Missing Error '" + key.getKey() + "'", "Error", JOptionPane.ERROR_MESSAGE);
       return key.getKey();
     }
-  }
-
-  public static String getLabelForType(ProgramType programType, LabelProperty labelProperty) {
-    String value;
-    String prefix;
-    String postfix = labelProperty.isPlural() ? "s" : "";
-    prefix = switch (labelProperty.getGrammar()) {
-      case SINGLE -> labelProperty.isPlural() ? "more" : "one";
-      case THE -> "the";
-      case OF_THE -> "ofthe";
-      default -> "";
-    };
-    value = switch (programType) {
-      case BOOK -> getLabelFromCode("Program." + prefix + "book" + postfix, true);
-      case MUSIC -> getLabelFromCode("Program." + prefix + "disc" + postfix, true);
-      default -> getLabelFromCode("Program." + prefix + "wine" + postfix, true);
-    };
-    if (labelProperty.isUppercaseFirst()) {
-      value = StringUtils.capitalize(value);
-    }
-    return value;
   }
 }

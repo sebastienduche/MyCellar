@@ -3,7 +3,6 @@ package mycellar.general;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
@@ -310,7 +309,7 @@ public class XmlUtils {
                 Element vin_name = doc.createElement(VIN_1);
                 vin.appendChild(vin_name);
                 if (preview) {
-                  vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE, LabelProperty.A_SINGLE.withCapital()));
+                  vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
                 } else {
                   complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                           .withNumPlace(i)

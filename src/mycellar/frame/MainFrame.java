@@ -87,7 +87,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.UNTITLED;
 import static mycellar.core.MyCellarSettings.DIR;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
-import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
@@ -968,7 +967,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
 
     @Override
     public String toString() {
-      return MyCellarLabelManagement.getLabelForType(type, PLURAL.withCapital());
+      return MyCellarLabelManagement.getLabel(type.getResource());
     }
 
     public ProgramType getType() {

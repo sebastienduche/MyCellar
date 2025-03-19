@@ -57,15 +57,15 @@ import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.MyCellarSettings.DEVISE;
 import static mycellar.core.MyCellarSettings.TRANCHE_PRIX;
-import static mycellar.core.text.LabelProperty.PLURAL;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.core.text.MyCellarLabelManagement.getLabelForType;
 import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 import static mycellar.general.ResourceKey.MAIN_NV;
 import static mycellar.general.ResourceKey.MAIN_OTHER;
 import static mycellar.general.ResourceKey.MAIN_SETTINGSMENU;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.PROGRAM_DISCS;
+import static mycellar.general.ResourceKey.PROGRAM_WINES;
 import static mycellar.general.ResourceKey.STATS_1SHELVE;
 import static mycellar.general.ResourceKey.STATS_ALLBRACKETS;
 import static mycellar.general.ResourceKey.STATS_ALLSTORAGES;
@@ -756,7 +756,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     YEAR(1, getLabel(STATS_YEARS)),
     PRICE(2, getLabel(STATS_PRICES)),
     HISTORY(3, getLabel(STATS_HISTORY)),
-    OBJECT(4, getLabelForType(Program.getProgramType(), PLURAL.withCapital()));
+    OBJECT(4, getLabel(Program.isWineType() ? PROGRAM_WINES : PROGRAM_DISCS));
 
     private final int index;
     private final String label;

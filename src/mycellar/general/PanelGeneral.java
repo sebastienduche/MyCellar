@@ -13,7 +13,6 @@ import mycellar.core.IPanelModifyable;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.JModifyTextField;

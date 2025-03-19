@@ -29,7 +29,6 @@ import mycellar.core.tablecomponents.ButtonCellRenderer;
 import mycellar.core.tablecomponents.CheckboxCellEditor;
 import mycellar.core.tablecomponents.CheckboxCellRenderer;
 import mycellar.core.tablecomponents.ToolTipRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -129,19 +128,19 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   private final MyCellarComboBox<BottleColor> colorCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<MusicSupport> musicSupportCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<BottlesStatus> statusCbx = new MyCellarComboBox<>();
-  final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
   private final MyCellarComboBox<State> verifyStatusCbx = new MyCellarComboBox<>();
+  private final ShowFileColumn<State> checkedButtonColumn;
   private boolean updateView = false;
   private UpdateViewType updateViewType;
+  final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
   final List<ShowFileColumn<?>> columns = new ArrayList<>();
   final LinkedList<MyCellarObject> workingBottles = new LinkedList<>();
   TableShowValues model;
   JTable table;
   ShowFileColumn<Boolean> checkBoxStartColumn;
   ShowFileColumn<?> modifyButtonColumn;
-  ShowFileColumn<State> checkedButtonColumn;
 
-  public AbstractShowFilePanel(boolean worksheet) {
+  AbstractShowFilePanel(boolean worksheet) {
     checkBoxStartColumn = new ShowFileColumn<>(25, true, true, "", Boolean.FALSE) {
       @Override
       void setValue(MyCellarObject b, Boolean value) {

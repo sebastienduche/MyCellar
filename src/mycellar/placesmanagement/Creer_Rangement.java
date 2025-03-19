@@ -12,7 +12,6 @@ import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JModifyTextField;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.STORAGE_NUMBERCOLUMNS;
@@ -25,8 +24,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 14/03/25
+ * @version 1.7
+ * @since 19/03/25
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -97,7 +96,7 @@ class CreerRangementTableModel extends AbstractTableModel {
         return "";
       }
       return switch (col) {
-        case NAME -> getLabel(STORAGE_SHELVENUMBER, p.getNumberAsDisplay()) + SPACE + getLabel(STORAGE_NUMBERLINES);
+        case NAME -> String.format("%s %s", getLabel(STORAGE_SHELVENUMBER, p.getNumberAsDisplay()), getLabel(STORAGE_NUMBERLINES));
         case ROW -> line;
         case COLUMN -> {
           if (p.getRowAt(line - 1) != null) {

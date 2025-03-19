@@ -22,7 +22,6 @@ import java.util.List;
 
 import static mycellar.ProgramConstants.EURO;
 import static mycellar.ProgramConstants.FONT_LABEL_BOLD;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.INFOS_STATS;
 import static mycellar.general.ResourceKey.MAIN_GLOBALVALUE;
@@ -35,8 +34,8 @@ import static mycellar.general.ResourceKey.MAIN_NUMBEROFITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 18/03/25
+ * @version 3.5
+ * @since 19/03/25
  */
 public final class PanelInfos extends JPanel {
 
@@ -120,7 +119,7 @@ final class PanelStats extends JPanel {
       if (Program.hasConfigCaveKey(MyCellarSettings.DEVISE)) {
         devise = Program.getCaveConfigString(MyCellarSettings.DEVISE, EURO);
       }
-      cellarTotal.setText(Program.sumAllPrices() + SPACE + devise);
+      cellarTotal.setText(String.format("%s %s",Program.sumAllPrices() ,devise));
       bottlesNb.setText(Integer.toString(nbBottles));
     });
   }

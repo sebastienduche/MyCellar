@@ -74,7 +74,6 @@ import static mycellar.MyCellarImage.WORK;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMSELECTED;
@@ -124,8 +123,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.1
- * @since 18/03/25
+ * @version 25.2
+ * @since 19/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -317,7 +316,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         erreur_txt1 = getError(ERROR_NITEMSSELECTED, listToDelete.size());
         erreur_txt2 = getError(ERROR_CONFIRMNDELETE);
       }
-      int resul = JOptionPane.showConfirmDialog(this, erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      String message = String.format("%s %s", erreur_txt1, erreur_txt2);
+      int resul = JOptionPane.showConfirmDialog(this, message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (resul == JOptionPane.YES_OPTION) {
         SwingUtilities.invokeLater(() -> {
           for (MyCellarObject myCellarObject : listToDelete) {

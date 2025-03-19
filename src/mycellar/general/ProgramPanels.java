@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ScreenType.ADDVIN;
@@ -85,8 +84,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 18/03/25
+ * @version 2.3
+ * @since 19/03/25
  */
 public class ProgramPanels {
 
@@ -426,7 +425,7 @@ public class ProgramPanels {
         UPDATABLE_MYCELLAROBJECTS.put(myCellarObject.getId(), manage);
         String bottleName = myCellarObject.getNom();
         if (bottleName.length() > 30) {
-          bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
+          bottleName = String.format("%s%s",bottleName.substring(0, 30),THREE_DOTS);
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
       }

@@ -59,7 +59,6 @@ import static javax.swing.border.EtchedBorder.RAISED;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.CREERRANGEMENT_ASKUPDATEBOTTLEPART;
@@ -108,8 +107,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 18.4
- * @since 18/03/25
+ * @version 18.5
+ * @since 19/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -391,7 +390,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt1 = getError(ERROR_NITEMSINSTORAGE, nb_bottle);
           erreur_txt2 = getError(ERROR_QUESTIONCHANGESTORAGEITEMS);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+       String message = String.format("%s %s", erreur_txt1, erreur_txt2);
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           // Modify Name of place
           Program.getStorage().getAllList()
               .stream()
@@ -400,10 +400,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       } else if (simplePlace.getPartNumberIncrement() != partNumberIncrementSimplePlace) {
         // Le numero de la premiere partie a change, renumeroter
-        String erreur_txt1 = getError(CREERRANGEMENT_UPDATEDBOTTLEPART, partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement());
-        String erreur_txt2 = getError(CREERRANGEMENT_ASKUPDATEBOTTLEPART);
-
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String message = String.format("%s %s", getError(CREERRANGEMENT_UPDATEDBOTTLEPART, partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement()), getError(CREERRANGEMENT_ASKUPDATEBOTTLEPART));
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify start part number
           final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();
           Program.getStorage().getAllList()
@@ -530,7 +528,8 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt1 = getError(ERROR_NITEMSINSTORAGE, nbBottles);
           erreur_txt2 = getError(ERROR_QUESTIONCHANGESTORAGEITEMS);
         }
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), erreur_txt1 + SPACE + erreur_txt2, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String message = String.format("%s %s", erreur_txt1, erreur_txt2);
+        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           //Modify Name of place
           complexPlace.setName(nom);
           complexPlace.updatePlace(listPart);
@@ -620,7 +619,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         createComplexPlace(nom);
       }
     }
-    if (!Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false) && bResul) {
+    if (bResul && !Program.getCaveConfigBool(MyCellarSettings.DONT_SHOW_CREATE_MESS, false)) {
       Erreur.showInformationMessageWithKey(getError(ERROR_CANCREATEANOTHERSTORAGESAMEOPTIONS), MyCellarSettings.DONT_SHOW_CREATE_MESS);
     }
     if (bResul) {
@@ -716,7 +715,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     if (modify) {
       if (nom_obj.isModified() || model.isModified()) {
         if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
-            getError(ERROR_STORAGEMODIFICATIONINCOMPLETED) + SPACE + getError(ERROR_CONFIRMQUIT),
+            String.format("%s %s", getError(ERROR_STORAGEMODIFICATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)),
             getLabel(MAIN_ASKCONFIRMATION),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
@@ -725,7 +724,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
     } else {
       if (!toCleanString(nom_obj.getText()).isEmpty()) {
         if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(),
-            getError(ERROR_STORAGECREATIONINCOMPLETED) + SPACE + getError(ERROR_CONFIRMQUIT),
+            String.format("%s %s", getError(ERROR_STORAGECREATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT)),
             getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
           return false;
         }

@@ -30,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.io.Serial;
 import java.util.LinkedList;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKTRANSFORMTO4DIGITSYEAR;
@@ -58,8 +57,8 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 18/03/25
+ * @version 2.4
+ * @since 19/03/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -446,8 +445,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       } else {
         label = getError(ERROR_ITEMNOTYETADDED);
       }
+      String message = String.format("%s %s", label, getError(ERROR_CONFIRMQUIT));
       Debug("Message: Confirm to Quit?");
-      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMQUIT), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }
@@ -463,8 +463,9 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
       } else {
         label = getError(ERROR_ITEMNOTYETADDED);
       }
-      Debug("Message: Confirm to Quit?");
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), label + SPACE + getError(ERROR_CONFIRMSAVE), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
+      String message = String.format("%s %s", label, getError(ERROR_CONFIRMSAVE));
+      Debug("Message: Confirm Save?");
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), message, getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION)) {
         Debug("Don't Quit.");
         return true;
       }

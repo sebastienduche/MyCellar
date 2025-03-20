@@ -16,7 +16,4 @@ public abstract class MyCellarObject implements IMyCellarObject {
 
   public abstract void update(MyCellarObject bouteille);
 
-  public abstract Object cast(MyCellarObject myCellarObject);
-
-  public abstract Object castCopy(MyCellarObject myCellarObject);
 }

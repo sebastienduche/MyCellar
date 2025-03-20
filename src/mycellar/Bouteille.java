@@ -46,8 +46,8 @@ import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.4
- * @since 17/03/25
+ * @version 8.5
+ * @since 20/03/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -472,14 +472,12 @@ public class Bouteille extends MyCellarObject implements Serializable {
     setLastModified(LocalDateTime.now());
   }
 
-  @Override
-  public Bouteille cast(MyCellarObject myCellarObject) {
+  public static Bouteille cast(MyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return (Bouteille) myCellarObject;
   }
 
-  @Override
-  public Bouteille castCopy(MyCellarObject myCellarObject) {
+  public static Bouteille castCopy(MyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return new Bouteille((Bouteille) myCellarObject);
   }

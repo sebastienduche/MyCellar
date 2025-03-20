@@ -42,8 +42,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 17/03/25
+ * @version 2.1
+ * @since 20/03/25
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -728,14 +728,12 @@ public class Music extends MyCellarObject implements Serializable {
         .build();
   }
 
-  @Override
-  public Music cast(MyCellarObject myCellarObject) {
+  public static Music cast(MyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Music.class);
     return (Music) myCellarObject;
   }
 
-  @Override
-  public Music castCopy(MyCellarObject myCellarObject) {
+  public static Music castCopy(MyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Music.class);
     return new Music((Music) myCellarObject);
   }

@@ -46,8 +46,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 18/03/25
+ * @version 1.7
+ * @since 20/03/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -144,7 +144,7 @@ public final class PanelWineAttribute extends JPanel {
     labelStillToAdd.setForeground(Color.red);
     nbItems.addChangeListener((e) -> {
       labelStillToAdd.setText("");
-      if (Integer.parseInt(nbItems.getValue().toString()) <= 0) {
+      if (nbItems.getIntValue() < 1) {
         nbItems.setValue(1);
       }
     });

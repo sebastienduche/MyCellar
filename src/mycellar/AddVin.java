@@ -68,8 +68,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.0
- * @since 19/03/25
+ * @version 33.1
+ * @since 20/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -506,10 +506,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
   private MyCellarObject createCopy(MyCellarObject newMyCellarObject) {
     if (Program.isWineType()) {
-      return new Bouteille().castCopy(newMyCellarObject);
+      return Bouteille.castCopy(newMyCellarObject);
     }
     if (Program.isMusicType()) {
-      return new Music().castCopy(newMyCellarObject);
+      return Music.castCopy(newMyCellarObject);
     }
     Program.throwNotImplementedForNewType();
     return new Bouteille();
@@ -643,11 +643,10 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     } else {
       Debug("Modifying multiple bottles in Armoire without changing place");
       final String comment = commentTextArea.isModified() ? commentTextArea.getText() : null;
-      final String prix = nonNullValueOrDefault(panelWineAttribute.getPriceIfModified(), null);
       for (MyCellarObject tmp : listBottleInModification) {
         if (Program.isWineType()) {
-          Bouteille bouteille = new Bouteille().cast(tmp);
-          bouteille.setPrix(nonNullValueOrDefault(prix, bouteille.getPrix()));
+          Bouteille bouteille = Bouteille.cast(tmp);
+          bouteille.setPrix(nonNullValueOrDefault(panelWineAttribute.getPriceIfModified(), bouteille.getPrix()));
           bouteille.setComment(nonNullValueOrDefault(comment, bouteille.getComment()));
           bouteille.setMaturity(nonNullValueOrDefault(panelWineAttribute.getMaturityIfModified(), bouteille.getMaturity()));
           bouteille.setParker(nonNullValueOrDefault(panelWineAttribute.getParkerIfModified(), bouteille.getParker()));
@@ -656,8 +655,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             bouteille.setVignoble(new VignobleJaxb(panelVignobles.getCountry(), panelVignobles.getVignoble(), panelVignobles.getAOC(), panelVignobles.getIGP()));
           }
         } else if (Program.isMusicType()) {
-          Music music = new Music().cast(tmp);
-          music.setPrix(nonNullValueOrDefault(prix, music.getPrix()));
+          Music music = Music.cast(tmp);
+          music.setPrix(nonNullValueOrDefault(panelWineAttribute.getPriceIfModified(), music.getPrix()));
           music.setComment(nonNullValueOrDefault(comment, music.getComment()));
           Program.throwNotImplementedIfNotFor(tmp, Music.class);
 //          bTemp.setMaturity(dateOfC);

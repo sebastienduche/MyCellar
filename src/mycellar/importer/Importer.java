@@ -87,7 +87,6 @@ import static mycellar.general.ResourceErrorKey.ERROR043;
 import static mycellar.general.ResourceErrorKey.ERROR082;
 import static mycellar.general.ResourceErrorKey.ERROR140;
 import static mycellar.general.ResourceErrorKey.ERROR141;
-import static mycellar.general.ResourceErrorKey.ERROR143;
 import static mycellar.general.ResourceErrorKey.ERROR204;
 import static mycellar.general.ResourceErrorKey.ERROR205;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
@@ -98,6 +97,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOCOLUMNSELECTEDFORNAME;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_REQUIRESTORAGENAME;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTCOLUMNFORBOTTLEIMPORT;
 import static mycellar.general.ResourceErrorKey.ERROR_STORAGENAMEALREADYUSED;
 import static mycellar.general.ResourceErrorKey.IMPORTER_UNKNOWNCELLTYPE;
 import static mycellar.general.ResourceErrorKey.IMPORT_NOTITUNESFILE;
@@ -473,7 +473,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.NAME) == null) {
         resetLabelProgress();
         Debug("ERROR: No column for wine name");
-        Erreur.showSimpleErreur(getError(ERROR_NOCOLUMNSELECTEDFORNAME), getError(ERROR143));
+        Erreur.showSimpleErreur(getError(ERROR_NOCOLUMNSELECTEDFORNAME), getError(ERROR_SELECTCOLUMNFORBOTTLEIMPORT));
         importe.setEnabled(true);
         return;
       }

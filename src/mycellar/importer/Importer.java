@@ -78,7 +78,6 @@ import static mycellar.ProgramConstants.IMPORT_COMBO_COUNT;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.ERROR017;
 import static mycellar.general.ResourceErrorKey.ERROR018;
 import static mycellar.general.ResourceErrorKey.ERROR025;
 import static mycellar.general.ResourceErrorKey.ERROR026;
@@ -89,6 +88,7 @@ import static mycellar.general.ResourceErrorKey.ERROR140;
 import static mycellar.general.ResourceErrorKey.ERROR141;
 import static mycellar.general.ResourceErrorKey.ERROR204;
 import static mycellar.general.ResourceErrorKey.ERROR205;
+import static mycellar.general.ResourceErrorKey.ERROR_CANTSELECTFIELDTWICE;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENAMESHOULDNTBEEMPTY;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
@@ -465,7 +465,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (isMoreThanOne) {
         resetLabelProgress();
         Debug("ERROR: fields cannot be selected more than one time");
-        Erreur.showSimpleErreur(getError(ERROR017), getError(ERROR018));
+        Erreur.showSimpleErreur(getError(ERROR_CANTSELECTFIELDTWICE), getError(ERROR018));
         importe.setEnabled(true);
         return;
       }

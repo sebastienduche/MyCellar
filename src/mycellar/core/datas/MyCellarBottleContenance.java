@@ -27,8 +27,8 @@ import static mycellar.ProgramConstants.NORMAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 04/01/22
+ * @version 1.0
+ * @since 20/03/25
  */
 public final class MyCellarBottleContenance {
 
@@ -49,7 +49,7 @@ public final class MyCellarBottleContenance {
   public static boolean isContenanceUsed(String value) {
     return Program.getStorage().getAllList()
         .stream()
-        .map(myCellarObject -> (Bouteille) myCellarObject)
+        .map(Bouteille::cast)
         .map(Bouteille::getKind)
         .anyMatch(value::equals);
   }
@@ -58,15 +58,10 @@ public final class MyCellarBottleContenance {
     Program.getStorage().getAllList()
         .stream()
         .filter(b -> oldValue.equals(b.getKind()))
-        .map(myCellarObject -> (Bouteille) myCellarObject)
+        .map(Bouteille::cast)
         .forEach(bouteille -> bouteille.setKind(newValue));
-    final int oldIndex = getList().indexOf(oldValue);
-    final int index = getList().indexOf(newValue);
-    if (index == -1) {
-      getList().set(oldIndex, newValue);
-    } else if (index != oldIndex) {
-      getList().remove(oldIndex);
-    }
+    getInstance().list.remove(oldValue);
+    getInstance().list.add(newValue);
   }
 
   public static List<String> getList() {
@@ -92,18 +87,14 @@ public final class MyCellarBottleContenance {
   private void loadFile() {
     readTypesXml();
     if (Program.getStorage().getAllList() != null) {
-      final List<String> collect = Program.getStorage().getAllList()
+      Program.getStorage().getAllList()
           .stream()
-          .map(myCellarObject -> (Bouteille) myCellarObject)
+          .map(Bouteille::cast)
           .map(Bouteille::getKind)
           .distinct()
           .filter(Predicate.not(String::isBlank))
-          .toList();
-      for (String val : collect) {
-        if (!list.contains(val)) {
-          list.add(val);
-        }
-      }
+          .filter(Predicate.not(list::contains))
+          .forEach(list::add);
     }
 
     defaultValue = NORMAL;
@@ -142,9 +133,7 @@ public final class MyCellarBottleContenance {
             if (type.hasAttribute("default")) {
               defaultValue = value;
             }
-            if (!list.contains(value)) {
-              list.add(value);
-            }
+            list.add(value);
           }
         }
       }

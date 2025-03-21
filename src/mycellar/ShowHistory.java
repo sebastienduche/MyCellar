@@ -1,7 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellar;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.tablecomponents.ButtonCellEditor;
@@ -192,7 +192,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      LinkedList<MyCellarObject> toRestoreList = new LinkedList<>();
+      LinkedList<IMyCellarObject> toRestoreList = new LinkedList<>();
 
       boolean nonExit = false;
 
@@ -226,8 +226,8 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           message = String.format("%s %s", getError(ERROR_NITEMSSELECTED, toRestoreList.size()), getLabel(SHOWFILE_RESTORESEVERAL));
         }
         if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
-          LinkedList<MyCellarObject> cantRestoreList = new LinkedList<>();
-          for (MyCellarObject myCellarObject : toRestoreList) {
+          LinkedList<IMyCellarObject> cantRestoreList = new LinkedList<>();
+          for (IMyCellarObject myCellarObject : toRestoreList) {
             if (myCellarObject.isInExistingPlace()) {
               AbstractPlace rangement = myCellarObject.getAbstractPlace();
               if (rangement.isSimplePlace()) {

@@ -2,7 +2,6 @@ package mycellar.showfile;
 
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
@@ -16,8 +15,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 10/09/21
+ * @version 1.5
+ * @since 21/03/25
  */
 
 abstract class ShowFileColumn<T> {
@@ -92,14 +91,14 @@ abstract class ShowFileColumn<T> {
     return editable;
   }
 
-  abstract void setValue(MyCellarObject b, T value);
-  abstract Object getDisplayValue(MyCellarObject b);
+  abstract void setValue(IMyCellarObject b, T value);
+  abstract Object getDisplayValue(IMyCellarObject b);
 
-  void setModelValue(MyCellarObject myCellarObject, Object value) {
+  void setModelValue(IMyCellarObject myCellarObject, Object value) {
     setValue(myCellarObject, (T) value);
   }
 
-  void setStringValue(MyCellarObject b, String value) {
+  void setStringValue(IMyCellarObject b, String value) {
       b.setValue(field, value);
       Program.setModified();
       b.updateStatus();
@@ -125,11 +124,11 @@ abstract class ShowFileColumn<T> {
     return buttonLabel;
   }
 
-  public boolean execute(MyCellarObject b, int row, int column) {
+  public boolean execute(IMyCellarObject b, int row, int column) {
     return true;
   }
 
-  T getMapValue(MyCellarObject b) {
+  T getMapValue(IMyCellarObject b) {
     if (value.containsKey(b.getId())) {
       return value.get(b.getId());
     }

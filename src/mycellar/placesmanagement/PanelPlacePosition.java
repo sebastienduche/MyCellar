@@ -4,8 +4,8 @@ import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlacePosition;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -53,8 +53,8 @@ import static mycellar.general.ResourceKey.STORAGE_PREVIEW;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 18/03/25
+ * @version 4.5
+ * @since 21/03/25
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
   @Serial
@@ -227,7 +227,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     }
   }
 
-  public void setBeforeObjectLabels(MyCellarObject myCellarObject) {
+  public void setBeforeObjectLabels(IMyCellarObject myCellarObject) {
     setLineColumnVisible(myCellarObject.getAbstractPlace());
     previousPlaceLabel.setText(myCellarObject.getEmplacement());
     previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));

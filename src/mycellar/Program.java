@@ -8,7 +8,6 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFile;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
@@ -58,7 +57,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,8 +113,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.5
- * @since 14/03/25
+ * @version 29.6
+ * @since 21/03/25
  */
 
 public final class Program {
@@ -133,7 +131,7 @@ public final class Program {
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
   private static final List<AbstractPlace> PLACES = new LinkedList<>();
-  private static final List<MyCellarObject> TRASH = new LinkedList<>();
+  private static final List<IMyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
   private static ProgramType programType = ProgramType.WINE;
@@ -227,11 +225,11 @@ public final class Program {
     return getGlobalDir() + CONFIG_INI;
   }
 
-  public static List<MyCellarObject> getTrash() {
+  public static List<IMyCellarObject> getTrash() {
     return TRASH;
   }
 
-  public static void setToTrash(MyCellarObject b) {
+  public static void setToTrash(IMyCellarObject b) {
     TRASH.add(b);
   }
 
@@ -1090,10 +1088,10 @@ public final class Program {
     return properties;
   }
 
-  static List<PDFRow> getPDFRows(List<? extends MyCellarObject> list, PDFProperties properties) {
+  static List<PDFRow> getPDFRows(List<? extends IMyCellarObject> list, PDFProperties properties) {
     LinkedList<PDFRow> rows = new LinkedList<>();
     LinkedList<PDFColumn> columns = properties.getColumns();
-    for (MyCellarObject myCellarObject : list) {
+    for (IMyCellarObject myCellarObject : list) {
       PDFRow row = new PDFRow();
       for (PDFColumn column : columns) {
         row.addCell(MyCellarFields.getValue(column.getField(), myCellarObject));
@@ -1239,7 +1237,7 @@ public final class Program {
     return nextID;
   }
 
-  public static void modifyBottles(List<MyCellarObject> listToModify) {
+  public static void modifyBottles(List<IMyCellarObject> listToModify) {
     if (listToModify == null || listToModify.isEmpty()) {
       return;
     }
@@ -1250,11 +1248,11 @@ public final class Program {
     }
   }
 
-  public static List<MyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
+  public static List<IMyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
     return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isNotExistingMyCellarObject(MyCellarObject myCellarObject) {
+  public static boolean isNotExistingMyCellarObject(IMyCellarObject myCellarObject) {
     return getStorage().getAllList().stream().noneMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
@@ -1270,7 +1268,7 @@ public final class Program {
     return openedFile != null && openedFile.isFileSavable();
   }
 
-  public static void throwNotImplementedIfNotFor(MyCellarObject myCellarObject, Class<?> aClass) {
+  public static void throwNotImplementedIfNotFor(IMyCellarObject myCellarObject, Class<?> aClass) {
     if (!aClass.isInstance(myCellarObject)) {
       throw new NotImplementedException("Not implemented For " + aClass);
     }

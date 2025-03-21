@@ -2,7 +2,7 @@ package mycellar.actions;
 
 import mycellar.AddVin;
 import mycellar.MyCellarImage;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.AbstractAction;
@@ -16,9 +16,9 @@ import static mycellar.general.ResourceKey.OPENVIN_MODIFYNITEM;
 
 public class OpenAddVinAction extends AbstractAction {
 
-  private final List<MyCellarObject> listToModify;
+  private final List<IMyCellarObject> listToModify;
 
-  public OpenAddVinAction(List<MyCellarObject> listToModify) {
+  public OpenAddVinAction(List<IMyCellarObject> listToModify) {
     this.listToModify = listToModify;
   }
 

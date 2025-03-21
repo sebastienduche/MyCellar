@@ -1,7 +1,7 @@
 package mycellar.placesmanagement.places;
 
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Objects;
@@ -13,13 +13,13 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 11/09/24
+ * @version 0.7
+ * @since 21/03/25
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
   private String name;
-  protected int partCount;
+  int partCount;
   private boolean defaultPlace = false;
 
   public AbstractPlace(String name) {
@@ -44,22 +44,22 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
     this.partCount = partCount;
   }
 
-  public boolean isDefaultPlace() {
+  boolean isDefaultPlace() {
     return defaultPlace;
   }
 
-  public void setDefaultPlace(boolean defaultPlace) {
+  void setDefaultPlace(boolean defaultPlace) {
     this.defaultPlace = defaultPlace;
   }
 
   @Override
-  public void removeObject(MyCellarObject myCellarObject) throws MyCellarException {
+  public void removeObject(IMyCellarObject myCellarObject) throws MyCellarException {
     clearStorage(myCellarObject);
     Program.getStorage().deleteWine(myCellarObject);
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject) {
+  public void clearStorage(IMyCellarObject myCellarObject) {
     clearStorage(myCellarObject, myCellarObject.getPlacePosition());
   }
 

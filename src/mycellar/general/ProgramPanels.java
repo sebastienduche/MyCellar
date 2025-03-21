@@ -14,10 +14,10 @@ import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.exceptions.MyCellarException;
@@ -85,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 19/03/25
+ * @version 2.4
+ * @since 21/03/25
  */
 public class ProgramPanels {
 
@@ -410,7 +410,7 @@ public class ProgramPanels {
     return object;
   }
 
-  public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
+  public static void showBottle(IMyCellarObject myCellarObject, boolean edit) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -433,7 +433,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void removeObjectTab(MyCellarObject myCellarObject) {
+  public static void removeObjectTab(IMyCellarObject myCellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {

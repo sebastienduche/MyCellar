@@ -1,7 +1,6 @@
 package mycellar.showfile;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.ArrayList;
@@ -14,11 +13,11 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 01/06/22
+ * @version 1.4
+ * @since 21/03/25
  */
 
-public class ShowFileModel extends TableShowValues {
+class ShowFileModel extends TableShowValues {
 
   private List<ShowFileColumn<?>> columns = new ArrayList<>();
 
@@ -34,7 +33,7 @@ public class ShowFileModel extends TableShowValues {
       if (showFileColumn.isButton()) {
         return Boolean.TRUE;
       }
-      MyCellarObject b = myCellarObjects.get(row);
+      IMyCellarObject b = myCellarObjects.get(row);
       return showFileColumn.getDisplayValue(b);
     }
     return null;
@@ -42,7 +41,7 @@ public class ShowFileModel extends TableShowValues {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    MyCellarObject b = myCellarObjects.get(row);
+    IMyCellarObject b = myCellarObjects.get(row);
     if (!columns.get(column).execute(b, row, column)) {
       fireTableRowsUpdated(row, row);
       return;

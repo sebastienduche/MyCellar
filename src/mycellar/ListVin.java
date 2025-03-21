@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
@@ -29,8 +28,8 @@ import static mycellar.general.ResourceKey.LISTVIN_SELECTITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.8
- * @since 18/03/25
+ * @version 4.9
+ * @since 21/03/25
  */
 final class ListVin extends JPanel {
   private final ListValues listValues;
@@ -59,7 +58,7 @@ final class ListVin extends JPanel {
       if (!lsm.isSelectionEmpty()) {
         int minSelectedRow = lsm.getMinSelectionIndex();
         int maxSelectedRow = lsm.getMaxSelectionIndex();
-        LinkedList<MyCellarObject> list = new LinkedList<>();
+        LinkedList<IMyCellarObject> list = new LinkedList<>();
         for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
           if (lsm.isSelectedIndex(x)) {
             list.add(listValues.getObject(x));
@@ -84,8 +83,8 @@ final class ListVin extends JPanel {
     setVisible(true);
   }
 
-  void updateList(List<MyCellarObject> remove) {
-    for (MyCellarObject b : remove) {
+  void updateList(List<IMyCellarObject> remove) {
+    for (IMyCellarObject b : remove) {
       listValues.removeObject(b);
     }
   }

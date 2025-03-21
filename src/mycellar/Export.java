@@ -5,7 +5,7 @@ import com.sebastienduche.pdf.PDFProperties;
 import com.sebastienduche.pdf.PDFTools;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.storage.ListeBouteille;
@@ -114,19 +114,19 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarButton openit = new MyCellarButton(MAIN_OPENTHEFILE);
   private final MyCellarButton options = new MyCellarButton(MAIN_SETTINGSMENU, new SettingsAction());
-  private final List<? extends MyCellarObject> myCellarObjects;
+  private final List<? extends IMyCellarObject> myCellarObjects;
 
   public Export() {
     myCellarObjects = Program.getStorage().getAllList();
     initialize();
   }
 
-  public Export(final List<MyCellarObject> myCellarObjects) {
+  public Export(final List<IMyCellarObject> myCellarObjects) {
     this.myCellarObjects = myCellarObjects;
     initialize();
   }
 
-  public static boolean exportToPDF(final List<? extends MyCellarObject> bottles, File nomFichier) {
+  public static boolean exportToPDF(final List<? extends IMyCellarObject> bottles, File nomFichier) {
     try {
       final PDFProperties pdfProperties = Program.getPDFProperties();
       PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getDefaultFontSize(), 50);

@@ -4,7 +4,6 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IMyCellarEnum;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.UpdateViewType;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.history.History;
@@ -108,8 +107,8 @@ import static mycellar.general.ResourceKey.STATS_YEARS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.1
- * @since 18/03/25
+ * @version 11.2
+ * @since 21/03/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -300,7 +299,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       Map<Integer, Integer> mapPriceCount = new HashMap<>();
       int withoutPrice = 0;
 
-      for (MyCellarObject b : Program.getStorage().getAllList()) {
+      for (IMyCellarObject b : Program.getStorage().getAllList()) {
         if (!b.hasPrice()) {
           withoutPrice++;
           continue;

@@ -4,6 +4,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
+import org.w3c.dom.Element;
 
 import java.math.BigDecimal;
 
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 17/03/25
+ * @version 1.0
+ * @since 21/03/25
  */
 public interface IMyCellarObject {
   int getId();
@@ -92,9 +93,21 @@ public interface IMyCellarObject {
 
   boolean isNonVintage();
 
+  IMyCellarObject fromXmlElement(Element element);
+
+  void update(IMyCellarObject object);
+
   static void assertObjectType(IMyCellarObject myCellarObject, Class<?> aClass) {
     if (!aClass.isInstance(myCellarObject)) {
       throw new ClassCastException("Invalid class cast: " + aClass);
+    }
+  }
+
+   default boolean equalsValue(String value, String other) {
+    if (value == null) {
+      return other != null;
+    } else {
+      return !value.equals(other);
     }
   }
 }

@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.uicomponents.JModifyComboBox;
@@ -46,8 +45,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 20/03/25
+ * @version 1.8
+ * @since 21/03/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -104,7 +103,7 @@ public final class PanelWineAttribute extends JPanel {
     statusList.setActive(active);
   }
 
-  public void initializeExtraProperties(MyCellarObject myCellarObject, boolean m_bmulti, boolean isEditionMode) {
+  public void initializeExtraProperties(IMyCellarObject myCellarObject, boolean m_bmulti, boolean isEditionMode) {
     setModificationDetectionActive(false);
     enableAll(true, m_bmulti, isEditionMode);
     nbItems.setValue(1);

@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.general.ProgramPanels;
 
@@ -35,8 +34,8 @@ import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.6
- * @since 14/03/25
+ * @version 3.7
+ * @since 21/03/25
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -181,7 +180,7 @@ class TableHistoryValues extends AbstractTableModel {
       case ACTION:
         History h = displayList.get(row);
         if (Program.isWineType()) {
-          MyCellarObject bottle = h.getBouteille();
+          IMyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(bottle, false);
           } else {
@@ -192,7 +191,7 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
-          MyCellarObject music = h.getMusic();
+          IMyCellarObject music = h.getMusic();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(music, false);
           } else {
@@ -279,7 +278,7 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  MyCellarObject getObject(int row) {
+  IMyCellarObject getObject(int row) {
     if (Program.isMusicType()) {
       return displayList.get(row).getMusic();
     } else if (Program.isWineType()) {

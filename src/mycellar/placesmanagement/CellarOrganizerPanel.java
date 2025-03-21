@@ -6,9 +6,9 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.PanelCloseButton;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
@@ -83,8 +83,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 19/03/25
+ * @version 6.8
+ * @since 21/03/25
  */
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -286,7 +286,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       for (int i = 0; i < stock.getComponentCount(); i++) {
         Component c = stock.getComponent(i);
         if (c instanceof MyCellarObjectDraggingLabel label) {
-          final MyCellarObject myCellarObject = label.getMyCellarObject();
+          final IMyCellarObject myCellarObject = label.getMyCellarObject();
           Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
           Program.getStorage().getAllList().remove(myCellarObject);
           Program.setToTrash(myCellarObject);
@@ -366,7 +366,7 @@ public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCel
       for (RangementCell cell : rangementCells) {
         MyCellarObjectDraggingLabel bottleLabel = cell.getBottleLabel();
         if (bottleLabel != null) {
-          final MyCellarObject myCellarObject = bottleLabel.getMyCellarObject();
+          final IMyCellarObject myCellarObject = bottleLabel.getMyCellarObject();
           if (myCellarObject != null) {
             myCellarObject.setEmplacement(TEMP_PLACE);
             myCellarObject.setNumLieu(1);
@@ -533,9 +533,9 @@ final class RangementCell extends JPanel {
 final class MyCellarObjectDraggingLabel extends JPanel {
 
   private final MyCellarSimpleLabel label = new MyCellarSimpleLabel();
-  private MyCellarObject myCellarObject;
+  private IMyCellarObject myCellarObject;
 
-  MyCellarObjectDraggingLabel(final MyCellarObject myCellarObject) {
+  MyCellarObjectDraggingLabel(final IMyCellarObject myCellarObject) {
     super();
     this.myCellarObject = myCellarObject;
     int width = myCellarObject.getAbstractPlace().isSimplePlace() ? 400 : 100;
@@ -585,7 +585,7 @@ final class MyCellarObjectDraggingLabel extends JPanel {
     return label.getIcon();
   }
 
-  public MyCellarObject getMyCellarObject() {
+  public IMyCellarObject getMyCellarObject() {
     return myCellarObject;
   }
 
@@ -709,7 +709,7 @@ class LabelTransferHandler extends TransferHandler {
     try {
       final RangementCell src = (RangementCell) support.getTransferable().getTransferData(localObjectFlavor);
       final MyCellarObjectDraggingLabel bouteilleLabel = new MyCellarObjectDraggingLabel(src.draggingLabel.getMyCellarObject());
-      final MyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
+      final IMyCellarObject bouteille = bouteilleLabel.getMyCellarObject();
       target.setPlace(PlaceUtils.getPlaceByName(target.getPlaceName()));
       bouteille.setEmplacement(target.getPlaceName());
       bouteille.setLigne(target.getRow());
@@ -735,7 +735,7 @@ class LabelTransferHandler extends TransferHandler {
   @Override
   protected void exportDone(JComponent c, Transferable data, int action) {
     RangementCell src = (RangementCell) c;
-    if (action != TransferHandler.COPY) {
+    if (action != COPY) {
       src.remove(src.draggingLabel);
       src.revalidate();
       src.repaint();

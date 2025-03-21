@@ -6,7 +6,6 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarObject;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -49,11 +48,11 @@ import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 18/03/25
+ * @version 3.9
+ * @since 21/03/25
  */
 
-public class ErrorShowValues extends TableShowValues {
+class ErrorShowValues extends TableShowValues {
 
   enum Column {
     STATE(0),
@@ -161,7 +160,7 @@ public class ErrorShowValues extends TableShowValues {
   @Override
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
-    MyCellarObject b = error.getMyCellarObject();
+    IMyCellarObject b = error.getMyCellarObject();
     AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
@@ -256,7 +255,7 @@ public class ErrorShowValues extends TableShowValues {
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-            MyCellarObject searchObject = null;
+            IMyCellarObject searchObject = null;
             if (abstractPlace.isComplexPlace()) {
               searchObject = ((ComplexPlace) abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
@@ -329,7 +328,7 @@ public class ErrorShowValues extends TableShowValues {
   }
 
   @Override
-  public MyCellarObject getMyCellarObject(int i) {
+  public IMyCellarObject getMyCellarObject(int i) {
     return errors.get(i).getMyCellarObject();
   }
 

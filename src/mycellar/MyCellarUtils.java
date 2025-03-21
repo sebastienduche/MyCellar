@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.MyCellarObject;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.math.BigDecimal;
@@ -21,8 +20,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 14/01/24
+ * @version 0.8
+ * @since 21/03/25
  */
 public final class MyCellarUtils {
 

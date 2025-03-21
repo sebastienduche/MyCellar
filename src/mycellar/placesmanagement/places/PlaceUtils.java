@@ -6,7 +6,6 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
@@ -81,7 +80,7 @@ public final class PlaceUtils {
   private PlaceUtils() {
   }
 
-  public static void replaceMyCellarObject(MyCellarObject oldObject, MyCellarObject newObject, PlacePosition newObjectPreviousPlace) throws MyCellarException {
+  public static void replaceMyCellarObject(IMyCellarObject oldObject, IMyCellarObject newObject, PlacePosition newObjectPreviousPlace) throws MyCellarException {
     Debug("Replace objet '" + oldObject + "' by '" + newObject + "' previous place: " + newObjectPreviousPlace + " current name " + newObject.getPlacePosition());
     Program.getStorage().addHistory(HistoryState.DEL, oldObject);
     Program.getStorage().deleteWine(oldObject);
@@ -104,7 +103,7 @@ public final class PlaceUtils {
    *
    * @return int
    */
-  public static boolean writeCSV(final File file, final List<? extends MyCellarObject> myCellarObjects, final JProgressBar progressBar) {
+  public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
 
     Debug("writeCSV: writing file: " + file.getAbsolutePath());
     final String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
@@ -130,7 +129,7 @@ public final class PlaceUtils {
       fileWriter.write(titleLine.toString());
 
       int i = 0;
-      for (MyCellarObject myCellarObject : myCellarObjects) {
+      for (IMyCellarObject myCellarObject : myCellarObjects) {
         progressBar.setValue(i++);
         StringBuilder line = new StringBuilder();
         final String doubleCote = "\"";
@@ -165,7 +164,7 @@ public final class PlaceUtils {
    * @param bouteilles List<Bouteille>: stock de bouteilles
    * @return int
    */
-  public static boolean writeHTML(final File file, final List<? extends MyCellarObject> bouteilles, List<MyCellarFields> fields) {
+  public static boolean writeHTML(final File file, final List<? extends IMyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
     Debug("writeHTML: writing file: " + file.getAbsolutePath());
     try {
@@ -200,7 +199,7 @@ public final class PlaceUtils {
       Element tbody = doc.createElement("tbody");
       table.appendChild(tbody);
 
-      for (MyCellarObject myCellarObject : bouteilles) {
+      for (IMyCellarObject myCellarObject : bouteilles) {
         throwNotImplementedIfNotFor(myCellarObject, Bouteille.class);
         Bouteille b = (Bouteille) myCellarObject;
         Element tr = doc.createElement("tr");
@@ -276,12 +275,12 @@ public final class PlaceUtils {
    * write_XLS: Fonction d'ecriture du ficher Excel
    *
    * @param file        String: Fichier a ecrire.
-   * @param bouteilles  List<Bouteille>: Tableau de bouteilles a ecrire
+   * @param iMyCellarObjects  List<Bouteille>: Tableau de bouteilles a ecrire
    * @param isExit      boolean: True si appel pour la creation automatique d'une sauvegarde Excel
    * @param progressBar JProgressBar
    * @return boolean
    */
-  public static boolean writeXLS(final File file, final List<? extends MyCellarObject> bouteilles, boolean isExit, JProgressBar progressBar) {
+  public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> iMyCellarObjects, boolean isExit, JProgressBar progressBar) {
 
     Debug("writeXLS: writing file: " + file.getAbsolutePath());
 
@@ -392,11 +391,11 @@ public final class PlaceUtils {
       }
 
       if (progressBar != null) {
-        progressBar.setMaximum(bouteilles.size());
+        progressBar.setMaximum(iMyCellarObjects.size());
         progressBar.setMinimum(0);
       }
       i = 0;
-      for (IMyCellarObject b : bouteilles) {
+      for (IMyCellarObject b : iMyCellarObjects) {
         int j = 0;
         if (progressBar != null) {
           progressBar.setValue(i);
@@ -719,7 +718,7 @@ public final class PlaceUtils {
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
           Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         } else {
-          final MyCellarObject myCellarObject = complexPlace.getObject(bouteille.getPlacePosition()).orElse(null);
+          final IMyCellarObject myCellarObject = complexPlace.getObject(bouteille.getPlacePosition()).orElse(null);
           if (myCellarObject != null && !myCellarObject.equals(bouteille)) {
             // Cellule occupee
             Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());

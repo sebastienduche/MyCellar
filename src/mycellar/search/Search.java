@@ -10,8 +10,8 @@ import mycellar.TextFieldPopup;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarObjectSwingWorker;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.UpdateViewType;
@@ -298,7 +298,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
   private void deleteActionPerformed(ActionEvent event) {
     try {
       Debug("Deleting...");
-      final List<MyCellarObject> listToDelete = searchTableModel.getSelectedObjects();
+      final List<IMyCellarObject> listToDelete = searchTableModel.getSelectedObjects();
 
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
@@ -318,7 +318,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       String message = String.format("%s %s", erreur_txt1, erreur_txt2);
       if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         SwingUtilities.invokeLater(() -> {
-          for (MyCellarObject myCellarObject : listToDelete) {
+          for (IMyCellarObject myCellarObject : listToDelete) {
             searchTableModel.removeObject(myCellarObject);
             Program.getStorage().addHistory(HistoryState.DEL, myCellarObject);
             try {
@@ -392,11 +392,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug("Searching with regexp: " + regexToSearch);
     new MyCellarObjectSwingWorker() {
       @Override
-      protected List<MyCellarObject> doInBackground() {
+      protected List<IMyCellarObject> doInBackground() {
         final Pattern p = Pattern.compile(regexToSearch, Pattern.CASE_INSENSITIVE);
         alreadyFoundItems = false;
-        List<MyCellarObject> list = new LinkedList<>();
-        for (MyCellarObject myCellarObject : Program.getStorage().getAllList()) {
+        List<IMyCellarObject> list = new LinkedList<>();
+        for (IMyCellarObject myCellarObject : Program.getStorage().getAllList()) {
           Matcher m = p.matcher(myCellarObject.getNom());
           if (m.matches()) {
             if (searchTableModel.doesNotContain(myCellarObject)) {
@@ -412,8 +412,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       @Override
       protected void done() {
         try {
-          final List<MyCellarObject> myCellarObjects = get();
-          searchTableModel.addObjects(myCellarObjects);
+          searchTableModel.addObjects(get());
           Debug(searchTableModel.getRowCount() + " object(s) found");
           doAfterSearch();
           Debug("Search by text Done");
@@ -447,7 +446,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     SwingUtilities.invokeLater(() -> {
       try {
         Debug("modif_actionPerforming...");
-        final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
+        final List<IMyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
           Erreur.showInformationMessage(ERROR_NOITEMTOMODIFY, ERROR_SELECTITEMTOMODIFY);
@@ -523,14 +522,14 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     Debug(sb.toString());
     new MyCellarObjectSwingWorker() {
       @Override
-      protected List<MyCellarObject> doInBackground() {
+      protected List<IMyCellarObject> doInBackground() {
         if (Program.isWineType()) {
           CountryVignobleController.rebuild();
         }
-        Collection<? extends MyCellarObject> objects = CollectionFilter.select(Program.getStorage().getAllList(), panelRequest.getPredicates()).getResults();
-        List<MyCellarObject> list = new LinkedList<>();
+        Collection<? extends IMyCellarObject> objects = CollectionFilter.select(Program.getStorage().getAllList(), panelRequest.getPredicates()).getResults();
+        List<IMyCellarObject> list = new LinkedList<>();
         if (objects != null) {
-          for (MyCellarObject b : objects) {
+          for (IMyCellarObject b : objects) {
             if (searchTableModel.doesNotContain(b)) {
               list.add(b);
             } else {
@@ -544,7 +543,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       @Override
       protected void done() {
         try {
-          final List<MyCellarObject> myCellarObjects = get();
+          final List<IMyCellarObject> myCellarObjects = get();
           searchTableModel.addObjects(myCellarObjects);
           Debug(searchTableModel.getRowCount() + " object(s) found");
           doAfterSearch();
@@ -573,7 +572,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       return;
     }
 
-    final List<MyCellarObject> myCellarObjectList;
+    final List<IMyCellarObject> myCellarObjectList;
     if (panelPlace.getSelectedAbstractPlace().isSimplePlace()) {
       myCellarObjectList = searchSimplePlace();
     } else {
@@ -587,12 +586,12 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     });
   }
 
-  private List<MyCellarObject> searchComplexPlace() {
+  private List<IMyCellarObject> searchComplexPlace() {
     final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     ComplexPlace complexPlace = (ComplexPlace) selectedPlace.getAbstractPlace();
-    List<MyCellarObject> myCellarObjectList = new LinkedList<>();
+    List<IMyCellarObject> myCellarObjectList = new LinkedList<>();
     if (!panelPlace.isSeveralLocationChecked()) {
-      final MyCellarObject myCellarObject = complexPlace.getObject(selectedPlace).orElse(null);
+      final IMyCellarObject myCellarObject = complexPlace.getObject(selectedPlace).orElse(null);
       if (myCellarObject == null) {
         searchTableModel.removeAll();
         updateLabelObjectNumber(true);
@@ -631,7 +630,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         for (int j = lineStart; j < lineEnd; j++) {
           int nb_colonnes = complexPlace.getColumnCountAt(i, j);
           for (int k = 0; k < nb_colonnes; k++) {
-            MyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+            IMyCellarObject myCellarObject = complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
                 .withNumPlace(i)
                 .withLine(j)
                 .withColumn(k)
@@ -650,7 +649,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     return myCellarObjectList;
   }
 
-  private List<MyCellarObject> searchSimplePlace() {
+  private List<IMyCellarObject> searchSimplePlace() {
     final PlacePosition selectedPlace = panelPlace.getSelectedPlacePosition();
     SimplePlace simplePlace = (SimplePlace) selectedPlace.getAbstractPlace();
     int lieu_num = selectedPlace.getPlaceNumIndex();
@@ -665,11 +664,11 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       boucle_toutes = lieu_num + 1;
     }
 
-    List<MyCellarObject> myCellarObjectList = new LinkedList<>();
+    List<IMyCellarObject> myCellarObjectList = new LinkedList<>();
     for (int part = start_boucle; part < boucle_toutes; part++) {
       int totalCellUsed = simplePlace.getCountCellUsed(part);
       for (int i = 0; i < totalCellUsed; i++) {
-        MyCellarObject b = simplePlace.getObjectAt(part, i);
+        IMyCellarObject b = simplePlace.getObjectAt(part, i);
         if (b != null) {
           if (searchTableModel.doesNotContain(b)) {
             myCellarObjectList.add(b);
@@ -689,7 +688,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     new MyCellarObjectSwingWorker() {
 
       @Override
-      protected List<MyCellarObject> doInBackground() {
+      protected List<IMyCellarObject> doInBackground() {
         String selectedYear = "";
         if (year.getSelectedItem() != null) {
           selectedYear = year.getSelectedItem().toString();
@@ -701,8 +700,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           annee = MyCellarUtils.safeParseInt(selectedYear, 0); // It will be 0 for 'Others'
         }
 
-        List<MyCellarObject> list = new ArrayList<>();
-        for (MyCellarObject b : Program.getStorage().getAllList()) {
+        List<IMyCellarObject> list = new ArrayList<>();
+        for (IMyCellarObject b : Program.getStorage().getAllList()) {
           if (annee == b.getAnneeInt()) {
             if (searchTableModel.doesNotContain(b)) {
               list.add(b);
@@ -717,7 +716,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       @Override
       protected void done() {
         try {
-          final List<MyCellarObject> myCellarObjects = get();
+          final List<IMyCellarObject> myCellarObjects = get();
           searchTableModel.addObjects(myCellarObjects);
           Debug(searchTableModel.getRowCount() + " object(s) found");
           doAfterSearch();
@@ -787,7 +786,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
    */
   private void addToWorksheet_actionPerformed(ActionEvent e) {
     Debug("addToWorksheet_actionPerforming...");
-    final List<MyCellarObject> list = searchTableModel.getSelectedObjects();
+    final List<IMyCellarObject> list = searchTableModel.getSelectedObjects();
 
     if (list.isEmpty()) {
       Erreur.showInformationMessage(getError(ERROR_NOWINESELECTED));
@@ -819,7 +818,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     }
   }
 
-  public void removeObject(MyCellarObject myCellarObject) {
+  public void removeObject(IMyCellarObject myCellarObject) {
     new MyCellarObjectSwingWorker() {
       @Override
       protected void done() {

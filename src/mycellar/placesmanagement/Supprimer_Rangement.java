@@ -5,8 +5,8 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
@@ -82,8 +82,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.2
- * @since 19/03/25
+ * @version 11.3
+ * @since 21/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -232,8 +232,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
-              for (MyCellarObject b : myCellarObjectList) {
+              List<IMyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
+              for (IMyCellarObject b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {
                   abstractPlace.removeObject(b);

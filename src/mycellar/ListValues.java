@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
@@ -17,8 +16,8 @@ import static mycellar.general.ResourceKey.MAIN_NAME;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 25/12/23
+ * @version 1.6
+ * @since 21/03/25
  */
 class ListValues extends AbstractTableModel {
   private List<? extends IMyCellarObject> list = new LinkedList<>();
@@ -50,13 +49,13 @@ class ListValues extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  public void removeObject(MyCellarObject num) {
-    list.remove(num);
+  public void removeObject(IMyCellarObject iMyCellarObject) {
+    list.remove(iMyCellarObject);
     fireTableDataChanged();
   }
 
-  public MyCellarObject getObject(int x) {
-    return (MyCellarObject) list.get(x);
+  public IMyCellarObject getObject(int x) {
+    return list.get(x);
   }
 
 }

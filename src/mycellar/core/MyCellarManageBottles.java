@@ -26,8 +26,8 @@ import static mycellar.general.ResourceKey.MAIN_COMMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.6
- * @since 13/03/25
+ * @version 5.7
+ * @since 21/03/25
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
@@ -43,7 +43,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
-  protected MyCellarObject myCellarObject = null;
+  protected IMyCellarObject myCellarObject = null;
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
 

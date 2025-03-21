@@ -1,7 +1,6 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
@@ -130,7 +129,7 @@ public final class MoveLine extends JDialog {
       Erreur.showSimpleErreur(this, getError(ERROR_STILLITEMSONLINE));
       return;
     }
-    List<MyCellarObject> notMoved = new ArrayList<>();
+    List<IMyCellarObject> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
       complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
           .withNumPlace(nNumLieu)

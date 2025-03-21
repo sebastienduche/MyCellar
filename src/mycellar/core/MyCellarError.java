@@ -18,20 +18,20 @@ import static mycellar.general.ResourceErrorKey.MYCELLARERROR_OCCUPIEDCASE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 14/03/25
+ * @version 1.0
+ * @since 21/03/25
  */
 
 public class MyCellarError {
 
   private final ID error;
-  private final MyCellarObject myCellarObject;
+  private final IMyCellarObject myCellarObject;
   private final String place;
   private final int numLieu;
   private boolean status;
   private boolean solved;
 
-  public MyCellarError(ID error, MyCellarObject myCellarObject, String place, int numLieu) {
+  public MyCellarError(ID error, IMyCellarObject myCellarObject, String place, int numLieu) {
     this.error = error;
     this.myCellarObject = myCellarObject;
     this.place = place;
@@ -40,7 +40,7 @@ public class MyCellarError {
     solved = false;
   }
 
-  public MyCellarError(ID error, MyCellarObject myCellarObject, String place) {
+  public MyCellarError(ID error, IMyCellarObject myCellarObject, String place) {
     this.error = error;
     this.myCellarObject = myCellarObject;
     this.place = place;
@@ -49,7 +49,7 @@ public class MyCellarError {
     solved = false;
   }
 
-  public MyCellarError(ID error, MyCellarObject myCellarObject) {
+  public MyCellarError(ID error, IMyCellarObject myCellarObject) {
     this.error = error;
     this.myCellarObject = myCellarObject;
     place = "";
@@ -75,7 +75,7 @@ public class MyCellarError {
     return error;
   }
 
-  public MyCellarObject getMyCellarObject() {
+  public IMyCellarObject getMyCellarObject() {
     return myCellarObject;
   }
 

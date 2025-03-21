@@ -13,7 +13,7 @@ import mycellar.Program;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MyCellarMusicSupport;
@@ -576,7 +576,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           int maxNumPlace = 0;
           while (line != null) {
             String[] readValues = line.split(fieldSeparator);
-            MyCellarObject bottle = createObject();
+            IMyCellarObject bottle = createObject();
             bottle.updateID();
             for (int i = 0; i < readValues.length; i++) {
               String value = removeQuotes(readValues[i]);
@@ -625,7 +625,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     label_progression.setText(getLabel(IMPORT_INPROGRESS));
   }
 
-  private MyCellarObject createObject() {
+  private IMyCellarObject createObject() {
     if (Program.isWineType()) {
       return new Bouteille();
     }
@@ -669,7 +669,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           continue;
         }
         if (count > 0) {
-          MyCellarObject myCellarObject = createObject();
+          IMyCellarObject myCellarObject = createObject();
           myCellarObject.updateID();
 
           int i = 0;

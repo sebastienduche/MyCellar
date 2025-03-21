@@ -4,8 +4,8 @@ package mycellar.showfile;
 import mycellar.ITabListener;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.uicomponents.MyCellarButton;
 import net.miginfocom.swing.MigLayout;
@@ -31,8 +31,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_REMOVEFROMWORKSHEET;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.9
- * @since 13/03/25
+ * @version 13.0
+ * @since 21/03/25
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -51,12 +51,12 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     init();
   }
 
-  public void addToWorksheet(List<MyCellarObject> list) {
-    final List<MyCellarObject> myCellarObjects = list
+  public void addToWorksheet(List<IMyCellarObject> list) {
+    final List<IMyCellarObject> myCellarObjects = list
         .stream()
         .filter(bouteille -> !workingBottles.contains(bouteille))
         .toList();
-    for (MyCellarObject myCellarObject : myCellarObjects) {
+    for (IMyCellarObject myCellarObject : myCellarObjects) {
       Program.getStorage().addToWorksheet(myCellarObject);
     }
     workingBottles.addAll(myCellarObjects);

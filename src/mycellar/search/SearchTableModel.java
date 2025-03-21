@@ -2,7 +2,7 @@ package mycellar.search;
 
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
@@ -26,8 +26,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 18/03/25
+ * @version 4.0
+ * @since 21/03/25
  */
 class SearchTableModel extends AbstractTableModel {
 
@@ -43,7 +43,7 @@ class SearchTableModel extends AbstractTableModel {
       getLabel(MYCELLARFIELDS_LINE), getLabel(MYCELLARFIELDS_COLUMN), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
-  private final List<MyCellarObject> datas = new ArrayList<>();
+  private final List<IMyCellarObject> datas = new ArrayList<>();
 
   @Override
   public int getRowCount() {
@@ -68,7 +68,7 @@ class SearchTableModel extends AbstractTableModel {
       Program.Debug("SearchTableModel: Error listBoolean index " + row + " > " + datas.size());
       return "";
     }
-    final MyCellarObject myCellarObject = datas.get(row);
+    final IMyCellarObject myCellarObject = datas.get(row);
     return switch (column) {
       case ETAT -> listBoolean.get(row);
       case 1 -> MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
@@ -109,7 +109,7 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  void addObjects(List<MyCellarObject> myCellarObjects) {
+  void addObjects(List<IMyCellarObject> myCellarObjects) {
     if (myCellarObjects != null) {
       myCellarObjects.forEach(myCellarObject -> {
         datas.add(myCellarObject);
@@ -125,7 +125,7 @@ class SearchTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  void removeObject(MyCellarObject myCellarObject) {
+  void removeObject(IMyCellarObject myCellarObject) {
     int index = datas.indexOf(myCellarObject);
     if (index != -1) {
       datas.remove(myCellarObject);
@@ -134,16 +134,16 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  List<MyCellarObject> getDatas() {
+  List<IMyCellarObject> getDatas() {
     return datas;
   }
 
-  boolean doesNotContain(MyCellarObject b) {
+  boolean doesNotContain(IMyCellarObject b) {
     return !datas.contains(b);
   }
 
-  List<MyCellarObject> getSelectedObjects() {
-    List<MyCellarObject> selectedObjects = new ArrayList<>();
+  List<IMyCellarObject> getSelectedObjects() {
+    List<IMyCellarObject> selectedObjects = new ArrayList<>();
     for (int i = 0; i < listBoolean.size(); i++) {
       if (listBoolean.get(i)) {
         selectedObjects.add(datas.get(i));

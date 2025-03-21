@@ -1,6 +1,6 @@
 package mycellar.placesmanagement.places;
 
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Map;
@@ -12,8 +12,8 @@ import java.util.Map;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 11/09/24
+ * @version 1.0
+ * @since 21/03/25
  */
 public interface IAbstractPlace {
 
@@ -27,17 +27,17 @@ public interface IAbstractPlace {
 
   public int getPartCount();
 
-  public void clearStorage(MyCellarObject myCellarObject);
+  public void clearStorage(IMyCellarObject myCellarObject);
 
-  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place);
+  public void clearStorage(IMyCellarObject myCellarObject, PlacePosition place);
 
   public int getCountCellUsed(int part);
 
-  public boolean addObject(MyCellarObject myCellarObject);
+  public boolean addObject(IMyCellarObject myCellarObject);
 
-  public void removeObject(MyCellarObject myCellarObject) throws MyCellarException;
+  public void removeObject(IMyCellarObject myCellarObject) throws MyCellarException;
 
-  public void updateToStock(MyCellarObject myCellarObject);
+  public void updateToStock(IMyCellarObject myCellarObject);
 
   public boolean canAddObjectAt(PlacePosition place);
 

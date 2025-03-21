@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -17,6 +16,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.List.of;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -47,8 +47,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.6
- * @since 18/03/25
+ * @version 6.7
+ * @since 21/03/25
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -80,7 +80,7 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<? extends MyCellarObject> myCellarObjects = new LinkedList<>();
+  List<? extends IMyCellarObject> myCellarObjects = new LinkedList<>();
 
   @Override
   public int getRowCount() {
@@ -248,9 +248,7 @@ class TableShowValues extends AbstractTableModel {
               Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_CANTMODIFYSTORAGE), getError(ERROR_ERROR), JOptionPane.YES_NO_OPTION)) {
-                LinkedList<MyCellarObject> list = new LinkedList<>();
-                list.add(b);
-                Program.modifyBottles(list);
+                Program.modifyBottles(of(b));
               }
             }
           }
@@ -261,7 +259,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setMyCellarObjects(List<? extends MyCellarObject> list) {
+  public void setMyCellarObjects(List<? extends IMyCellarObject> list) {
     if (list == null) {
       return;
     }
@@ -273,7 +271,7 @@ class TableShowValues extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  public MyCellarObject getMyCellarObject(int i) {
+  public IMyCellarObject getMyCellarObject(int i) {
     return myCellarObjects.get(i);
   }
 

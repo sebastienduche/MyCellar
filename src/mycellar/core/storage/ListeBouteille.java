@@ -9,7 +9,7 @@ package mycellar.core.storage;
 import mycellar.Bouteille;
 import mycellar.Music;
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,8 +42,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 26/12/23
+ * @version 1.7
+ * @since 21/03/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -215,7 +215,7 @@ public class ListeBouteille {
     return -1;
   }
 
-  public boolean add(MyCellarObject myCellarObject) {
+  public boolean add(IMyCellarObject myCellarObject) {
     if (myCellarObject instanceof Bouteille b) {
       return getBouteille().add(b);
     } else if (myCellarObject instanceof Music m) {
@@ -226,7 +226,7 @@ public class ListeBouteille {
     }
   }
 
-  public boolean remove(MyCellarObject myCellarObject) {
+  public boolean remove(IMyCellarObject myCellarObject) {
     if (myCellarObject instanceof Bouteille b) {
       return getBouteille().remove(b);
     } else if (myCellarObject instanceof Music m) {

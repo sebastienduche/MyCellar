@@ -5,7 +5,6 @@ import mycellar.Music;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.PanelVignobles;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -53,8 +52,8 @@ import static mycellar.general.ResourceKey.PREDICATES_YEAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 13/03/25
+ * @version 2.5
+ * @since 21/03/25
  */
 
 public class Predicates {
@@ -182,12 +181,12 @@ public class Predicates {
     }
   };
 
-  public static final IPredicate<MyCellarObject> ARTIST = new IPredicate<>() {
+  public static final IPredicate<IMyCellarObject> ARTIST = new IPredicate<>() {
 
     private int type = -1;
 
     @Override
-    public boolean apply(MyCellarObject myCellarObject, Object compare, int type) {
+    public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
       Program.throwNotImplementedIfNotFor(myCellarObject, Music.class);
       Music music = (Music) myCellarObject;
       if (music.getArtist() == null) {

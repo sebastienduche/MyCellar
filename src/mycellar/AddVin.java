@@ -5,9 +5,9 @@ import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.BottlesStatus;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarManageBottles;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
@@ -77,7 +77,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   private boolean isModify = false; // Pour la Modification
   private AbstractPlace placeInModification;
   private ListVin listVin;
-  private LinkedList<MyCellarObject> listBottleInModification; //Pour enlever dans ListVin
+  private LinkedList<IMyCellarObject> listBottleInModification; //Pour enlever dans ListVin
 
   public AddVin() {
     super();
@@ -134,9 +134,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   /**
    * Fonction de chargement de plusieurs vins pour la classe ListVin
    *
-   * @param myCellarObjects LinkedList<MyCellarObject>
+   * @param myCellarObjects LinkedList<IMyCellarObject>
    */
-  public void setBottles(List<MyCellarObject> myCellarObjects) {
+  public void setBottles(List<IMyCellarObject> myCellarObjects) {
     Debug("Set Bottles...");
     if (listVin == null) {
       listVin = new ListVin(myCellarObjects, this);
@@ -151,9 +151,9 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   /**
    * Fonction de chargement d'un vin pour la classe ListVin
    *
-   * @param cellarObject MyCellarObject
+   * @param cellarObject IMyCellarObject
    */
-  private void setBottle(MyCellarObject cellarObject) {
+  private void setBottle(IMyCellarObject cellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -183,7 +183,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
   /**
    * Fonction pour le chargement de vins pour la classe ListVin.
    */
-  void setObjectsInModification(LinkedList<MyCellarObject> myCellarObjects) {
+  void setObjectsInModification(LinkedList<IMyCellarObject> myCellarObjects) {
     Debug("setBottlesInModification...");
     severalItems = myCellarObjects.size() > 1;
     panelGeneral.setSeveralItems(severalItems);
@@ -238,7 +238,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       throw new RuntimeException("Shouldn't happen!");
     }
     int nb_free_space = 0;
-    MyCellarObject myCellarObjectFound = null;
+    IMyCellarObject myCellarObjectFound = null;
     if (!isModify || panelPlace.isPlaceModified()) { //Si Ajout bouteille ou modification du lieu
       Debug("Adding bottle or modifying place");
       myCellarObjectFound = complexPlace.getObject(
@@ -253,7 +253,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
 
     Debug("Creating new bottle...");
-    MyCellarObject newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+    IMyCellarObject newMyCellarObject = createMyCellarObject(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
         .withNumPlace(part)
         .withLine(line)
         .withColumn(column)
@@ -346,7 +346,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       return modifySeveralObjectsInSimplePlace(place, simplePlace);
     }
 
-    MyCellarObject newMyCellarObject = createMyCellarObject(annee, place, simplePlace);
+    IMyCellarObject newMyCellarObject = createMyCellarObject(annee, place, simplePlace);
     // Add multiple bottle with question
     if (countStillToAdd > 1) {
       if (!Program.hasOnlyOnePlace()) {
@@ -362,7 +362,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           } else {
             result.setNbItemsAdded(countStillToAdd);
             for (int j = 0; j < countStillToAdd; j++) {
-              MyCellarObject copy = createCopy(newMyCellarObject);
+              IMyCellarObject copy = createCopy(newMyCellarObject);
               Program.getStorage().addHistory(HistoryState.ADD, copy);
               simplePlace.addObject(copy);
             }
@@ -387,7 +387,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         } else {
           Debug("Adding n objects: " + (countStillToAdd - 1));
           for (int i = 0; i < countStillToAdd - 1; i++) {
-            MyCellarObject copy = createCopy(newMyCellarObject);
+            IMyCellarObject copy = createCopy(newMyCellarObject);
             Program.getStorage().addHistory(HistoryState.ADD, copy);
             simplePlace.addObject(copy);
           }
@@ -447,7 +447,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       return result;
     }
     boolean bOneBottle = listBottleInModification.size() == 1;
-    for (MyCellarObject tmp : listBottleInModification) {
+    for (IMyCellarObject tmp : listBottleInModification) {
       updateMyCellarObject(bOneBottle, tmp);
       Debug("Adding multiple bottles in simple place...");
       if (isModify && tmp.isInExistingPlace()) {
@@ -482,7 +482,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Result result = new Result();
     Debug("Modifying without changing place");
     boolean bOneBottle = listBottleInModification.size() == 1;
-    for (MyCellarObject tmp : listBottleInModification) {
+    for (IMyCellarObject tmp : listBottleInModification) {
       updateMyCellarObject(bOneBottle, tmp);
       tmp.updateStatus();
 
@@ -504,7 +504,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return result;
   }
 
-  private MyCellarObject createCopy(MyCellarObject newMyCellarObject) {
+  private IMyCellarObject createCopy(IMyCellarObject newMyCellarObject) {
     if (Program.isWineType()) {
       return Bouteille.castCopy(newMyCellarObject);
     }
@@ -515,7 +515,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return new Bouteille();
   }
 
-  private MyCellarObject createMyCellarObject(String annee, PlacePosition place, AbstractPlace abstractPlace) {
+  private IMyCellarObject createMyCellarObject(String annee, PlacePosition place, AbstractPlace abstractPlace) {
     if (Program.isWineType()) {
       return createBouteille(annee, place, abstractPlace);
     }
@@ -566,7 +566,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return musicBuilder.build();
   }
 
-  private void updateMyCellarObject(boolean singleObject, MyCellarObject cellarObject) {
+  private void updateMyCellarObject(boolean singleObject, IMyCellarObject cellarObject) {
     String price = panelWineAttribute.getPrice();
     String comment = commentTextArea.getText();
     String dateOfC = panelWineAttribute.getMaturity();
@@ -635,7 +635,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("modifyOneOrSeveralObjectsWithoutPlaceModification...");
     if (!severalItems) {
       Debug("Modifying one bottle in Armoire without changing place");
-      MyCellarObject tmp = createMyCellarObject(annee, myCellarObject.getPlacePosition(), myCellarObject.getAbstractPlace());
+      IMyCellarObject tmp = createMyCellarObject(annee, myCellarObject.getPlacePosition(), myCellarObject.getAbstractPlace());
       Debug("Replacing bottle...");
       myCellarObject.update(tmp);
       Program.getStorage().addHistory(HistoryState.MODIFY, tmp);
@@ -643,7 +643,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     } else {
       Debug("Modifying multiple bottles in Armoire without changing place");
       final String comment = commentTextArea.isModified() ? commentTextArea.getText() : null;
-      for (MyCellarObject tmp : listBottleInModification) {
+      for (IMyCellarObject tmp : listBottleInModification) {
         if (Program.isWineType()) {
           Bouteille bouteille = Bouteille.cast(tmp);
           bouteille.setPrix(nonNullValueOrDefault(panelWineAttribute.getPriceIfModified(), bouteille.getPrix()));
@@ -698,7 +698,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     return result;
   }
 
-  private void replaceWine(final MyCellarObject newMyCellarObject, final MyCellarObject objectToDelete) throws MyCellarException {
+  private void replaceWine(final IMyCellarObject newMyCellarObject, final IMyCellarObject objectToDelete) throws MyCellarException {
     Debug("ReplaceWine...");
     //Change wine in a place
     Program.getStorage().addHistory(isModify ? HistoryState.MODIFY : HistoryState.ADD, newMyCellarObject);

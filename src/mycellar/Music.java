@@ -1,7 +1,7 @@
 package mycellar;
 
 import mycellar.core.BottlesStatus;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MusicSupport;
 import mycellar.core.datas.jaxb.tracks.Track;
@@ -42,8 +42,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 20/03/25
+ * @version 2.2
+ * @since 21/03/25
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -72,7 +72,7 @@ import static mycellar.general.XmlUtils.getTextContent;
     "tracks"
 })
 @XmlRootElement(name = "Music")
-public class Music extends MyCellarObject implements Serializable {
+public class Music implements IMyCellarObject, Serializable {
 
   private static final long serialVersionUID = 7443323147347096231L;
 
@@ -647,7 +647,7 @@ public class Music extends MyCellarObject implements Serializable {
   @Override
   public boolean updateID() {
     if (id != -1) {
-      final List<MyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+      final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
       if (bouteilles.size() == 1 && bouteilles.getFirst().equals(this)) {
         return false;
       }
@@ -728,18 +728,19 @@ public class Music extends MyCellarObject implements Serializable {
         .build();
   }
 
-  public static Music cast(MyCellarObject myCellarObject) {
+  public static Music cast(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Music.class);
     return (Music) myCellarObject;
   }
 
-  public static Music castCopy(MyCellarObject myCellarObject) {
+  public static Music castCopy(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Music.class);
     return new Music((Music) myCellarObject);
   }
 
   @Override
-  public void update(MyCellarObject myCellarObject) {
+  public void update(IMyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Music.class);
     Music music = (Music) myCellarObject;
     setTitle(music.getTitle());
     setAnnee(music.getAnnee());

@@ -10,7 +10,6 @@ package mycellar;
 
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -46,8 +45,8 @@ import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 20/03/25
+ * @version 8.6
+ * @since 21/03/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -97,7 +96,7 @@ import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
     "lastModified"
 })
 @XmlRootElement(name = "Bouteille")
-public class Bouteille extends MyCellarObject implements Serializable {
+public class Bouteille implements IMyCellarObject, Serializable {
 
   public static final String NON_VINTAGE = "NV";
   public static final int NON_VINTAGE_INT = 9999;
@@ -449,7 +448,8 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public void update(final MyCellarObject myCellarObject) {
+  public void update(final IMyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Bouteille.class);
     Bouteille b = (Bouteille) myCellarObject;
     setNom(b.getNom());
     setAnnee(b.getAnnee());
@@ -472,12 +472,12 @@ public class Bouteille extends MyCellarObject implements Serializable {
     setLastModified(LocalDateTime.now());
   }
 
-  public static Bouteille cast(MyCellarObject myCellarObject) {
+  public static Bouteille cast(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return (Bouteille) myCellarObject;
   }
 
-  public static Bouteille castCopy(MyCellarObject myCellarObject) {
+  public static Bouteille castCopy(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return new Bouteille((Bouteille) myCellarObject);
   }

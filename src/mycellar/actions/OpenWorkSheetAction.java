@@ -1,7 +1,7 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.WorksheetPanel;
@@ -16,13 +16,13 @@ import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
-  private final List<MyCellarObject> myCellarObjects;
+  private final List<IMyCellarObject> myCellarObjects;
 
   public OpenWorkSheetAction() {
     this(null);
   }
 
-  public OpenWorkSheetAction(List<MyCellarObject> list) {
+  public OpenWorkSheetAction(List<IMyCellarObject> list) {
     super(SHOWFILE_WORKSHEET, MyCellarImage.WORK);
     setDescriptionLabel(SHOWFILE_WORKSHEET);
     myCellarObjects = list != null ? list : Collections.emptyList();

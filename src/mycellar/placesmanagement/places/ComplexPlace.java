@@ -1,7 +1,7 @@
 package mycellar.placesmanagement.places;
 
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Collections;
@@ -19,14 +19,14 @@ import java.util.Optional;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 07/03/25
+ * @version 1.3
+ * @since 21/03/25
  */
 public class ComplexPlace extends AbstractPlace {
 
   private int lineCount;
   private int columnCount;
-  private MyCellarObject[][][] storage;
+  private IMyCellarObject[][][] storage;
   private List<Part> partList;
 
 
@@ -58,7 +58,7 @@ public class ComplexPlace extends AbstractPlace {
       }
     }
 
-    storage = new MyCellarObject[partCount][lineCount][columnCount];
+    storage = new IMyCellarObject[partCount][lineCount][columnCount];
   }
 
   public List<Part> getParts() {
@@ -104,7 +104,7 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  public boolean addObject(MyCellarObject myCellarObject) {
+  public boolean addObject(IMyCellarObject myCellarObject) {
     if (myCellarObject.hasNoStatus()) {
       myCellarObject.setCreated();
     }
@@ -114,13 +114,13 @@ public class ComplexPlace extends AbstractPlace {
     return true;
   }
 
-  public Optional<MyCellarObject> getObject(PlacePosition place) {
-    final MyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
+  public Optional<IMyCellarObject> getObject(PlacePosition place) {
+    final IMyCellarObject myCellarObject = storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()];
     return Optional.ofNullable(myCellarObject);
   }
 
   @Override
-  public void updateToStock(MyCellarObject myCellarObject) {
+  public void updateToStock(IMyCellarObject myCellarObject) {
     final PlacePosition place = myCellarObject.getPlacePosition();
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = myCellarObject;
   }
@@ -130,7 +130,7 @@ public class ComplexPlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
+  public void clearStorage(IMyCellarObject myCellarObject, PlacePosition place) {
     storage[place.getPlaceNumIndex()][place.getLineIndex()][place.getColumnIndex()] = null;
   }
 
@@ -184,7 +184,7 @@ public class ComplexPlace extends AbstractPlace {
 
   @Override
   public void resetStockage() {
-    storage = new MyCellarObject[partCount][lineCount][columnCount];
+    storage = new IMyCellarObject[partCount][lineCount][columnCount];
   }
 
   public boolean isExistingCell(int part, int line, int column) {
@@ -248,7 +248,7 @@ public class ComplexPlace extends AbstractPlace {
     return resul;
   }
 
-  public void moveToLine(MyCellarObject myCellarObject, int newLine) throws MyCellarException {
+  public void moveToLine(IMyCellarObject myCellarObject, int newLine) throws MyCellarException {
     if (!isExistingCell(myCellarObject.getNumLieu() - 1, newLine - 1, myCellarObject.getColonne() - 1)) {
       throw new MyCellarException("Unable to move this object to a new line: " + myCellarObject);
     }

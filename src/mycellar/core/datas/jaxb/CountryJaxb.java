@@ -64,7 +64,7 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
       return "";
     }
     String label = MyCellarLabelManagement.getLabelFromCode(COUNTRY_LABEL_KEY + id, false);
-    if (label.equals(COUNTRY_LABEL_KEY + id)) {
+    if (label.equals(COUNTRY_LABEL_KEY + id) || label.isBlank()) {
       return getName();
     }
     return label;

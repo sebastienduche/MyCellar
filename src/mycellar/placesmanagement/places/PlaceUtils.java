@@ -57,7 +57,6 @@ import static mycellar.core.MyCellarError.ID.FULL_BOX;
 import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
 import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
 import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
-import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR120;
 import static mycellar.general.ResourceErrorKey.ERROR161;
@@ -72,8 +71,8 @@ import static mycellar.general.ResourceKey.MYCELLAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 02/03/25
+ * @version 6.1
+ * @since 21/03/25
  */
 public final class PlaceUtils {
 
@@ -155,7 +154,7 @@ public final class PlaceUtils {
       progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
       Debug("ERROR: Error writing CSV \n" + ioe);
-      Erreur.showSimpleErreur(getError(ERROR120), getError(ERROR161));
+      Erreur.showSimpleErreur(ERROR120, ERROR161);
       return false;
     }
     return true;

@@ -68,8 +68,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.1
- * @since 20/03/25
+ * @version 33.2
+ * @since 21/03/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -336,7 +336,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     int countStillToAdd = panelWineAttribute.getNbItems();
     SimplePlace simplePlace = (SimplePlace) abstractPlace;
     if (!simplePlace.hasFreeSpace(place)) {
-      Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError(ERROR_SELECTANOTHERSTORAGE));
+      Erreur.showSimpleErreur(ERROR_NOTENOUGHSPACESTORAGE, ERROR_SELECTANOTHERSTORAGE);
       end.setText("");
       Debug("ERROR: No free spaces");
       return result;
@@ -357,7 +357,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
           Debug("Adding multiple objects in the same place: YES");
 
           if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
-            Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError(ERROR_SELECTANOTHERSTORAGE));
+            Erreur.showSimpleErreur(ERROR_NOTENOUGHSPACESTORAGE, ERROR_SELECTANOTHERSTORAGE);
             end.setText("");
           } else {
             result.setNbItemsAdded(countStillToAdd);
@@ -382,7 +382,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + countStillToAdd) > simplePlace.getMaxItemCount()) {
           result.setHasError(true);
           Debug("ERROR: This caisse is full. Unable to add all bottles in the same place!");
-          Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError(ERROR_SELECTANOTHERSTORAGE));
+          Erreur.showSimpleErreur(ERROR_NOTENOUGHSPACESTORAGE, ERROR_SELECTANOTHERSTORAGE);
           end.setText("");
         } else {
           Debug("Adding n objects: " + (countStillToAdd - 1));
@@ -440,7 +440,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Result result = new Result();
     if (simplePlace.isLimited() && (simplePlace.getCountCellUsed(place) + listBottleInModification.size()) > simplePlace.getMaxItemCount()) {
       Debug("ERROR: Not enough place!");
-      Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE), getError(ERROR_SELECTANOTHERSTORAGE));
+      Erreur.showSimpleErreur(ERROR_NOTENOUGHSPACESTORAGE, ERROR_SELECTANOTHERSTORAGE);
       panelPlace.enableSimplePlace(true);
       addButton.setEnabled(true);
       end.setText("");

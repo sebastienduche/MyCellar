@@ -59,6 +59,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGETOGENERATE;
 import static mycellar.general.ResourceErrorKey.ERROR_SIMPLESTORAGESELECTED;
 import static mycellar.general.ResourceKey.CREATETABLE_FILEGENERATED;
+import static mycellar.general.ResourceKey.CREATETABLE_FILETOGENERATE;
 import static mycellar.general.ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE;
 import static mycellar.general.ResourceKey.CREER;
 import static mycellar.general.ResourceKey.EXPORT_EXPORTFORMAT;
@@ -81,8 +82,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.0
- * @since 18/03/25
+ * @version 10.1
+ * @since 21/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -102,7 +103,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
   public CreateTablePanel() {
     Debug("Constructor");
-    final MyCellarLabel fileLabel = new MyCellarLabel(CREATETABLE_FILEGENERATED);
+    final MyCellarLabel fileLabel = new MyCellarLabel(CREATETABLE_FILETOGENERATE);
     m_jcb_options.addActionListener(this::options_actionPerformed);
     final MyCellarButton browse = new MyCellarButton(OPEN);
     browse.addActionListener(this::browse_actionPerformed);
@@ -254,7 +255,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     } else if (type_HTML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, singletonList(Filtre.FILTRE_HTML))) {
         Debug("ERROR: Not a HTML File");
-        Erreur.showSimpleErreur(getError(ERROR_NOTHTMLFILE), filename);
+        Erreur.showSimpleErreur(getError(ERROR_NOTHTMLFILE, filename));
         return;
       }
     } else if (type_XLS.isSelected()) {
@@ -276,7 +277,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
 
     if (rangements.isEmpty()) {
       Debug("ERROR: No place selected");
-      Erreur.showInformationMessage(getError(ERROR_NOSTORAGESELECTED), getError(ERROR_SELECTSTORAGETOGENERATE));
+      Erreur.showInformationMessage(ERROR_NOSTORAGESELECTED, ERROR_SELECTSTORAGETOGENERATE);
       return;
     }
     long caisseCount = 0;

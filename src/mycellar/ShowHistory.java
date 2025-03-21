@@ -71,8 +71,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.0
- * @since 19/03/25
+ * @version 6.1
+ * @since 21/03/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -217,7 +217,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
       }
 
       if (toRestoreList.isEmpty()) {
-        Erreur.showInformationMessage(getLabel(SHOWFILE_NOBOTTLETORESTORE), getLabel(SHOWFILE_SELECTTORESTORE));
+        Erreur.showInformationMessage(SHOWFILE_NOBOTTLETORESTORE, SHOWFILE_SELECTTORESTORE);
       } else {
         String message;
         if (toRestoreList.size() == 1) {
@@ -283,7 +283,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
         } while (row < max_row);
 
         if (toDeleteList.isEmpty()) {
-          Erreur.showInformationMessage(getError(ERROR_NOLINESELECTED), getError(ERROR_SELECTLINESTODELETE));
+          Erreur.showInformationMessage(ERROR_NOLINESELECTED, ERROR_SELECTLINESTODELETE);
           Debug("ERROR: No lines selected");
         } else {
           String message;

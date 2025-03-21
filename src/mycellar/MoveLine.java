@@ -45,8 +45,8 @@ import static mycellar.general.ResourceKey.MOVE_TOLINE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 18/03/25
+ * @version 4.7
+ * @since 21/03/25
  */
 
 public final class MoveLine extends JDialog {
@@ -147,7 +147,8 @@ public final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      Erreur.showSimpleErreur(this, getError(MOVELINE_UNABLETOMOVE), value);
+      String message = String.format("%s\n%s", getError(MOVELINE_UNABLETOMOVE), value);
+      Erreur.showSimpleErreur(this, message);
       Debug("ERROR: Unable to move objects: " + value);
     } else {
       label_end.setText(getLabel(MOVELINE_ITEMSMOVED), true);

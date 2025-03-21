@@ -13,7 +13,6 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.general.ProgramPanels;
-import mycellar.general.ResourceErrorKey;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.BorderFactory;
@@ -40,6 +39,9 @@ import static mycellar.core.MyCellarSettings.HAS_EXCEL_FILE;
 import static mycellar.core.MyCellarSettings.SIECLE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTANEXCELFILE;
 import static mycellar.general.ResourceKey.MAIN_BROWSE;
 import static mycellar.general.ResourceKey.MAIN_GENERAL;
 import static mycellar.general.ResourceKey.MAIN_VALIDATE;
@@ -197,7 +199,7 @@ public final class ParametersPanel extends JPanel implements ITabListener, ICutC
         Program.putCaveConfigBool(HAS_EXCEL_FILE, true);
         String fic = file_bak.getText();
         if (MyCellarControl.hasInvalidExtension(fic, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
-          Erreur.showSimpleErreur(getError(ResourceErrorKey.ERROR_NOTANEXCELFILE, fic), getError(ResourceErrorKey.ERROR_SELECTANEXCELFILE));
+          Erreur.showSimpleErreur(getError(ERROR_NOTANEXCELFILE, fic), getError(ERROR_SELECTANEXCELFILE));
           return;
         } else {
           Program.putCaveConfigString(FILE_EXCEL, fic);
@@ -238,7 +240,7 @@ public final class ParametersPanel extends JPanel implements ITabListener, ICutC
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(getError(ResourceErrorKey.ERROR_FILENOTFOUND, ""));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, ""));
         Program.Debug("ERROR: parcourir_excel: File not found while Opening!");
         return;
       }

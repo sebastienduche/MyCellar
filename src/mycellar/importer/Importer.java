@@ -139,8 +139,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.7
- * @since 18/03/25
+ * @version 16.8
+ * @since 21/03/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -415,7 +415,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         resetLabelProgress();
         Debug("ERROR: No field selected");
         // Please select fields
-        Erreur.showSimpleErreur(getError(ERROR025), getError(ERROR026));
+        Erreur.showSimpleErreur(ERROR025, ERROR026);
         importe.setEnabled(true);
         return;
       }
@@ -465,7 +465,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (isMoreThanOne) {
         resetLabelProgress();
         Debug("ERROR: fields cannot be selected more than one time");
-        Erreur.showSimpleErreur(getError(ERROR_CANTSELECTFIELDTWICE), getError(ERROR018));
+        Erreur.showSimpleErreur(ERROR_CANTSELECTFIELDTWICE, ERROR018);
         importe.setEnabled(true);
         return;
       }
@@ -473,7 +473,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.NAME) == null) {
         resetLabelProgress();
         Debug("ERROR: No column for wine name");
-        Erreur.showSimpleErreur(getError(ERROR_NOCOLUMNSELECTEDFORNAME), getError(ERROR_SELECTCOLUMNFORBOTTLEIMPORT));
+        Erreur.showSimpleErreur(ERROR_NOCOLUMNSELECTEDFORNAME, ERROR_SELECTCOLUMNFORBOTTLEIMPORT);
         importe.setEnabled(true);
         return;
       }
@@ -482,7 +482,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
         resetLabelProgress();
         Debug("ERROR: No place defined, a place will be create");
-        Erreur.showInformationMessage(getError(ERROR140), getError(ERROR141));
+        Erreur.showInformationMessage(ERROR140, ERROR141);
 
         List<MyOptionKey> myOptionKeys = new ArrayList<>();
         int i;
@@ -562,7 +562,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             if (line.split(fieldSeparator).length <= 1) {
               resetLabelProgress();
               Debug("ERROR: No separator found");
-              Erreur.showSimpleErreur(getError(ERROR042), getError(ERROR043));
+              Erreur.showSimpleErreur(ERROR042, ERROR043);
               importe.setEnabled(true);
               reader.close();
               return;

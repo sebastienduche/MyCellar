@@ -122,8 +122,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.2
- * @since 19/03/25
+ * @version 25.3
+ * @since 21/03/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -303,7 +303,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       if (listToDelete.isEmpty()) {
         // No objet to delete / Select...
         Debug("ERROR: No bottle to delete!");
-        Erreur.showInformationMessage(getError(ERROR_NOITEMTODELETE), getError(ERROR_PLEASESELECT));
+        Erreur.showInformationMessage(ERROR_NOITEMTODELETE, ERROR_PLEASESELECT);
         return;
       }
       String erreur_txt1;
@@ -450,7 +450,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         final List<MyCellarObject> listToModify = searchTableModel.getSelectedObjects();
 
         if (listToModify.isEmpty()) {
-          Erreur.showInformationMessage(getError(ERROR_NOITEMTOMODIFY), getError(ERROR_SELECTITEMTOMODIFY));
+          Erreur.showInformationMessage(ERROR_NOITEMTOMODIFY, ERROR_SELECTITEMTOMODIFY);
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
           Program.modifyBottles(listToModify);

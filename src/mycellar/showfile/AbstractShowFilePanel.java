@@ -112,8 +112,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_VALID;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 19/03/25
+ * @version 0.9
+ * @since 21/03/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -650,7 +650,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       List<MyCellarObject> toDeleteList = getSelectedMyCellarObjects();
 
       if (toDeleteList.isEmpty()) {
-        Erreur.showInformationMessage(getError(ERROR_NOITEMTODELETE), getError(ERROR_PLEASESELECT));
+        Erreur.showInformationMessage(ERROR_NOITEMTODELETE, ERROR_PLEASESELECT);
       } else {
         String erreur_txt1, erreur_txt2;
         if (toDeleteList.size() == 1) {
@@ -707,7 +707,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     final List<MyCellarObject> toRestoreList = getSelectedMyCellarObjects();
 
     if (toRestoreList.isEmpty()) {
-      Erreur.showInformationMessage(getLabel(SHOWFILE_NOBOTTLETORESTORE), getLabel(SHOWFILE_SELECTTORESTORE));
+      Erreur.showInformationMessage(SHOWFILE_NOBOTTLETORESTORE, SHOWFILE_SELECTTORESTORE);
     } else {
       String erreur_txt1, erreur_txt2;
       if (toRestoreList.size() == 1) {
@@ -1094,7 +1094,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     public void actionPerformed(ActionEvent e) {
       List<MyCellarObject> selectedObjects = getSelectedMyCellarObjects();
       if (selectedObjects.isEmpty()) {
-        Erreur.showInformationMessage(getError(ERROR_NOITEMTOMODIFY), getError(ERROR_SELECTITEMTOMODIFY));
+        Erreur.showInformationMessage(ERROR_NOITEMTOMODIFY, ERROR_SELECTITEMTOMODIFY);
         return;
       }
 

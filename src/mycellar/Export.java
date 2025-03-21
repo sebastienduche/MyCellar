@@ -94,8 +94,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.2
- * @since 19/03/25
+ * @version 12.3
+ * @since 21/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -135,7 +135,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       pdf.save(nomFichier);
       Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
-      Erreur.showSimpleErreur(getError(ERROR160), getError(ERROR161));
+      Erreur.showSimpleErreur(ERROR160, ERROR161);
       Program.showException(ex, false);
       return false;
     }
@@ -372,7 +372,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         openit.setEnabled(true);
       } else {
         end.setText(getError(ERROR_EXPORTERROR));
-        Erreur.showSimpleErreur(getError(ERROR160), getError(ERROR161));
+        Erreur.showSimpleErreur(ERROR160, ERROR161);
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {

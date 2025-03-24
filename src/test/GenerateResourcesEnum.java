@@ -4,6 +4,11 @@ import mycellar.core.text.LanguageFileLoader;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 public class GenerateResourcesEnum {
 
@@ -11,19 +16,36 @@ public class GenerateResourcesEnum {
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceKey.java")) {
       writer.write("package mycellar.general;\n\n");
       writer.write("public enum ResourceKey implements IResource {\n");
-      LanguageFileLoader.getInstance().getBundleTitle().keySet().forEach(
-          s -> {
+      Map<String, String> mapKeyValue = LanguageFileLoader.getInstance().getBundleTitle().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+
+      LinkedHashMap<String, String> sortedMap = mapKeyValue.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
+              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+      sortedMap.forEach(
+          (key, value) -> {
             try {
-              writer.write(s.toUpperCase().replace('.', '_') + "(\"" + s + "\"),\n");
+              writer.write(key + "(\"" + value + "\"),\n");
             } catch (IOException e) {
               throw new RuntimeException(e);
             }
           }
       );
-      LanguageFileLoader.getInstance().getBundleWine().keySet().forEach(
-          s -> {
+
+      Map<String, String> mapKeyValueWine = LanguageFileLoader.getInstance().getBundleWine().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+
+      LinkedHashMap<String, String> sortedMapWine = mapKeyValueWine.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
+              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+      sortedMapWine.forEach(
+          (key, value) -> {
             try {
-              writer.write(s.toUpperCase().replace('.', '_') + "(\"" + s + "\"),\n");
+              writer.write(key + "(\"" + value + "\"),\n");
             } catch (IOException e) {
               throw new RuntimeException(e);
             }
@@ -46,19 +68,34 @@ public class GenerateResourcesEnum {
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceErrorKey.java")) {
       writer.write("package mycellar.general;\n\n");
       writer.write("public enum ResourceErrorKey implements IResource {\n");
-      LanguageFileLoader.getInstance().getBundleError().keySet().forEach(
-          s -> {
+      Map<String, String> mapKeyValueError = LanguageFileLoader.getInstance().getBundleError().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+
+      LinkedHashMap<String, String> sortedMapError = mapKeyValueError.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
+              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+      sortedMapError.forEach(
+          (key, value) -> {
             try {
-              writer.write(s.toUpperCase().replace('.', '_') + "(\"" + s + "\"),\n");
+              writer.write(key + "(\"" + value + "\"),\n");
             } catch (IOException e) {
               throw new RuntimeException(e);
             }
           }
       );
-      LanguageFileLoader.getInstance().getBundleWineError().keySet().forEach(
-          s -> {
+
+      Map<String, String> mapKeyValueErrorWine = LanguageFileLoader.getInstance().getBundleWineError().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+
+      LinkedHashMap<String, String> sortedMapErrorWine = mapKeyValueErrorWine.entrySet()
+          .stream()
+          .sorted(Map.Entry.comparingByKey())
+          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
+              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+      sortedMapErrorWine.forEach(
+          (key, value) -> {
             try {
-              writer.write(s.toUpperCase().replace('.', '_') + "(\"" + s + "\"),\n");
+              writer.write(key + "(\"" + value + "\"),\n");
             } catch (IOException e) {
               throw new RuntimeException(e);
             }

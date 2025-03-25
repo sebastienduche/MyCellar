@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
@@ -16,41 +17,14 @@ public class GenerateResourcesEnum {
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceKey.java")) {
       writer.write("package mycellar.general;\n\n");
       writer.write("public enum ResourceKey implements IResource {\n");
-      Map<String, String> mapKeyValue = LanguageFileLoader.getInstance().getBundleTitle().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+      Map<String, String> mapKeyValue = mapResources(LanguageFileLoader.getInstance().getBundleTitle());
+      writeResourceKeys(mapKeyValue, writer);
 
-      LinkedHashMap<String, String> sortedMap = mapKeyValue.entrySet()
-          .stream()
-          .sorted(Map.Entry.comparingByKey())
-          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
-              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+      Map<String, String> mapKeyValueWine = mapResources(LanguageFileLoader.getInstance().getBundleWine());
+      writeResourceKeys(mapKeyValueWine, writer);
 
-      sortedMap.forEach(
-          (key, value) -> {
-            try {
-              writer.write(key + "(\"" + value + "\"),\n");
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }
-      );
-
-      Map<String, String> mapKeyValueWine = LanguageFileLoader.getInstance().getBundleWine().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
-
-      LinkedHashMap<String, String> sortedMapWine = mapKeyValueWine.entrySet()
-          .stream()
-          .sorted(Map.Entry.comparingByKey())
-          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
-              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-      sortedMapWine.forEach(
-          (key, value) -> {
-            try {
-              writer.write(key + "(\"" + value + "\"),\n");
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }
-      );
+      Map<String, String> mapKeyValueKeyboard = mapResources(LanguageFileLoader.getInstance().getBundleKeyboard());
+      writeResourceKeys(mapKeyValueKeyboard, writer);
       writer.write("EMPTY(\"\")\n");
       writer.write(";\n");
       writer.write("private final String key;\n\n");
@@ -68,39 +42,13 @@ public class GenerateResourcesEnum {
     try (FileWriter writer = new FileWriter("./src/mycellar/general/ResourceErrorKey.java")) {
       writer.write("package mycellar.general;\n\n");
       writer.write("public enum ResourceErrorKey implements IResource {\n");
-      Map<String, String> mapKeyValueError = LanguageFileLoader.getInstance().getBundleError().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+      Map<String, String> mapKeyValueError = mapResources(LanguageFileLoader.getInstance().getBundleError());
 
-      LinkedHashMap<String, String> sortedMapError = mapKeyValueError.entrySet()
-          .stream()
-          .sorted(Map.Entry.comparingByKey())
-          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
-              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-      sortedMapError.forEach(
-          (key, value) -> {
-            try {
-              writer.write(key + "(\"" + value + "\"),\n");
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }
-      );
+      writeResourceKeys(mapKeyValueError, writer);
 
-      Map<String, String> mapKeyValueErrorWine = LanguageFileLoader.getInstance().getBundleWineError().keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+      Map<String, String> mapKeyValueErrorWine = mapResources(LanguageFileLoader.getInstance().getBundleWineError());
 
-      LinkedHashMap<String, String> sortedMapErrorWine = mapKeyValueErrorWine.entrySet()
-          .stream()
-          .sorted(Map.Entry.comparingByKey())
-          .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
-              (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-      sortedMapErrorWine.forEach(
-          (key, value) -> {
-            try {
-              writer.write(key + "(\"" + value + "\"),\n");
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }
-      );
+      writeResourceKeys(mapKeyValueErrorWine, writer);
       writer.write("EMPTY(\"\")\n");
       writer.write(";\n");
       writer.write("private final String key;\n\n");
@@ -114,5 +62,26 @@ public class GenerateResourcesEnum {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static Map<String, String> mapResources(ResourceBundle resourceBundle) {
+    return resourceBundle.keySet().stream().collect(toMap(s -> s.toUpperCase().replace('.', '_'), Function.identity()));
+  }
+
+  private static void writeResourceKeys(Map<String, String> mapKeyValue, FileWriter writer) {
+    LinkedHashMap<String, String> sortedMapError = mapKeyValue.entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByKey())
+        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue,
+            (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    sortedMapError.forEach(
+        (key, value) -> {
+          try {
+            writer.write(key + "(\"" + value + "\"),\n");
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+    );
   }
 }

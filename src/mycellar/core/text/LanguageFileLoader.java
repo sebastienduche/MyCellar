@@ -38,6 +38,7 @@ public final class LanguageFileLoader {
   private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
+  private ResourceBundle bundleKeyboard;
 
   private LanguageFileLoader() {
     loadLanguageFiles(Language.ENGLISH);
@@ -59,6 +60,10 @@ public final class LanguageFileLoader {
     return bundleError;
   }
 
+  public ResourceBundle getBundleKeyboard() {
+    return bundleKeyboard;
+  }
+
   public static LanguageFileLoader getInstance() {
     return INSTANCE;
   }
@@ -76,6 +81,9 @@ public final class LanguageFileLoader {
     }
     if (INSTANCE.bundleTitle.containsKey(id)) {
       return INSTANCE.bundleTitle.getString(id);
+    }
+    if (INSTANCE.bundleKeyboard.containsKey(id)) {
+      return INSTANCE.bundleKeyboard.getString(id);
     }
     if (Program.isWineType()) {
       if (INSTANCE.bundleWine == null) {
@@ -166,6 +174,7 @@ public final class LanguageFileLoader {
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
     bundleWineError = ResourceBundle.getBundle("wineError", locale, new UTF8Control());
     bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
+    bundleKeyboard = ResourceBundle.getBundle("keyboard", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }
 

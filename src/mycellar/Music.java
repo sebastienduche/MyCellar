@@ -32,7 +32,7 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.core.IMyCellarObject.assertObjectType;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
-import static mycellar.general.ResourceErrorKey.IMPORT_ERRORVALUE;
+import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
 import static mycellar.general.XmlUtils.getTextContent;
 
 /**
@@ -42,8 +42,8 @@ import static mycellar.general.XmlUtils.getTextContent;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 21/03/25
+ * @version 2.3
+ * @since 25/03/25
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -629,14 +629,14 @@ public class Music implements IMyCellarObject, Serializable {
         try {
           Double.valueOf(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(getError(IMPORT_ERRORVALUE, value, field));
+          throw new MyCellarException(getError(ERROR_ERRORVALUE, value, field));
         }
         break;
       case EXTERNAL_ID:
         try {
           Integer.parseInt(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(getError(IMPORT_ERRORVALUE, value, field));
+          throw new MyCellarException(getError(ERROR_ERRORVALUE, value, field));
         }
         break;
       default:

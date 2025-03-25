@@ -49,15 +49,15 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.MyCellarSettings.CREATE_TAB_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.ERROR087;
-import static mycellar.general.ResourceErrorKey.ERROR127;
-import static mycellar.general.ResourceErrorKey.ERROR128;
+import static mycellar.general.ResourceErrorKey.ERROR_LISTGENERATED;
 import static mycellar.general.ResourceErrorKey.ERROR_LISTOFITEMSINSTORAGEGENERATED;
 import static mycellar.general.ResourceErrorKey.ERROR_NOSTORAGESELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTAXMLFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGETOGENERATE;
 import static mycellar.general.ResourceErrorKey.ERROR_SIMPLESTORAGESELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_SIMPLESTORAGESSELECTED;
 import static mycellar.general.ResourceKey.CREATETABLE_FILEGENERATED;
 import static mycellar.general.ResourceKey.CREATETABLE_FILETOGENERATE;
 import static mycellar.general.ResourceKey.CREATETABLE_SELECTSTORAGESTOGENERATE;
@@ -82,8 +82,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.1
- * @since 21/03/25
+ * @version 10.2
+ * @since 25/03/25
  */
 public final class CreateTablePanel extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   private final JTextField name = new JTextField();
@@ -249,7 +249,7 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
     if (type_XML.isSelected()) {
       if (MyCellarControl.hasInvalidExtension(filename, singletonList(Filtre.FILTRE_XML))) {
         Debug("ERROR: Not a XML File");
-        Erreur.showSimpleErreur(getError(ERROR087, filename));
+        Erreur.showSimpleErreur(getError(ERROR_NOTAXMLFILE, filename));
         return;
       }
     } else if (type_HTML.isSelected()) {
@@ -300,8 +300,8 @@ public final class CreateTablePanel extends JPanel implements ITabListener, ICut
           erreur_txt1 = getError(ERROR_SIMPLESTORAGESELECTED);
           erreur_txt2 = getError(ERROR_LISTOFITEMSINSTORAGEGENERATED);
         } else {
-          erreur_txt1 = getError(ERROR127); //"Vous avez selectionne des rangements de type Caisse
-          erreur_txt2 = getError(ERROR128); //"Une liste des vins de ces rangements a ete generee.
+          erreur_txt1 = getError(ERROR_SIMPLESTORAGESSELECTED);
+          erreur_txt2 = getError(ERROR_LISTGENERATED);
         }
         Erreur.showInformationMessageWithKey(erreur_txt1, erreur_txt2, MyCellarSettings.DONT_SHOW_TAB_MESS);
       }

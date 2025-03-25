@@ -27,9 +27,9 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMSTOMOVE;
 import static mycellar.general.ResourceErrorKey.ERROR_STILLITEMSONLINE;
+import static mycellar.general.ResourceErrorKey.ERROR_UNABLETOMOVE;
 import static mycellar.general.ResourceErrorKey.ERROR_WRONGLINENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_WRONGNEWCOLUMNNUMBER;
-import static mycellar.general.ResourceErrorKey.MOVELINE_UNABLETOMOVE;
 import static mycellar.general.ResourceKey.MAIN_CLOSE;
 import static mycellar.general.ResourceKey.MAIN_MOVE;
 import static mycellar.general.ResourceKey.MAIN_VALIDATE;
@@ -44,8 +44,8 @@ import static mycellar.general.ResourceKey.MOVE_TOLINE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.7
- * @since 21/03/25
+ * @version 4.8
+ * @since 25/03/25
  */
 
 public final class MoveLine extends JDialog {
@@ -146,7 +146,7 @@ public final class MoveLine extends JDialog {
     }
     if (!notMoved.isEmpty()) {
       final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
-      String message = String.format("%s\n%s", getError(MOVELINE_UNABLETOMOVE), value);
+      String message = String.format("%s\n%s", getError(ERROR_UNABLETOMOVE), value);
       Erreur.showSimpleErreur(this, message);
       Debug("ERROR: Unable to move objects: " + value);
     } else {

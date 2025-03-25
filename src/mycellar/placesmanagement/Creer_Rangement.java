@@ -61,11 +61,10 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.CREERRANGEMENT_ASKUPDATEBOTTLEPART;
-import static mycellar.general.ResourceErrorKey.CREERRANGEMENT_CANTDELETEPARTCAISSE;
-import static mycellar.general.ResourceErrorKey.CREERRANGEMENT_UPDATEDBOTTLEPART;
 import static mycellar.general.ResourceErrorKey.ERROR_1ITEMINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_ASKUPDATEBOTTLEPART;
 import static mycellar.general.ResourceErrorKey.ERROR_CANCREATEANOTHERSTORAGESAMEOPTIONS;
+import static mycellar.general.ResourceErrorKey.ERROR_CANTDELETEPARTCAISSE;
 import static mycellar.general.ResourceErrorKey.ERROR_CLICKOKBEFOREPREVIEW;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMCHANGESTORAGE1ITEM;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMQUIT;
@@ -79,6 +78,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_REMOVENOTEMPTYSHELVELINES;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_STORAGECREATIONINCOMPLETED;
 import static mycellar.general.ResourceErrorKey.ERROR_STORAGEMODIFICATIONINCOMPLETED;
+import static mycellar.general.ResourceErrorKey.ERROR_UPDATEDBOTTLEPART;
 import static mycellar.general.ResourceKey.CREATESTORAGE_ACTIVATELIMIT;
 import static mycellar.general.ResourceKey.CREATESTORAGE_ALLLINESNOTSAME;
 import static mycellar.general.ResourceKey.CREATESTORAGE_ALLLINESSAME;
@@ -106,8 +106,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 18.5
- * @since 19/03/25
+ * @version 18.6
+ * @since 25/03/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -369,7 +369,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
       for (int i = nbPart; i < simplePlace.getPartCount(); i++) {
         if (numberOfObjectsPerPlace.get(i) > 0) {
           Debug("ERROR: Unable to delete simple place part with objects!");
-          Erreur.showSimpleErreur(getError(CREERRANGEMENT_CANTDELETEPARTCAISSE, (i + simplePlace.getPartNumberIncrement())));
+          Erreur.showSimpleErreur(getError(ERROR_CANTDELETEPARTCAISSE, (i + simplePlace.getPartNumberIncrement())));
           return;
         }
       }
@@ -389,7 +389,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
           erreur_txt1 = getError(ERROR_NITEMSINSTORAGE, nb_bottle);
           erreur_txt2 = getError(ERROR_QUESTIONCHANGESTORAGEITEMS);
         }
-       String message = String.format("%s %s", erreur_txt1, erreur_txt2);
+        String message = String.format("%s %s", erreur_txt1, erreur_txt2);
         if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           // Modify Name of place
           Program.getStorage().getAllList()
@@ -399,7 +399,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
         }
       } else if (simplePlace.getPartNumberIncrement() != partNumberIncrementSimplePlace) {
         // Le numero de la premiere partie a change, renumeroter
-        String message = String.format("%s %s", getError(CREERRANGEMENT_UPDATEDBOTTLEPART, partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement()), getError(CREERRANGEMENT_ASKUPDATEBOTTLEPART));
+        String message = String.format("%s %s", getError(ERROR_UPDATEDBOTTLEPART, partNumberIncrementSimplePlace, simplePlace.getPartNumberIncrement()), getError(ERROR_ASKUPDATEBOTTLEPART));
         if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           //Modify start part number
           final int difference = partNumberIncrementSimplePlace - simplePlace.getPartNumberIncrement();

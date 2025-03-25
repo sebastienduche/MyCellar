@@ -10,7 +10,7 @@ import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.MANAGECOLUMN_ERRORNB;
+import static mycellar.general.ResourceErrorKey.ERROR_NEEDMINIMUM1COLUMN;
 import static mycellar.general.ResourceKey.MAIN_COLUMN;
 
 /**
@@ -20,8 +20,8 @@ import static mycellar.general.ResourceKey.MAIN_COLUMN;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 14/03/25
+ * @version 1.3
+ * @since 25/03/25
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -96,7 +96,7 @@ public class ManageColumnModel extends DefaultTableModel {
       }
     }
     if (selectedColumns.isEmpty()) {
-      Erreur.showSimpleErreur(getError(MANAGECOLUMN_ERRORNB));
+      Erreur.showSimpleErreur(getError(ERROR_NEEDMINIMUM1COLUMN));
       values[row] = Boolean.TRUE;
       selectedColumns.add(list.get(row).getIndex());
     }

@@ -13,18 +13,18 @@ import java.util.List;
 import static java.util.List.of;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_EMPTYPATH;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERCOLUMNNUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERLINENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNAME;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERSHELVENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
 import static mycellar.general.ResourceErrorKey.ERROR_FORBIDDENCHARACTERS;
+import static mycellar.general.ResourceErrorKey.ERROR_INVALIDPATH;
 import static mycellar.general.ResourceErrorKey.ERROR_REQUIRESTORAGENAME;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGENUMBER;
 import static mycellar.general.ResourceErrorKey.ERROR_STORAGENAMEALREADYUSED;
-import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_EMPTYPATH;
-import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_INVALIDPATH;
 
 /**
  * Titre : Cave &agrave; vin
@@ -33,8 +33,8 @@ import static mycellar.general.ResourceErrorKey.MYCELLARCONTROL_INVALIDPATH;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 18/03/25
+ * @version 3.5
+ * @since 25/03/25
  */
 
 public final class MyCellarControl {
@@ -149,7 +149,7 @@ public final class MyCellarControl {
     Debug("Controlling path...");
     if (isNullOrEmpty(path)) {
       Debug("ERROR: Name cannot be empty!");
-      Erreur.showSimpleErreur(getError(MYCELLARCONTROL_EMPTYPATH));
+      Erreur.showSimpleErreur(getError(ERROR_EMPTYPATH));
       return false;
     }
 
@@ -157,7 +157,7 @@ public final class MyCellarControl {
       Paths.get(path.strip());
     } catch (InvalidPathException e) {
       Debug("ERROR:Invalid Path!");
-      Erreur.showSimpleErreur(getError(MYCELLARCONTROL_INVALIDPATH));
+      Erreur.showSimpleErreur(getError(ERROR_INVALIDPATH));
       return false;
     }
     return true;

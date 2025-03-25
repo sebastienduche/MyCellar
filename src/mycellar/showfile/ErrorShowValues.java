@@ -25,7 +25,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
-import static mycellar.general.ResourceErrorKey.SHOWFILE_ERRORADDINGBOTTLE;
+import static mycellar.general.ResourceErrorKey.ERROR_ERRORADDINGBOTTLE;
 import static mycellar.general.ResourceKey.ERRORSHOWVALUES_ERROR;
 import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
 import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
@@ -48,8 +48,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 21/03/25
+ * @version 4.0
+ * @since 25/03/25
  */
 
 class ErrorShowValues extends TableShowValues {
@@ -178,11 +178,11 @@ class ErrorShowValues extends TableShowValues {
             fireTableRowsUpdated(row, row);
           } else {
             status[row] = Boolean.FALSE;
-            Erreur.showSimpleErreur(getError(SHOWFILE_ERRORADDINGBOTTLE));
+            Erreur.showSimpleErreur(getError(ERROR_ERRORADDINGBOTTLE));
           }
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(getError(SHOWFILE_ERRORADDINGBOTTLE));
+          Erreur.showSimpleErreur(getError(ERROR_ERRORADDINGBOTTLE));
         }
         break;
       case NAME:

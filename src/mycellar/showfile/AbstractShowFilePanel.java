@@ -81,6 +81,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_CONFIRM1DELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMNDELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
 import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGBOTTLE;
 import static mycellar.general.ResourceErrorKey.ERROR_NITEMSSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTODELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOITEMTOMODIFY;
@@ -88,7 +89,6 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
 import static mycellar.general.ResourceErrorKey.ERROR_PLEASESELECT;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTITEMTOMODIFY;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTSTORAGE;
-import static mycellar.general.ResourceErrorKey.SHOWFILE_INEXISTINGBOTTLE;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
 import static mycellar.general.ResourceKey.HISTORY_TOCHECK;
 import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
@@ -112,8 +112,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_VALID;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 21/03/25
+ * @version 1.0
+ * @since 25/03/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -551,7 +551,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       public boolean execute(IMyCellarObject myCellarObject, int row, int column) {
         if (Program.isNotExistingMyCellarObject(myCellarObject)) {
           Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(getError(SHOWFILE_INEXISTINGBOTTLE, myCellarObject.getNom()));
+          Erreur.showSimpleErreur(getError(ERROR_INEXISTINGBOTTLE, myCellarObject.getNom()));
           return false;
         }
         ProgramPanels.showBottle(myCellarObject, true);
@@ -1103,7 +1103,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       for (IMyCellarObject bottle : selectedObjects) {
         if (Program.isNotExistingMyCellarObject(bottle)) {
           Debug("Object " + bottle.getNom() + " [" + bottle.getId() + "] doesn't exist");
-          Erreur.showSimpleErreur(getError(SHOWFILE_INEXISTINGBOTTLE, bottle.getNom()));
+          Erreur.showSimpleErreur(getError(ERROR_INEXISTINGBOTTLE, bottle.getNom()));
         } else {
           existingObjects.add(bottle);
         }

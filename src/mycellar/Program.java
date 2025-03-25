@@ -99,11 +99,11 @@ import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.ERROR162;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
 import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
-import static mycellar.general.ResourceErrorKey.PROGRAM_NOTSUPPORTEDVERSION;
-import static mycellar.general.ResourceErrorKey.SAVEMODIFICATIONS;
+import static mycellar.general.ResourceErrorKey.ERROR_HELPNOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTSUPPORTEDVERSION;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONSAVEMODIFICATIONS;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 /**
@@ -113,12 +113,12 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.6
- * @since 21/03/25
+ * @version 29.7
+ * @since 25/03/25
  */
 
 public final class Program {
-  
+
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
 
@@ -314,7 +314,7 @@ public final class Program {
     }
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
     if (currentVersion > VERSION) {
-      Erreur.showSimpleErreur(getError(PROGRAM_NOTSUPPORTEDVERSION));
+      Erreur.showSimpleErreur(getError(ERROR_NOTSUPPORTEDVERSION));
       throw new UnableToOpenMyCellarFileException("The file version '" + currentVersion + "' is not supported by this program version: " + VERSION);
     }
   }
@@ -458,7 +458,7 @@ public final class Program {
       }
 
     } else {
-      Erreur.showSimpleErreur(getError(ERROR162));
+      Erreur.showSimpleErreur(getError(ERROR_HELPNOTFOUND));
     }
   }
 
@@ -708,7 +708,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (openedFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError(SAVEMODIFICATIONS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError(ERROR_QUESTIONSAVEMODIFICATIONS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!openedFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();

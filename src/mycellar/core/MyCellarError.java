@@ -4,12 +4,11 @@ import mycellar.core.text.MyCellarLabelManagement;
 
 import java.util.Objects;
 
-import static mycellar.general.ResourceErrorKey.MYCELLARERROR_FULLCAISSE;
-import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGCASE;
-import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGNUMPLACE;
-import static mycellar.general.ResourceErrorKey.MYCELLARERROR_INEXISTINGPLACE;
-import static mycellar.general.ResourceErrorKey.MYCELLARERROR_OCCUPIEDCASE;
-
+import static mycellar.general.ResourceErrorKey.ERROR_FULLCAISSE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGCASE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGNUMPLACE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGPLACE;
+import static mycellar.general.ResourceErrorKey.ERROR_OCCUPIEDCASE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -18,8 +17,8 @@ import static mycellar.general.ResourceErrorKey.MYCELLARERROR_OCCUPIEDCASE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 21/03/25
+ * @version 1.1
+ * @since 25/03/25
  */
 
 public class MyCellarError {
@@ -49,25 +48,13 @@ public class MyCellarError {
     solved = false;
   }
 
-  public MyCellarError(ID error, IMyCellarObject myCellarObject) {
-    this.error = error;
-    this.myCellarObject = myCellarObject;
-    place = "";
-    numLieu = -1;
-    status = false;
-    solved = false;
-  }
-
   public String getErrorMessage() {
     return switch (error) {
-      case INEXISTING_PLACE ->
-          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGPLACE, place);
-      case INEXISTING_NUM_PLACE ->
-          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGNUMPLACE, numLieu);
-      case FULL_BOX -> MyCellarLabelManagement.getError(MYCELLARERROR_FULLCAISSE, numLieu);
-      case INEXISTING_CELL ->
-          MyCellarLabelManagement.getError(MYCELLARERROR_INEXISTINGCASE, place);
-      case CELL_FULL -> MyCellarLabelManagement.getError(MYCELLARERROR_OCCUPIEDCASE);
+      case INEXISTING_PLACE -> MyCellarLabelManagement.getError(ERROR_INEXISTINGPLACE, place);
+      case INEXISTING_NUM_PLACE -> MyCellarLabelManagement.getError(ERROR_INEXISTINGNUMPLACE, numLieu);
+      case FULL_BOX -> MyCellarLabelManagement.getError(ERROR_FULLCAISSE, numLieu);
+      case INEXISTING_CELL -> MyCellarLabelManagement.getError(ERROR_INEXISTINGCASE, place);
+      case CELL_FULL -> MyCellarLabelManagement.getError(ERROR_OCCUPIEDCASE);
     };
   }
 

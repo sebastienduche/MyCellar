@@ -57,8 +57,8 @@ import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
 import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
 import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.ERROR120;
-import static mycellar.general.ResourceErrorKey.ERROR161;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKIFOPENED;
+import static mycellar.general.ResourceErrorKey.ERROR_WRITINGCSVFILE;
 import static mycellar.general.ResourceKey.MAIN_HTMLEXPORT;
 import static mycellar.general.ResourceKey.MAIN_NOTITLE;
 import static mycellar.general.ResourceKey.MYCELLAR;
@@ -70,8 +70,8 @@ import static mycellar.general.ResourceKey.MYCELLAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 21/03/25
+ * @version 6.2
+ * @since 25/03/25
  */
 public final class PlaceUtils {
 
@@ -153,16 +153,15 @@ public final class PlaceUtils {
       progressBar.setValue(progressBar.getMaximum());
     } catch (IOException ioe) {
       Debug("ERROR: Error writing CSV \n" + ioe);
-      Erreur.showSimpleErreur(ERROR120, ERROR161);
+      Erreur.showSimpleErreur(ERROR_WRITINGCSVFILE, ERROR_CHECKIFOPENED);
       return false;
     }
     return true;
   }
 
   /**
-   * @param file       String: fichier HTML a ecrire
-   * @param bouteilles List<Bouteille>: stock de bouteilles
-   * @return int
+   * @param file       String: HTML file to write
+   * @param bouteilles List<Bouteille>: bottles to include in the file
    */
   public static boolean writeHTML(final File file, final List<? extends IMyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
@@ -272,16 +271,13 @@ public final class PlaceUtils {
   }
 
   /**
-   * write_XLS: Fonction d'ecriture du ficher Excel
+   * write_XLS: Write the Excel file
    *
-   * @param file        String: Fichier a ecrire.
-   * @param iMyCellarObjects  List<Bouteille>: Tableau de bouteilles a ecrire
-   * @param isExit      boolean: True si appel pour la creation automatique d'une sauvegarde Excel
-   * @param progressBar JProgressBar
+   * @param iMyCellarObjects: List of objects to write
+   * @param isExit            : Use when writing automatically during Program exiting
    * @return boolean
    */
   public static boolean writeXLS(final File file, final List<? extends IMyCellarObject> iMyCellarObjects, boolean isExit, JProgressBar progressBar) {
-
     Debug("writeXLS: writing file: " + file.getAbsolutePath());
 
     try {
@@ -436,10 +432,9 @@ public final class PlaceUtils {
   }
 
   /**
-   * Fonction d'ecriture du fichier Excel des tableaux
+   * Write a table in the Excel file
    *
-   * @param file      String: Fichier a ecrire.
-   * @param placeList LinkedList: liste de rangements a ecrire
+   * @param placeList Place to write
    */
   public static void writeXLSTable(final String file, final List<AbstractPlace> placeList) {
 

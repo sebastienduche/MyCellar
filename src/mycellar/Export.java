@@ -51,21 +51,28 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.List.of;
+import static mycellar.Filtre.FILTRE_CSV;
+import static mycellar.Filtre.FILTRE_HTML;
+import static mycellar.Filtre.FILTRE_ODS;
+import static mycellar.Filtre.FILTRE_PDF;
+import static mycellar.Filtre.FILTRE_XLS;
+import static mycellar.Filtre.FILTRE_XLSX;
+import static mycellar.Filtre.FILTRE_XML;
 import static mycellar.MyCellarImage.OPEN;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.MyCellarSettings.EXPORT_DEFAULT;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
-import static mycellar.general.ResourceErrorKey.ERROR087;
-import static mycellar.general.ResourceErrorKey.ERROR157;
-import static mycellar.general.ResourceErrorKey.ERROR160;
-import static mycellar.general.ResourceErrorKey.ERROR161;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKIFOPENED;
 import static mycellar.general.ResourceErrorKey.ERROR_EXPORTERROR;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTAPDFFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTAXMLFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTCSVFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTHTMLFILE;
-import static mycellar.general.ResourceErrorKey.EXPORT_REPLACEFILEQUESTION;
+import static mycellar.general.ResourceErrorKey.ERROR_REPLACEFILEQUESTION;
+import static mycellar.general.ResourceErrorKey.ERROR_UNABLETOCREATEFILE;
 import static mycellar.general.ResourceKey.EXPORT_CSV;
 import static mycellar.general.ResourceKey.EXPORT_CSVINFO;
 import static mycellar.general.ResourceKey.EXPORT_ENDED;
@@ -94,8 +101,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.3
- * @since 21/03/25
+ * @version 12.4
+ * @since 25/03/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -135,7 +142,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       pdf.save(nomFichier);
       Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
-      Erreur.showSimpleErreur(ERROR160, ERROR161);
+      Erreur.showSimpleErreur(ERROR_UNABLETOCREATEFILE, ERROR_CHECKIFOPENED);
       Program.showException(ex, false);
       return false;
     }
@@ -230,16 +237,16 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR));
     boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
     if (MyCellarRadioButtonPDF.isSelected()) {
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
+      boiteFichier.addChoosableFileFilter(FILTRE_PDF);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
+      boiteFichier.addChoosableFileFilter(FILTRE_XLSX);
+      boiteFichier.addChoosableFileFilter(FILTRE_ODS);
     } else if (MyCellarRadioButtonCSV.isSelected()) {
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_CSV);
+      boiteFichier.addChoosableFileFilter(FILTRE_CSV);
     } else if (MyCellarRadioButtonHTML.isSelected()) {
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_HTML);
+      boiteFichier.addChoosableFileFilter(FILTRE_HTML);
     } else if (MyCellarRadioButtonXML.isSelected()) {
-      boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
+      boiteFichier.addChoosableFileFilter(FILTRE_XML);
     }
 
     if (boiteFichier.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -299,7 +306,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     File aFile = new File(fileName);
     if (aFile.exists()) {
       // Existing file. replace?
-      if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(getError(EXPORT_REPLACEFILEQUESTION, aFile.getAbsolutePath()))) {
+      if (JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(getError(ERROR_REPLACEFILEQUESTION, aFile.getAbsolutePath()))) {
         end.setText("");
         valider.setEnabled(true);
         return;
@@ -307,10 +314,10 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     }
 
     if (MyCellarRadioButtonXML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(fileName, of(Filtre.FILTRE_XML))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, of(FILTRE_XML))) {
         // Error, not a xml file
         end.setText("");
-        Erreur.showSimpleErreur(getError(ERROR087, fileName));
+        Erreur.showSimpleErreur(getError(ERROR_NOTAXMLFILE, fileName));
         valider.setEnabled(true);
         return;
       }
@@ -325,7 +332,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonHTML.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(fileName, of(Filtre.FILTRE_HTML))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, of(FILTRE_HTML))) {
         // Error: Not a html file
         end.setText("");
         Erreur.showSimpleErreur(getError(ERROR_NOTHTMLFILE, fileName));
@@ -341,7 +348,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         end.setText(getError(ERROR_EXPORTERROR));
       }
     } else if (MyCellarRadioButtonCSV.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(fileName, of(Filtre.FILTRE_CSV))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, of(FILTRE_CSV))) {
         // Error not a csv file
         end.setText("");
         Erreur.showSimpleErreur(getError(ERROR_NOTCSVFILE, fileName));
@@ -358,7 +365,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonXLS.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(fileName, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, asList(FILTRE_XLSX, FILTRE_XLS, FILTRE_ODS))) {
         end.setText("");
         Erreur.showSimpleErreur(getError(ERROR_NOTANEXCELFILE, fileName));
         valider.setEnabled(true);
@@ -372,14 +379,14 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         openit.setEnabled(true);
       } else {
         end.setText(getError(ERROR_EXPORTERROR));
-        Erreur.showSimpleErreur(ERROR160, ERROR161);
+        Erreur.showSimpleErreur(ERROR_UNABLETOCREATEFILE, ERROR_CHECKIFOPENED);
       }
       progressBar.setVisible(false);
     } else if (MyCellarRadioButtonPDF.isSelected()) {
-      if (MyCellarControl.hasInvalidExtension(fileName, of(Filtre.FILTRE_PDF))) {
+      if (MyCellarControl.hasInvalidExtension(fileName, of(FILTRE_PDF))) {
         // Error, not a pdf file
         end.setText("");
-        Erreur.showSimpleErreur(getError(ERROR157, fileName));
+        Erreur.showSimpleErreur(getError(ERROR_NOTAPDFFILE, fileName));
         valider.setEnabled(true);
         return;
       }

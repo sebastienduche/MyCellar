@@ -52,9 +52,9 @@ import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
+import static mycellar.general.ResourceErrorKey.ERROR_FORBIDDENTODELETE;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETESTORAGE;
-import static mycellar.general.ResourceErrorKey.SUPPRIMERRANGEMENT_FORBIDDENTODELETE;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEM;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEMIN;
 import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMS;
@@ -82,8 +82,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.3
- * @since 21/03/25
+ * @version 11.4
+ * @since 25/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -203,7 +203,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     // Verifier l'etat du rangement avant de le supprimer et demander confirmation
     if (num_select > 0) {
       if (Program.hasOnlyOnePlace()) {
-        Erreur.showSimpleErreur(getError(SUPPRIMERRANGEMENT_FORBIDDENTODELETE));
+        Erreur.showSimpleErreur(getError(ERROR_FORBIDDENTODELETE));
         return;
       }
       final AbstractPlace abstractPlace = (AbstractPlace) choix.getSelectedItem();

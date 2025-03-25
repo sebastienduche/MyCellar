@@ -42,8 +42,8 @@ import java.util.Objects;
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_COUNTRYEXIST;
 import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
-import static mycellar.general.ResourceErrorKey.VINEYARDPANEL_COUNTRYEXIST;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONS;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_ADDAPPELLATION;
 import static mycellar.general.ResourceKey.VINEYARDPANEL_ADDAPPELLATIONQUESTION;
@@ -68,8 +68,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEVIGNOBLE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.1
- * @since 19/03/25
+ * @version 4.2
+ * @since 25/03/25
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -297,7 +297,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       String val = JOptionPane.showInputDialog(getLabel(VINEYARDPANEL_ADDCOUNTRYQUESTION));
       if (isDefined(val)) {
         if (CountryVignobleController.hasCountryWithName(val)) {
-          Erreur.showSimpleErreur(getError(VINEYARDPANEL_COUNTRYEXIST));
+          Erreur.showSimpleErreur(getError(ERROR_COUNTRYEXIST));
           return;
         }
         CountryJaxb countryJaxb = new CountryJaxb(val);

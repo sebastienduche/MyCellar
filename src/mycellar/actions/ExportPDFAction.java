@@ -24,14 +24,12 @@ public class ExportPDFAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
-    boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
-    boiteFichier.addChoosableFileFilter(Filtre.FILTRE_PDF);
+    JFileChooser fileChooser = new JFileChooser(Program.getCaveConfigString(MyCellarSettings.DIR, ""));
+    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
+    fileChooser.addChoosableFileFilter(Filtre.FILTRE_PDF);
 
-    int retour_jfc = boiteFichier.showSaveDialog(null);
-    if (retour_jfc == JFileChooser.APPROVE_OPTION) {
-      File nomFichier = boiteFichier.getSelectedFile();
-      String name = nomFichier.getAbsolutePath();
+    if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+      String name = fileChooser.getSelectedFile().getAbsolutePath();
       name = MyCellarControl.controlAndUpdateExtension(name, Filtre.FILTRE_PDF);
       Export.exportToPDF(Program.getStorage().getAllList(), new File(name));
     }

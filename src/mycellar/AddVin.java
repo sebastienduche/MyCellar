@@ -68,8 +68,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.2
- * @since 21/03/25
+ * @version 33.3
+ * @since 03/04/25
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -770,7 +770,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
 
     Debug("Quitting...");
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
     panelWineAttribute.runExit();
     panelPlace.resetValues();

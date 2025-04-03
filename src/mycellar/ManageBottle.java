@@ -47,8 +47,8 @@ import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEMODIFICATIONS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.0
- * @since 21/03/25
+ * @version 11.1
+ * @since 03/04/25
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -251,7 +251,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
     ProgramPanels.updateSearchTable();
 
@@ -323,7 +323,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
     Debug("Quitting...");
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
     panelWineAttribute.runExit();
     clearValues();

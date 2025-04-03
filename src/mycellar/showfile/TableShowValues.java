@@ -3,6 +3,7 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
+import mycellar.actions.OpenAddVinAction;
 import mycellar.core.IMyCellarObject;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -47,8 +48,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.7
- * @since 21/03/25
+ * @version 6.8
+ * @since 03/04/25
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -248,7 +249,7 @@ class TableShowValues extends AbstractTableModel {
               Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
             } else {
               if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_CANTMODIFYSTORAGE), getError(ERROR_ERROR), JOptionPane.YES_NO_OPTION)) {
-                Program.modifyBottles(of(b));
+                OpenAddVinAction.open(of(b));
               }
             }
           }

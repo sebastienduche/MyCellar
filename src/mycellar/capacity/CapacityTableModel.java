@@ -24,11 +24,11 @@ import static mycellar.general.ResourceKey.MAIN_VALUES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 19/03/25
+ * @version 1.7
+ * @since 03/04/25
  */
 class CapacityTableModel extends DefaultTableModel {
-  public static final int STATE = 1;
+  static final int STATE = 1;
   private final String[] columnNames = {getLabel(MAIN_VALUES), ""};
 
   private final List<String> list;

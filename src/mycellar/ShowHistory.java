@@ -1,5 +1,6 @@
 package mycellar;
 
+import mycellar.actions.OpenAddVinAction;
 import mycellar.core.IMyCellar;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.history.History;
@@ -71,8 +72,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.1
- * @since 21/03/25
+ * @version 6.2
+ * @since 03/04/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -248,7 +249,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           }
 
           if (!cantRestoreList.isEmpty()) {
-            Program.modifyBottles(cantRestoreList);
+            OpenAddVinAction.open(cantRestoreList);
           }
         }
         PlaceUtils.putTabStock();

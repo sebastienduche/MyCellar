@@ -139,8 +139,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.9
- * @since 25/03/25
+ * @version 17.0
+ * @since 03/04/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -614,7 +614,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         MyCellarBottleContenance.load();
       }
     } else {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
     Debug("Importing... Done");
   }
@@ -737,7 +737,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     importe.setEnabled(true);
     label_progression.setText(getLabel(IMPORT_DONE), true);
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
   }
 

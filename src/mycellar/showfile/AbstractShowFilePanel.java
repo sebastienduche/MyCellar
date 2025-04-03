@@ -7,6 +7,7 @@ import mycellar.ITabListener;
 import mycellar.Music;
 import mycellar.MyCellarImage;
 import mycellar.Program;
+import mycellar.actions.OpenAddVinAction;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellar;
 import mycellar.core.IMyCellarEnum;
@@ -112,8 +113,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_VALID;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 25/03/25
+ * @version 1.1
+ * @since 03/04/25
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -738,7 +739,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           }
         }
         if (!cantRestoreList.isEmpty()) {
-          Program.modifyBottles(cantRestoreList);
+          OpenAddVinAction.open(cantRestoreList);
         }
       }
       refresh();
@@ -1108,7 +1109,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           existingObjects.add(bottle);
         }
       }
-      Program.modifyBottles(existingObjects);
+      OpenAddVinAction.open(existingObjects);
     }
   }
 

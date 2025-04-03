@@ -7,6 +7,7 @@ import mycellar.ITabListener;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.TextFieldPopup;
+import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenWorkSheetAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
@@ -122,8 +123,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.3
- * @since 21/03/25
+ * @version 25.4
+ * @since 03/04/25
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -452,7 +453,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
           Erreur.showInformationMessage(ERROR_NOITEMTOMODIFY, ERROR_SELECTITEMTOMODIFY);
         } else {
           Debug("Modifying " + listToModify.size() + " object(s)...");
-          Program.modifyBottles(listToModify);
+          OpenAddVinAction.open(listToModify);
         }
       } catch (RuntimeException exc) {
         Program.showException(exc);
@@ -792,7 +793,7 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
       Erreur.showInformationMessage(getError(ERROR_NOWINESELECTED));
       return;
     }
-    new OpenWorkSheetAction(list).actionPerformed(null);
+    OpenWorkSheetAction.open(list);
     Debug("addToWorksheet_actionPerforming... Done");
   }
 

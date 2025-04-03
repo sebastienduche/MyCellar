@@ -16,20 +16,17 @@ import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
-  private final List<IMyCellarObject> myCellarObjects;
-
   public OpenWorkSheetAction() {
-    this(null);
-  }
-
-  public OpenWorkSheetAction(List<IMyCellarObject> list) {
     super(SHOWFILE_WORKSHEET, MyCellarImage.WORK);
     setDescriptionLabel(SHOWFILE_WORKSHEET);
-    myCellarObjects = list != null ? list : Collections.emptyList();
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    open(Collections.emptyList());
+  }
+
+  public static void open(List<IMyCellarObject> myCellarObjects) {
     SwingUtilities.invokeLater(() -> {
       final WorksheetPanel showWorksheet = ProgramPanels.createWorksheetPanel();
       showWorksheet.updateView();

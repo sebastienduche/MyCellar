@@ -40,8 +40,8 @@ import static mycellar.general.ResourceKey.MAIN_NEWVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 13/03/25
+ * @version 2.3
+ * @since 03/04/25
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,11 +76,11 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = toCleanString(JOptionPane.showInputDialog(MainFrame.getInstance(), getLabel(MAIN_NEWVALUE), getLabel(MAIN_ENTERVALUE), JOptionPane.QUESTION_MESSAGE));
-    if (!s.isEmpty()) {
+    String capacity = toCleanString(JOptionPane.showInputDialog(MainFrame.getInstance(), getLabel(MAIN_NEWVALUE), getLabel(MAIN_ENTERVALUE), JOptionPane.QUESTION_MESSAGE));
+    if (!capacity.isEmpty()) {
       Program.setModified();
-      model.addValue(s);
-      defaultComboBox.addItem(s);
+      model.addValue(capacity);
+      defaultComboBox.addItem(capacity);
     }
     ProgramPanels.updateAllPanelsForUpdatingCapacity();
   }

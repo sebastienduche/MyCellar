@@ -106,8 +106,8 @@ import static mycellar.placesmanagement.places.ComplexPlace.copyParts;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 18.6
- * @since 25/03/25
+ * @version 18.7
+ * @since 03/04/25
  */
 public final class Creer_Rangement extends JPanel implements ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
   // TODO Can we manage the modified status correctly?
@@ -563,7 +563,7 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
 
   private void putTabStock() {
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
   }
 

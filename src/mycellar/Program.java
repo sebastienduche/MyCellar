@@ -3,7 +3,6 @@ package mycellar;
 import com.sebastienduche.pdf.PDFColumn;
 import com.sebastienduche.pdf.PDFProperties;
 import com.sebastienduche.pdf.PDFRow;
-import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
@@ -113,8 +112,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.7
- * @since 25/03/25
+ * @version 29.8
+ * @since 03/04/25
  */
 
 public final class Program {
@@ -677,7 +676,7 @@ public final class Program {
 
     PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
 
     if (openedFile.isFileSavable()) {
@@ -1235,17 +1234,6 @@ public final class Program {
       ++nextID;
     } while (getStorage().getAllList().stream().anyMatch(bouteille -> bouteille.getId() == nextID));
     return nextID;
-  }
-
-  public static void modifyBottles(List<IMyCellarObject> listToModify) {
-    if (listToModify == null || listToModify.isEmpty()) {
-      return;
-    }
-    if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.getFirst(), true);
-    } else {
-      new OpenAddVinAction(listToModify).actionPerformed(null);
-    }
   }
 
   public static List<IMyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {

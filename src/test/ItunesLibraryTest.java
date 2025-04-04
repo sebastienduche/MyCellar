@@ -1,8 +1,8 @@
 package test;
 
 import mycellar.Music;
+import mycellar.core.exceptions.NoITunesFileException;
 import mycellar.importer.ItunesLibraryImporter;
-import mycellar.importer.NoITunesFileException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

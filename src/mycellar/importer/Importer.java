@@ -19,6 +19,7 @@ import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.exceptions.NoITunesFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelKey;
 import mycellar.core.uicomponents.MyCellarButton;

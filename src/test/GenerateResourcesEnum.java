@@ -31,6 +31,7 @@ public class GenerateResourcesEnum {
       writer.write("ResourceKey(String key) {\n");
       writer.write("this.key = key;\n");
       writer.write("}\n\n");
+      writer.write("@Override\n");
       writer.write("public String getKey() {\n");
       writer.write("return key;\n");
       writer.write("}\n");
@@ -55,6 +56,7 @@ public class GenerateResourcesEnum {
       writer.write("ResourceErrorKey(String key) {\n");
       writer.write("this.key = key;\n");
       writer.write("}\n\n");
+      writer.write("@Override\n");
       writer.write("public String getKey() {\n");
       writer.write("return key;\n");
       writer.write("}\n");

@@ -90,7 +90,7 @@ public final class JButtonTabComponent extends JPanel {
     super(new FlowLayout(FlowLayout.LEFT, 0, 0));
     this.indexToGoBack = indexToGoBack;
     if (pane == null) {
-      throw new NullPointerException("TabbedPane is null");
+      throw new NullPointerException("JButtonTabComponent: JTabbedPane is null");
     }
     this.pane = pane;
     setOpaque(false);
@@ -160,7 +160,7 @@ public final class JButtonTabComponent extends JPanel {
           // contient va se fermer
           if (!listener.tabWillClose(new TabEvent(pane))) {
             // Le listener a mis son veto pour la fermeture, ne rien faire
-            Program.Debug("Not Closing Tab");
+            Program.Debug("JButtonTabComponent: Not Closing Tab");
             return;
           }
           ProgramPanels.removeTabAt(i);

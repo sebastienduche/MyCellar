@@ -137,6 +137,7 @@ public enum ResourceErrorKey implements IResource {
     this.key = key;
   }
 
+  @Override
   public String getKey() {
     return key;
   }

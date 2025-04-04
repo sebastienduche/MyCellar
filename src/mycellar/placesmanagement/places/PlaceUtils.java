@@ -51,13 +51,13 @@ import static mycellar.ProgramConstants.DEFAULT_STORAGE_EN;
 import static mycellar.ProgramConstants.DEFAULT_STORAGE_FR;
 import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.TEMP_PLACE;
-import static mycellar.core.MyCellarError.ID.CELL_FULL;
-import static mycellar.core.MyCellarError.ID.FULL_BOX;
-import static mycellar.core.MyCellarError.ID.INEXISTING_CELL;
-import static mycellar.core.MyCellarError.ID.INEXISTING_NUM_PLACE;
-import static mycellar.core.MyCellarError.ID.INEXISTING_PLACE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKIFOPENED;
+import static mycellar.general.ResourceErrorKey.ERROR_FULLCAISSE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGCASE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGNUMPLACE;
+import static mycellar.general.ResourceErrorKey.ERROR_INEXISTINGPLACE;
+import static mycellar.general.ResourceErrorKey.ERROR_OCCUPIEDCASE;
 import static mycellar.general.ResourceErrorKey.ERROR_WRITINGCSVFILE;
 import static mycellar.general.ResourceKey.MAIN_HTMLEXPORT;
 import static mycellar.general.ResourceKey.MAIN_NOTITLE;
@@ -70,8 +70,8 @@ import static mycellar.general.ResourceKey.MYCELLAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.2
- * @since 25/03/25
+ * @version 6.3
+ * @since 04/04/25
  */
 public final class PlaceUtils {
 
@@ -682,7 +682,7 @@ public final class PlaceUtils {
       }
       if (!bouteille.isInExistingPlace()) {
         Debug("ERROR: Inexisting place: " + bouteille.getNom() + " place: " + bouteille.getEmplacement());
-        Program.addError(new MyCellarError(INEXISTING_PLACE, bouteille, bouteille.getEmplacement()));
+        Program.addError(new MyCellarError(ERROR_INEXISTINGPLACE, bouteille, bouteille.getEmplacement()));
         continue;
       }
       final AbstractPlace rangement = bouteille.getAbstractPlace();
@@ -690,7 +690,7 @@ public final class PlaceUtils {
         if (rangement.isIncorrectNumPlace(bouteille.getNumLieu())) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement());
-          Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+          Program.addError(new MyCellarError(ERROR_INEXISTINGNUMPLACE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           continue;
         }
         if (((SimplePlace) rangement).hasFreeSpace(bouteille.getPlacePosition())) {
@@ -698,26 +698,26 @@ public final class PlaceUtils {
         } else {
           // Caisse pleine
           Debug("ERROR: simple place full for bottle: " + bouteille.getNom() + " numplace: " + bouteille.getNumLieu() + " for place " + bouteille.getEmplacement() + " ");
-          Program.addError(new MyCellarError(FULL_BOX, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+          Program.addError(new MyCellarError(ERROR_FULLCAISSE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         }
       } else {
         ComplexPlace complexPlace = (ComplexPlace) rangement;
         if (rangement.isIncorrectNumPlace(bouteille.getNumLieu() - 1)) {
           // Numero de rangement inexistant
           Debug("ERROR: Inexisting numplace: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + " for place " + bouteille.getEmplacement());
-          Program.addError(new MyCellarError(INEXISTING_NUM_PLACE, bouteille, bouteille.getEmplacement()));
+          Program.addError(new MyCellarError(ERROR_INEXISTINGNUMPLACE, bouteille, bouteille.getEmplacement()));
           continue;
         }
         if (!complexPlace.isExistingCell(bouteille.getNumLieu() - 1, bouteille.getLigne() - 1, bouteille.getColonne() - 1)) {
           // Cellule inexistante
           Debug("ERROR: Inexisting cell: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
-          Program.addError(new MyCellarError(INEXISTING_CELL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+          Program.addError(new MyCellarError(ERROR_INEXISTINGCASE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
         } else {
           final IMyCellarObject myCellarObject = complexPlace.getObject(bouteille.getPlacePosition()).orElse(null);
           if (myCellarObject != null && !myCellarObject.equals(bouteille)) {
             // Cellule occupee
             Debug("ERROR: Already occupied: " + bouteille.getNom() + " numplace: " + (bouteille.getNumLieu() - 1) + ", line: " + (bouteille.getLigne() - 1) + ", column:" + (bouteille.getColonne() - 1) + " for place " + bouteille.getEmplacement());
-            Program.addError(new MyCellarError(CELL_FULL, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
+            Program.addError(new MyCellarError(ERROR_OCCUPIEDCASE, bouteille, bouteille.getEmplacement(), bouteille.getNumLieu()));
           } else {
             rangement.updateToStock(bouteille);
           }

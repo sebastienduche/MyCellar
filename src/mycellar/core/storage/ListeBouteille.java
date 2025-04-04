@@ -220,10 +220,9 @@ public class ListeBouteille {
       return getBouteille().add(b);
     } else if (myCellarObject instanceof Music m) {
       return getMusic().add(m);
-    } else {
-      Program.throwNotImplementedForNewType();
-      return false;
     }
+    Program.throwNotImplementedForNewType();
+    return false;
   }
 
   public boolean remove(IMyCellarObject myCellarObject) {
@@ -231,9 +230,8 @@ public class ListeBouteille {
       return getBouteille().remove(b);
     } else if (myCellarObject instanceof Music m) {
       return getMusic().remove(m);
-    } else {
-      Program.throwNotImplementedForNewType();
     }
+    Program.throwNotImplementedForNewType();
     return false;
   }
 }

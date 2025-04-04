@@ -246,9 +246,10 @@ public abstract class TextFieldPopup extends JPanel {
 
   final class MyJMenuItem extends MyCellarSimpleLabel {
 
+    @Serial
     private static final long serialVersionUID = -463113999199742853L;
-    private final Color blue = new Color(51, 153, 255);
-    private final Color lightblue = new Color(153, 204, 255);
+    private static final Color BLUE = new Color(51, 153, 255);
+    private static final Color LIGHT_BLUE = new Color(153, 204, 255);
     private final Color background;
     private final String text;
     private boolean mouse = false;
@@ -281,7 +282,7 @@ public abstract class TextFieldPopup extends JPanel {
 
     void activate() {
       setBorder(BorderFactory.createEtchedBorder());
-      setBackground(mouse ? lightblue : blue);
+      setBackground(mouse ? LIGHT_BLUE : BLUE);
       setFont(getFont().deriveFont(Font.BOLD));
     }
 

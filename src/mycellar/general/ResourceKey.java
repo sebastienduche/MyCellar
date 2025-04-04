@@ -467,6 +467,7 @@ public enum ResourceKey implements IResource {
     this.key = key;
   }
 
+  @Override
   public String getKey() {
     return key;
   }

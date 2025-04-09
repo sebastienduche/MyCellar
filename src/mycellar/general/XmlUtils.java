@@ -264,28 +264,26 @@ public class XmlUtils {
         r.appendChild(name);
 
         if (rangement.isSimplePlace()) {
+          SimplePlace simplePlace = (SimplePlace) rangement;
           r.setAttribute(COLUMNS, "1");
           for (int i = 0; i < rangement.getPartCount(); i++) {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + ((SimplePlace) rangement).getPartNumberIncrement()));
+            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + simplePlace.getPartNumberIncrement()));
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
             for (int j = 0; j < rangement.getCountCellUsed(i); j++) {
               Element vin = doc.createElement(VIN);
               caisse.appendChild(vin);
-              Element vin_name = doc.createElement(VIN_1);
-              vin.appendChild(vin_name);
+              Element cellText = doc.createElement(VIN_1);
+              vin.appendChild(cellText);
               if (preview) {
-                vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
+                cellText.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
               } else {
-                IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
-                if (b != null)
-                  vin_name.setTextContent(b.getNom());
-                else
-                  vin_name.setTextContent(DASH);
+                IMyCellarObject b = simplePlace.getObjectAt(i, j);
+                cellText.setTextContent(b != null ? b.getNom() : DASH);
               }
             }
           }

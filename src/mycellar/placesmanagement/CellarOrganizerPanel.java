@@ -89,7 +89,7 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
 public class CellarOrganizerPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
-  protected final List<RangementCell> rangementCells = new ArrayList<>();
+  final List<RangementCell> rangementCells = new ArrayList<>();
   private final MouseListener handler = new Handler();
   private final List<JPanel[][]> places = new LinkedList<>();
   private final JPanel placePanel = new JPanel();
@@ -500,7 +500,7 @@ final class RangementCell extends JPanel {
     return place != null ? place.getName() : TEMP_PLACE;
   }
 
-  public boolean isTemporaryPlace() {
+  private boolean isTemporaryPlace() {
     return TEMP_PLACE.equalsIgnoreCase(getPlaceName());
   }
 

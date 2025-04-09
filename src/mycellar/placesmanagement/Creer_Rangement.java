@@ -420,16 +420,16 @@ public final class Creer_Rangement extends JPanel implements ITabListener, ICutC
   private void modifyComplexPlace(ComplexPlace complexPlace, String nom) {
     Debug("Modifying complex place...");
     int nbBottles = complexPlace.getTotalCountCellUsed();
-    for (Part p : listPart) {
-      if (p.rows().isEmpty()) {
-        Debug("ERROR: Wrong number of lines on part: " + p.getNumberAsDisplay());
-        Erreur.showSimpleErreur(getError(ERROR_INCORRECTNUMBERLINESFORSHELVE, p.getNumberAsDisplay()));
+    for (Part part : listPart) {
+      if (part.rows().isEmpty()) {
+        Debug("ERROR: Wrong number of lines on part: " + part.getNumberAsDisplay());
+        Erreur.showSimpleErreur(getError(ERROR_INCORRECTNUMBERLINESFORSHELVE, part.getNumberAsDisplay()));
         return;
       }
-      for (Row r : p.rows()) {
+      for (Row r : part.rows()) {
         if (r.getColumnCount() == 0) {
-          Debug("ERROR: Wrong number of columns on part: " + p.getNumberAsDisplay());
-          Erreur.showSimpleErreur(getError(ERROR_INCORRECTNUMBERCOLUMNSFORSHELVE, p.getNumberAsDisplay()));
+          Debug("ERROR: Wrong number of columns on part: " + part.getNumberAsDisplay());
+          Erreur.showSimpleErreur(getError(ERROR_INCORRECTNUMBERCOLUMNSFORSHELVE, part.getNumberAsDisplay()));
           return;
         }
       }

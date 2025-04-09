@@ -324,7 +324,6 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       columns.add(new Column(Column.PART, getLabel(MAIN_STORAGE)));
       columns.add(colLine);
       columns.add(new Column(Column.WINE, getLabel(MAIN_STATE)));
-
     }
 
     public void setCaisse(boolean caisse) {

@@ -113,8 +113,8 @@ public final class SimplePlace extends AbstractPlace {
     return hasFreeSpace(place.getPlaceNumIndex());
   }
 
-  public boolean hasFreeSpace(int part) {
-    return (!isLimited() || getCountCellUsed(part) < maxItemCount);
+  private boolean hasFreeSpace(int part) {
+    return !isLimited() || getCountCellUsed(part) < maxItemCount;
   }
 
   @Override

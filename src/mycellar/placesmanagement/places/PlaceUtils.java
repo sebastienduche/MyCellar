@@ -75,7 +75,7 @@ import static mycellar.general.ResourceKey.MYCELLAR;
  */
 public final class PlaceUtils {
 
-  public static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
+  private static final SimplePlace STOCK_PLACE = new SimplePlaceBuilder(TEMP_PLACE).build();
 
   private PlaceUtils() {
   }
@@ -98,13 +98,7 @@ public final class PlaceUtils {
     Debug("Replace object Done");
   }
 
-  /**
-   * Write a CSV file
-   *
-   * @return int
-   */
   public static boolean writeCSV(final File file, final List<? extends IMyCellarObject> myCellarObjects, final JProgressBar progressBar) {
-
     Debug("writeCSV: writing file: " + file.getAbsolutePath());
     final String separator = Program.getCaveConfigString(MyCellarSettings.SEPARATOR_DEFAULT, COLUMNS_SEPARATOR);
 
@@ -161,7 +155,7 @@ public final class PlaceUtils {
 
   /**
    * @param file       String: HTML file to write
-   * @param bouteilles List<Bouteille>: bottles to include in the file
+   * @param bouteilles List<IMyCellarObject>: bottles to include in the file
    */
   public static boolean writeHTML(final File file, final List<? extends IMyCellarObject> bouteilles, List<MyCellarFields> fields) {
 
@@ -562,23 +556,23 @@ public final class PlaceUtils {
     }
   }
 
-  private static String getLabelToDisplay(final IMyCellarObject b) {
-    if (b == null) {
+  private static String getLabelToDisplay(final IMyCellarObject myCellarObject) {
+    if (myCellarObject == null) {
       return "";
     }
     StringBuilder sTitle = new StringBuilder();
     // Contenu de la cellule
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL0, true)) {
-      sTitle.append(b.getNom());
+      sTitle.append(myCellarObject.getNom());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL1, false)) {
-      sTitle.append(SPACE).append(b.getAnnee());
+      sTitle.append(SPACE).append(myCellarObject.getAnnee());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL2, false)) {
-      sTitle.append(SPACE).append(b.getKind());
+      sTitle.append(SPACE).append(myCellarObject.getKind());
     }
     if (Program.getCaveConfigBool(MyCellarSettings.XLSTAB_COL3, false)) {
-      sTitle.append(SPACE).append(b.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
+      sTitle.append(SPACE).append(myCellarObject.getPrix()).append(Program.getCaveConfigString(MyCellarSettings.DEVISE, ""));
     }
     return toCleanString(sTitle);
   }

@@ -1,13 +1,13 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_NAME;
 
 /**
  * Titre : Cave &agrave; vin
@@ -16,8 +16,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 25/12/23
+ * @version 1.6
+ * @since 21/03/25
  */
 class ListValues extends AbstractTableModel {
   private List<? extends IMyCellarObject> list = new LinkedList<>();
@@ -41,21 +41,21 @@ class ListValues extends AbstractTableModel {
 
   @Override
   public String getColumnName(int column) {
-    return getLabel("Main.Name");
+    return getLabel(MAIN_NAME);
   }
 
-  protected void setObjects(List<? extends IMyCellarObject> b) {
+  void setObjects(List<? extends IMyCellarObject> b) {
     list = b;
     fireTableDataChanged();
   }
 
-  public void removeObject(MyCellarObject num) {
-    list.remove(num);
+  public void removeObject(IMyCellarObject iMyCellarObject) {
+    list.remove(iMyCellarObject);
     fireTableDataChanged();
   }
 
-  public MyCellarObject getObject(int x) {
-    return (MyCellarObject) list.get(x);
+  public IMyCellarObject getObject(int x) {
+    return list.get(x);
   }
 
 }

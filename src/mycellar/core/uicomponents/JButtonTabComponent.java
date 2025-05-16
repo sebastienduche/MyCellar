@@ -57,6 +57,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static mycellar.general.ResourceKey.MAIN_CLOSE;
+
 /**
  * Component to be used as tabComponent; Contains a JLabel to show the text and
  * a JButton to close the tab it belongs to
@@ -88,7 +90,7 @@ public final class JButtonTabComponent extends JPanel {
     super(new FlowLayout(FlowLayout.LEFT, 0, 0));
     this.indexToGoBack = indexToGoBack;
     if (pane == null) {
-      throw new NullPointerException("TabbedPane is null");
+      throw new NullPointerException("JButtonTabComponent: JTabbedPane is null");
     }
     this.pane = pane;
     setOpaque(false);
@@ -130,7 +132,7 @@ public final class JButtonTabComponent extends JPanel {
     private TabButton() {
       int size = 17;
       setPreferredSize(new Dimension(size, size));
-      setToolTipText(MyCellarLabelManagement.getLabel("Main.Close"));
+      setToolTipText(MyCellarLabelManagement.getLabel(MAIN_CLOSE));
       // Make the button looks the same for all Laf's
       setUI(new BasicButtonUI());
       // Make it transparent
@@ -158,7 +160,7 @@ public final class JButtonTabComponent extends JPanel {
           // contient va se fermer
           if (!listener.tabWillClose(new TabEvent(pane))) {
             // Le listener a mis son veto pour la fermeture, ne rien faire
-            Program.Debug("Not Closing Tab");
+            Program.Debug("JButtonTabComponent: Not Closing Tab");
             return;
           }
           ProgramPanels.removeTabAt(i);

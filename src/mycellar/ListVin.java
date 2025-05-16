@@ -1,9 +1,7 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
@@ -11,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
@@ -20,6 +16,10 @@ import java.awt.Font;
 import java.util.LinkedList;
 import java.util.List;
 
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.SwingConstants.CENTER;
+import static mycellar.general.ResourceKey.LISTVIN_LISTPROBLEMS;
+import static mycellar.general.ResourceKey.LISTVIN_SELECTITEMS;
 
 /**
  * Titre : Cave &agrave; vin
@@ -28,8 +28,8 @@ import java.util.List;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 25/12/23
+ * @version 4.9
+ * @since 21/03/25
  */
 final class ListVin extends JPanel {
   private final ListValues listValues;
@@ -58,7 +58,7 @@ final class ListVin extends JPanel {
       if (!lsm.isSelectionEmpty()) {
         int minSelectedRow = lsm.getMinSelectionIndex();
         int maxSelectedRow = lsm.getMaxSelectionIndex();
-        LinkedList<MyCellarObject> list = new LinkedList<>();
+        LinkedList<IMyCellarObject> list = new LinkedList<>();
         for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
           if (lsm.isSelectedIndex(x)) {
             list.add(listValues.getObject(x));
@@ -68,23 +68,23 @@ final class ListVin extends JPanel {
       }
     });
 
-    MyCellarLabel selectItemsLabel = new MyCellarLabel("ListVin.SelectItems", LabelProperty.THE_PLURAL);
+    MyCellarLabel selectItemsLabel = new MyCellarLabel(LISTVIN_SELECTITEMS);
 
     setLayout(new MigLayout("", "grow", "[grow][]"));
-    MyCellarLabel listProblemsLabel = new MyCellarLabel("ListVin.ListProblems", LabelProperty.PLURAL);
+    MyCellarLabel listProblemsLabel = new MyCellarLabel(LISTVIN_LISTPROBLEMS);
     listProblemsLabel.setForeground(Color.red);
     listProblemsLabel.setFont(new Font("Dialog", Font.BOLD, 13));
-    listProblemsLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    listProblemsLabel.setHorizontalAlignment(CENTER);
 
     JScrollPane scrollpane = new JScrollPane(table);
-    scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollpane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
     add(scrollpane, "grow,wrap,width min(100,200)");
     add(selectItemsLabel, "width min(100,200)");
     setVisible(true);
   }
 
-  void updateList(List<MyCellarObject> remove) {
-    for (MyCellarObject b : remove) {
+  void updateList(List<IMyCellarObject> remove) {
+    for (IMyCellarObject b : remove) {
       listValues.removeObject(b);
     }
   }

@@ -2,15 +2,22 @@ package mycellar.search;
 
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
+import mycellar.core.IMyCellarObject;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -19,20 +26,24 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 25/05/22
+ * @version 4.0
+ * @since 21/03/25
  */
 class SearchTableModel extends AbstractTableModel {
 
+  @Serial
+  private static final long serialVersionUID = -3899189654755476591L;
   static final int ETAT = 0;
   static final int SHOW = 7;
-  private static final long serialVersionUID = -3899189654755476591L;
   private final List<String> columnNames = List.of("",
-      getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), "");
+      getLabel(MAIN_ITEM),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_STORAGE),
+      getLabel(MYCELLARFIELDS_NUMPLACE),
+      getLabel(MYCELLARFIELDS_LINE), getLabel(MYCELLARFIELDS_COLUMN), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
-  private final List<MyCellarObject> datas = new ArrayList<>();
+  private final List<IMyCellarObject> datas = new ArrayList<>();
 
   @Override
   public int getRowCount() {
@@ -57,30 +68,23 @@ class SearchTableModel extends AbstractTableModel {
       Program.Debug("SearchTableModel: Error listBoolean index " + row + " > " + datas.size());
       return "";
     }
-    final MyCellarObject myCellarObject = datas.get(row);
-    switch (column) {
-      case ETAT:
-        return listBoolean.get(row);
-      case 1:
-        return MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
-      case 2:
-        return myCellarObject.getAnnee();
-      case 3:
+    final IMyCellarObject myCellarObject = datas.get(row);
+    return switch (column) {
+      case ETAT -> listBoolean.get(row);
+      case 1 -> MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
+      case 2 -> myCellarObject.getAnnee();
+      case 3 -> {
         if (myCellarObject.isInTemporaryStock()) {
-          return getLabel("Bouteille.TemporaryPlace");
+          yield getLabel(BOUTEILLE_TEMPORARYPLACE);
         }
-        return myCellarObject.getEmplacement();
-      case 4:
-        return Integer.toString(myCellarObject.getNumLieu());
-      case 5:
-        return Integer.toString(myCellarObject.getLigne());
-      case 6:
-        return Integer.toString(myCellarObject.getColonne());
-      case SHOW:
-        return Boolean.FALSE;
-      default:
-        return "";
-    }
+        yield myCellarObject.getEmplacement();
+      }
+      case 4 -> Integer.toString(myCellarObject.getNumLieu());
+      case 5 -> Integer.toString(myCellarObject.getLigne());
+      case 6 -> Integer.toString(myCellarObject.getColonne());
+      case SHOW -> Boolean.FALSE;
+      default -> "";
+    };
   }
 
   @Override
@@ -105,7 +109,7 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  void addObjects(List<MyCellarObject> myCellarObjects) {
+  void addObjects(List<IMyCellarObject> myCellarObjects) {
     if (myCellarObjects != null) {
       myCellarObjects.forEach(myCellarObject -> {
         datas.add(myCellarObject);
@@ -121,7 +125,7 @@ class SearchTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  void removeObject(MyCellarObject myCellarObject) {
+  void removeObject(IMyCellarObject myCellarObject) {
     int index = datas.indexOf(myCellarObject);
     if (index != -1) {
       datas.remove(myCellarObject);
@@ -130,16 +134,16 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  List<MyCellarObject> getDatas() {
+  List<IMyCellarObject> getDatas() {
     return datas;
   }
 
-  boolean doesNotContain(MyCellarObject b) {
+  boolean doesNotContain(IMyCellarObject b) {
     return !datas.contains(b);
   }
 
-  List<MyCellarObject> getSelectedObjects() {
-    List<MyCellarObject> selectedObjects = new ArrayList<>();
+  List<IMyCellarObject> getSelectedObjects() {
+    List<IMyCellarObject> selectedObjects = new ArrayList<>();
     for (int i = 0; i < listBoolean.size(); i++) {
       if (listBoolean.get(i)) {
         selectedObjects.add(datas.get(i));

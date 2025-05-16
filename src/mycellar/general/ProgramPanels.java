@@ -14,14 +14,13 @@ import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JButtonTabComponent;
 import mycellar.frame.MainFrame;
 import mycellar.importer.Importer;
@@ -49,9 +48,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.ProgramConstants.THREE_DOTS;
 import static mycellar.ScreenType.ADDVIN;
@@ -86,8 +85,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.0
- * @since 26/12/23
+ * @version 2.4
+ * @since 21/03/25
  */
 public class ProgramPanels {
 
@@ -367,31 +366,31 @@ public class ProgramPanels {
 
   public static void deleteChooseCellPanel(IPlacePosition iPlace) {
     CellarOrganizerPanel cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL0);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL0);
       UPDATABLE_PANELS.remove(CHOOSE_CELL0);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL1);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL1);
       UPDATABLE_PANELS.remove(CHOOSE_CELL1);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL2);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL2);
       UPDATABLE_PANELS.remove(CHOOSE_CELL2);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL3);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL3);
       UPDATABLE_PANELS.remove(CHOOSE_CELL3);
       return;
     }
     cellarOrganizerPanel = (CellarOrganizerPanel) OPENED_PANELS.get(CHOOSE_CELL4);
-    if (cellarOrganizerPanel != null && cellarOrganizerPanel.getIPlace() == iPlace) {
+    if (cellarOrganizerPanel != null && Objects.equals(cellarOrganizerPanel.getIPlace(), iPlace)) {
       OPENED_PANELS.remove(CHOOSE_CELL4);
       UPDATABLE_PANELS.remove(CHOOSE_CELL4);
     }
@@ -411,7 +410,7 @@ public class ProgramPanels {
     return object;
   }
 
-  public static void showBottle(MyCellarObject myCellarObject, boolean edit) {
+  public static void showBottle(IMyCellarObject myCellarObject, boolean edit) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -427,14 +426,14 @@ public class ProgramPanels {
         UPDATABLE_MYCELLAROBJECTS.put(myCellarObject.getId(), manage);
         String bottleName = myCellarObject.getNom();
         if (bottleName.length() > 30) {
-          bottleName = bottleName.substring(0, 30) + SPACE + THREE_DOTS;
+          bottleName = String.format("%s%s",bottleName.substring(0, 30),THREE_DOTS);
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
       }
     }.execute();
   }
 
-  public static void removeObjectTab(MyCellarObject myCellarObject) {
+  public static void removeObjectTab(IMyCellarObject myCellarObject) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -481,7 +480,7 @@ public class ProgramPanels {
     }.execute();
   }
 
-  public static void selectOrAddTab(Component component, String labelId, Icon icon) {
+  public static void selectOrAddTab(Component component, IResource key, Icon icon) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
@@ -491,7 +490,7 @@ public class ProgramPanels {
             iPanelModifyable.setPaneIndex(TABBED_PANE.getSelectedIndex());
           }
         } catch (IllegalArgumentException e) {
-          addTab(getLabel(labelId, LabelProperty.SINGLE), icon, component);
+          addTab(getLabel(key), icon, component);
         }
       }
     }.execute();
@@ -658,7 +657,7 @@ public class ProgramPanels {
     private String modifiedLabel;
     private boolean modified;
 
-    public TabLabel(int index, String label) {
+    private TabLabel(int index, String label) {
       this.index = index;
       this.label = label;
       modifiedLabel = label + STAR;

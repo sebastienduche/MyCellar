@@ -6,8 +6,6 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
-import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -16,7 +14,6 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +22,23 @@ import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.ERROR_ERRORADDINGBOTTLE;
+import static mycellar.general.ResourceKey.ERRORSHOWVALUES_ERROR;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_CHOOSECELL;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_KO;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
+import static mycellar.general.ResourceKey.SHOWFILE_ADDED;
+import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
 
 
 /**
@@ -34,11 +48,11 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 11/09/24
+ * @version 4.0
+ * @since 25/03/25
  */
 
-public class ErrorShowValues extends TableShowValues {
+class ErrorShowValues extends TableShowValues {
 
   enum Column {
     STATE(0),
@@ -63,14 +77,22 @@ public class ErrorShowValues extends TableShowValues {
       return index;
     }
 
-    static Column fromIndex(int i) {
+    private static Column fromIndex(int i) {
       return Arrays.stream(values()).filter(column -> column.getIndex() == i).findFirst().orElse(null);
     }
   }
 
   private static final int NBCOL = 11;
-  private final String[] columnNames = {"", getLabel("ErrorShowValues.Error"), getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("ShowFile.Status"), ""};
+  private final String[] columnNames = new String[]{"",
+      getLabel(ERRORSHOWVALUES_ERROR),
+      getLabel(MAIN_ITEM),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_CAPACITYORSUPPORT),
+      getLabel(MAIN_STORAGE),
+      getLabel(MYCELLARFIELDS_NUMPLACE),
+      getLabel(MYCELLARFIELDS_LINE),
+      getLabel(MYCELLARFIELDS_COLUMN),
+      getLabel(SHOWFILE_STATUS), ""};
 
   private Boolean[] status = null;
   private Boolean[] editable = null;
@@ -109,9 +131,9 @@ public class ErrorShowValues extends TableShowValues {
       case COLUMN -> Integer.toString(b.getColonne());
       case STATUS -> {
         if (error.isStatus()) {
-          yield getLabel("ShowFile.Added");
+          yield getLabel(SHOWFILE_ADDED);
         }
-        yield status[row] ? getLabel("Main.OK") : getLabel("Main.KO");
+        yield status[row] ? getLabel(MAIN_OK) : getLabel(MAIN_KO);
       }
       case BUTTON -> true;
       case ERROR -> convertStringFromHTMLString(error.getErrorMessage());
@@ -138,7 +160,7 @@ public class ErrorShowValues extends TableShowValues {
   @Override
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
-    MyCellarObject b = error.getMyCellarObject();
+    IMyCellarObject b = error.getMyCellarObject();
     AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
@@ -156,11 +178,11 @@ public class ErrorShowValues extends TableShowValues {
             fireTableRowsUpdated(row, row);
           } else {
             status[row] = Boolean.FALSE;
-            Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+            Erreur.showSimpleErreur(getError(ERROR_ERRORADDINGBOTTLE));
           }
         } else {
           status[row] = Boolean.FALSE;
-          Erreur.showSimpleErreur(getError("ShowFile.errorAddingBottle", LabelProperty.THE_SINGLE));
+          Erreur.showSimpleErreur(getError(ERROR_ERRORADDINGBOTTLE));
         }
         break;
       case NAME:
@@ -171,7 +193,7 @@ public class ErrorShowValues extends TableShowValues {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
+          Erreur.showSimpleErreur(getError(ERROR_ENTERVALIDYEAR));
         } else {
           b.setAnnee(String.valueOf(value));
         }
@@ -223,7 +245,7 @@ public class ErrorShowValues extends TableShowValues {
 
         if (!bError && (column.equals(Column.NUM_PLACE) || column.equals(Column.LINE) || column.equals(Column.COLUMN))) {
           if (!b.getAbstractPlace().isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
+            Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUEABOVEZERO));
             bError = true;
           }
         }
@@ -233,7 +255,7 @@ public class ErrorShowValues extends TableShowValues {
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-            MyCellarObject searchObject = null;
+            IMyCellarObject searchObject = null;
             if (abstractPlace.isComplexPlace()) {
               searchObject = ((ComplexPlace) abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
@@ -243,7 +265,7 @@ public class ErrorShowValues extends TableShowValues {
             }
             if (searchObject != null) {
               status[row] = Boolean.FALSE;
-              Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
+              Erreur.showSimpleErreur(getError(ERROR_ALREADYINSTORAGE, convertStringFromHTMLString(searchObject.getNom()), b.getAnnee()));
             } else {
               if (column.equals(Column.PLACE)) {
                 b.setEmplacement(empl);
@@ -268,7 +290,7 @@ public class ErrorShowValues extends TableShowValues {
             if (MyCellarUtils.isAnyOf(column, List.of(Column.PLACE, Column.NUM_PLACE, Column.LINE, Column.COLUMN))) {
               final PanelPlacePosition panelPlace = new PanelPlacePosition(abstractPlace, true, false, true, true, false, true, false);
               JOptionPane.showMessageDialog(MainFrame.getInstance(), panelPlace,
-                  getLabel("Main.ChooseCell"),
+                  getLabel(MAIN_CHOOSECELL),
                   JOptionPane.PLAIN_MESSAGE);
               PlacePosition place = panelPlace.getSelectedPlacePosition();
               if (place.hasPlace()) {
@@ -292,7 +314,7 @@ public class ErrorShowValues extends TableShowValues {
     }
   }
 
-  public void setErrors(List<MyCellarError> myCellarErrors) {
+  void setErrors(List<MyCellarError> myCellarErrors) {
     values = new Boolean[myCellarErrors.size()];
     status = new Boolean[myCellarErrors.size()];
     editable = new Boolean[myCellarErrors.size()];
@@ -306,7 +328,7 @@ public class ErrorShowValues extends TableShowValues {
   }
 
   @Override
-  public MyCellarObject getMyCellarObject(int i) {
+  public IMyCellarObject getMyCellarObject(int i) {
     return errors.get(i).getMyCellarObject();
   }
 

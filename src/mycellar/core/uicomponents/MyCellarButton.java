@@ -2,8 +2,8 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.IResource;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -18,8 +18,8 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.1
- * @since 05/05/22
+ * @version 1.5
+ * @since 18/03/25
  */
 
 public final class MyCellarButton extends JButton implements IMyCellarComponent {
@@ -31,39 +31,24 @@ public final class MyCellarButton extends JButton implements IMyCellarComponent 
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(String code) {
+  public MyCellarButton(IResource code) {
     labelKey = new LabelKey(code);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(String code, Action a) {
+  public MyCellarButton(IResource key, Action a) {
     super(a);
-    labelKey = new LabelKey(code);
+    labelKey = new LabelKey(key);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarButton(String code, LabelProperty labelProperty, Action a) {
-    super(a);
-    labelKey = new LabelKey(code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarButton(String code, Icon icon) {
+  public MyCellarButton(IResource key, Icon icon) {
     super(icon);
-    labelKey = new LabelKey(code);
+    labelKey = new LabelKey(key);
     updateText();
     setFont(FONT_PANEL);
   }

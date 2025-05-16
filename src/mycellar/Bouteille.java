@@ -10,7 +10,6 @@ package mycellar;
 
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.VignobleJaxb;
@@ -28,16 +27,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static mycellar.MyCellarUtils.assertObjectType;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
+import static mycellar.core.IMyCellarObject.assertObjectType;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -46,8 +45,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.2
- * @since 30/12/22
+ * @version 8.7
+ * @since 25/03/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -97,7 +96,7 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
     "lastModified"
 })
 @XmlRootElement(name = "Bouteille")
-public class Bouteille extends MyCellarObject implements Serializable {
+public class Bouteille implements IMyCellarObject, Serializable {
 
   public static final String NON_VINTAGE = "NV";
   public static final int NON_VINTAGE_INT = 9999;
@@ -449,7 +448,8 @@ public class Bouteille extends MyCellarObject implements Serializable {
   }
 
   @Override
-  public void update(final MyCellarObject myCellarObject) {
+  public void update(final IMyCellarObject myCellarObject) {
+    assertObjectType(myCellarObject, Bouteille.class);
     Bouteille b = (Bouteille) myCellarObject;
     setNom(b.getNom());
     setAnnee(b.getAnnee());
@@ -472,14 +472,12 @@ public class Bouteille extends MyCellarObject implements Serializable {
     setLastModified(LocalDateTime.now());
   }
 
-  @Override
-  public Bouteille cast(MyCellarObject myCellarObject) {
+  public static Bouteille cast(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return (Bouteille) myCellarObject;
   }
 
-  @Override
-  public Bouteille castCopy(MyCellarObject myCellarObject) {
+  public static Bouteille castCopy(IMyCellarObject myCellarObject) {
     assertObjectType(myCellarObject, Bouteille.class);
     return new Bouteille((Bouteille) myCellarObject);
   }
@@ -602,7 +600,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
         try {
           Double.valueOf(value);
         } catch (NumberFormatException e) {
-          throw new MyCellarException(MessageFormat.format(getError("Import.errorValue"), value, field));
+          throw new MyCellarException(getError(ERROR_ERRORVALUE, value, field));
         }
         break;
       default:
@@ -614,7 +612,7 @@ public class Bouteille extends MyCellarObject implements Serializable {
   public boolean updateID() {
     if (id != -1) {
       final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
-      if (bouteilles.size() == 1 && bouteilles.get(0).equals(this)) {
+      if (bouteilles.size() == 1 && bouteilles.getFirst().equals(this)) {
         return false;
       }
     }

@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.6
- * @since 19/05/21
+ * @version 2.7
+ * @since 14/03/25
  */
 
 @XmlRootElement(name = "vignobles")
@@ -133,7 +133,7 @@ public class VignobleListJaxb {
     id = IdGenerator.generateID();
   }
 
-  public void checkAvaibility() {
+  public void checkAvailability() {
     if (countryVignobleJaxbList == null) {
       countryVignobleJaxbList = new ArrayList<>();
     }

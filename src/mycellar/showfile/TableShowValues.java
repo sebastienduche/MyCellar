@@ -3,9 +3,8 @@ package mycellar.showfile;
 import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
+import mycellar.actions.OpenAddVinAction;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -15,14 +14,31 @@ import mycellar.placesmanagement.places.SimplePlace;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
+import static java.util.List.of;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.MyCellarUtils.parseIntOrError;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_ALREADYINSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_CANTMODIFYSTORAGE;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUEABOVEZERO;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERVALIDYEAR;
+import static mycellar.general.ResourceErrorKey.ERROR_ERROR;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTENOUGHSPACESTORAGE;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_COMMENT;
+import static mycellar.general.ResourceKey.MAIN_ITEM;
+import static mycellar.general.ResourceKey.MAIN_MATURITY;
+import static mycellar.general.ResourceKey.MAIN_PRICE;
+import static mycellar.general.ResourceKey.MAIN_RATING;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
 
 
 /**
@@ -32,8 +48,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.4
- * @since 11/09/24
+ * @version 6.8
+ * @since 03/04/25
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -50,13 +66,22 @@ class TableShowValues extends AbstractTableModel {
   private static final int COMMENT = 9;
   private static final int MATURITY = 10;
   private static final int PARKER = 11;
-  private final String[] columnNames = {"", getLabel("Main.Item", LabelProperty.SINGLE.withCapital()), getLabel("Main.Year"), getLabel("Main.CapacityOrSupport"), getLabel("Main.Storage"),
-      getLabel("MyCellarFields.NumPlace"), getLabel("MyCellarFields.Line"), getLabel("MyCellarFields.Column"), getLabel("Main.Price"), getLabel("Main.Comment"),
-      getLabel("Main.Maturity"), getLabel("Main.Rating")};
+  private final String[] columnNames = {"",
+      getLabel(MAIN_ITEM),
+      getLabel(MAIN_YEAR), getLabel(MAIN_CAPACITYORSUPPORT),
+      getLabel(MAIN_STORAGE),
+      getLabel(MYCELLARFIELDS_NUMPLACE),
+      getLabel(MYCELLARFIELDS_LINE),
+      getLabel(MYCELLARFIELDS_COLUMN),
+      getLabel(MAIN_PRICE),
+      getLabel(MAIN_COMMENT),
+
+      getLabel(MAIN_MATURITY),
+      getLabel(MAIN_RATING)};
 
   protected Boolean[] values = null;
 
-  List<? extends MyCellarObject> myCellarObjects = new LinkedList<>();
+  List<? extends IMyCellarObject> myCellarObjects = new LinkedList<>();
 
   @Override
   public int getRowCount() {
@@ -127,7 +152,7 @@ class TableShowValues extends AbstractTableModel {
         break;
       case YEAR:
         if (Program.hasYearControl() && Bouteille.isInvalidYear((String) value)) {
-          Erreur.showSimpleErreur(getError("Error.enterValidYear"));
+          Erreur.showSimpleErreur(getError(ERROR_ENTERVALIDYEAR));
         } else {
           b.setAnnee((String) value);
         }
@@ -176,7 +201,7 @@ class TableShowValues extends AbstractTableModel {
 
         if (!bError && (column == NUM_PLACE || column == LINE || column == COLUMN)) {
           if (!rangement.isSimplePlace() && nValueToCheck <= 0) {
-            Erreur.showSimpleErreur(getError("Error.enterNumericValueAboveZero"));
+            Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUEABOVEZERO));
             bError = true;
           }
         }
@@ -189,14 +214,14 @@ class TableShowValues extends AbstractTableModel {
               .withColumn(column1).build())) {
             boolean isPresent = false;
             if (rangement.isComplexPlace()) {
-              final IMyCellarObject bouteille = ((ComplexPlace)rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+              final IMyCellarObject bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)
                   .build()).orElse(null);
               if (bouteille != null) {
                 isPresent = true;
-                Erreur.showSimpleErreur(MessageFormat.format(getError("Error.alreadyInStorage"), convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
+                Erreur.showSimpleErreur(getError(ERROR_ALREADYINSTORAGE, convertStringFromHTMLString(bouteille.getNom()), bouteille.getAnnee()));
               }
             }
             if (!isPresent) {
@@ -221,12 +246,10 @@ class TableShowValues extends AbstractTableModel {
             }
           } else {
             if (rangement.isSimplePlace()) {
-              Erreur.showSimpleErreur(getError("Error.NotEnoughSpaceStorage"));
+              Erreur.showSimpleErreur(getError(ERROR_NOTENOUGHSPACESTORAGE));
             } else {
-              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError("Error.cantModifyStorage", LabelProperty.THE_SINGLE), getError("Error.error"), JOptionPane.YES_NO_OPTION)) {
-                LinkedList<MyCellarObject> list = new LinkedList<>();
-                list.add(b);
-                Program.modifyBottles(list);
+              if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(MainFrame.getInstance(), getError(ERROR_CANTMODIFYSTORAGE), getError(ERROR_ERROR), JOptionPane.YES_NO_OPTION)) {
+                OpenAddVinAction.open(of(b));
               }
             }
           }
@@ -237,7 +260,7 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setMyCellarObjects(List<? extends MyCellarObject> list) {
+  public void setMyCellarObjects(List<? extends IMyCellarObject> list) {
     if (list == null) {
       return;
     }
@@ -249,7 +272,7 @@ class TableShowValues extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  public MyCellarObject getMyCellarObject(int i) {
+  public IMyCellarObject getMyCellarObject(int i) {
     return myCellarObjects.get(i);
   }
 

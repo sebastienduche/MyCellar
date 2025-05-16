@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.MyCellarObject;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.math.BigDecimal;
@@ -12,6 +11,7 @@ import static mycellar.Filtre.EXTENSION_SINFO;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
+import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -20,8 +20,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getError;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 13/01/24
+ * @version 0.8
+ * @since 21/03/25
  */
 public final class MyCellarUtils {
 
@@ -37,12 +37,6 @@ public final class MyCellarUtils {
     return value == null ? defaultValue : value;
   }
 
-  public static void assertObjectType(MyCellarObject myCellarObject, Class<?> aClass) {
-    if (!aClass.isInstance(myCellarObject)) {
-      throw new ClassCastException("Invalid class cast: " + aClass);
-    }
-  }
-
   public static int safeParseInt(String value, int defaultValue) {
     try {
       return Integer.parseInt(value);
@@ -55,7 +49,7 @@ public final class MyCellarUtils {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      Erreur.showSimpleErreur(getError("Error.enterNumericValue"));
+      Erreur.showSimpleErreur(getError(ERROR_ENTERNUMERICVALUE));
       return null;
     }
   }

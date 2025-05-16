@@ -10,7 +10,6 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.tablecomponents.ButtonCellEditor;
 import mycellar.core.tablecomponents.ButtonCellRenderer;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -28,6 +27,11 @@ import javax.swing.table.TableColumnModel;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.CAPACITYPANEL_DEFAULT;
+import static mycellar.general.ResourceKey.CAPACITYPANEL_MODIFYINFO;
+import static mycellar.general.ResourceKey.MAIN_ADD;
+import static mycellar.general.ResourceKey.MAIN_ENTERVALUE;
+import static mycellar.general.ResourceKey.MAIN_NEWVALUE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -36,8 +40,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 25/12/23
+ * @version 2.3
+ * @since 03/04/25
  */
 
 public final class CapacityPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -58,9 +62,9 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
     tc.setCellEditor(new ButtonCellEditor());
     tc.setMinWidth(25);
     tc.setMaxWidth(25);
-    final MyCellarLabel labelDefault = new MyCellarLabel("CapacityPanel.Default");
-    final MyCellarButton add = new MyCellarButton("Main.Add", MyCellarImage.ADD);
-    final MyCellarLabel info = new MyCellarLabel("CapacityPanel.ModifyInfo", LabelProperty.THE_PLURAL.withCapital());
+    final MyCellarLabel labelDefault = new MyCellarLabel(CAPACITYPANEL_DEFAULT);
+    final MyCellarButton add = new MyCellarButton(MAIN_ADD, MyCellarImage.ADD);
+    final MyCellarLabel info = new MyCellarLabel(CAPACITYPANEL_MODIFYINFO);
     setLayout(new MigLayout("", "grow", "30px[][][grow]20px[]30px[]"));
     add(info, "wrap");
     add(add, "wrap");
@@ -72,11 +76,11 @@ public final class CapacityPanel extends JPanel implements ITabListener, IMyCell
   }
 
   private void add() {
-    String s = toCleanString(JOptionPane.showInputDialog(MainFrame.getInstance(), getLabel("Main.NewValue"), getLabel("Main.EnterValue"), JOptionPane.QUESTION_MESSAGE));
-    if (!s.isEmpty()) {
+    String capacity = toCleanString(JOptionPane.showInputDialog(MainFrame.getInstance(), getLabel(MAIN_NEWVALUE), getLabel(MAIN_ENTERVALUE), JOptionPane.QUESTION_MESSAGE));
+    if (!capacity.isEmpty()) {
       Program.setModified();
-      model.addValue(s);
-      defaultComboBox.addItem(s);
+      model.addValue(capacity);
+      defaultComboBox.addItem(capacity);
     }
     ProgramPanels.updateAllPanelsForUpdatingCapacity();
   }

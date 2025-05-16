@@ -20,13 +20,23 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.MessageFormat;
+import java.io.Serial;
 import java.util.List;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.isVK_ENTER;
 import static mycellar.ProgramConstants.isVK_O;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_CANCEL;
+import static mycellar.general.ResourceKey.MAIN_EXPORTED;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.OPTIONS_BOLD;
+import static mycellar.general.ResourceKey.OPTIONS_BORDER;
+import static mycellar.general.ResourceKey.OPTIONS_TABLECOLUMNS;
+import static mycellar.general.ResourceKey.OPTIONS_TEXTSIZE;
+import static mycellar.general.ResourceKey.PDFOPTIONS_ERRORTOTALCOLUMNWIDTH;
+import static mycellar.general.ResourceKey.PDFOPTIONS_PDFTITLE;
+import static mycellar.general.ResourceKey.PDFOPTIONS_TITLE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -35,14 +45,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 24/05/22
+ * @version 3.5
+ * @since 13/03/25
  */
 public final class PDFOptions extends JDialog {
+  @Serial
   private static final long serialVersionUID = 110805;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 99);
-  private final MyCellarCheckBox boldCheck = new MyCellarCheckBox("Options.Bold");
-  private final MyCellarCheckBox borderCheck = new MyCellarCheckBox("Options.Border");
+  private final MyCellarCheckBox boldCheck = new MyCellarCheckBox(OPTIONS_BOLD);
+  private final MyCellarCheckBox borderCheck = new MyCellarCheckBox(OPTIONS_BORDER);
   private final MyCellarCheckBox[] export;
   private final MyCellarSpinner[] col_size;
   private final JTextField pdf_title = new JTextField();
@@ -51,7 +62,7 @@ public final class PDFOptions extends JDialog {
 
   public PDFOptions() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("PDFOptions.Title"));
+    setTitle(getLabel(PDFOPTIONS_TITLE));
     setModal(true);
     addKeyListener(new KeyAdapter() {
       @Override
@@ -86,7 +97,7 @@ public final class PDFOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox("Main.Exported");
+      export[i] = new MyCellarCheckBox(MAIN_EXPORTED);
       export[i].setSelected(1 == Program.getCaveConfigInt(MyCellarSettings.SIZE_COL + i + "EXPORT", 0));
       col_size[i] = new MyCellarSpinner(1, 99);
       colonnes[i] = new MyCellarSimpleLabel(listColumns.get(i).toString());
@@ -96,19 +107,19 @@ public final class PDFOptions extends JDialog {
     JPanel jPanel2 = new JPanel();
     jPanel2.setLayout(new MigLayout("", "[grow][grow][grow]", ""));
     jPanel2.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton("Main.OK");
+    MyCellarButton valider = new MyCellarButton(MAIN_OK);
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
+    MyCellarButton annuler = new MyCellarButton(MAIN_CANCEL);
     annuler.addActionListener((e) -> dispose());
 
-    jPanel1.add(new MyCellarLabel("PDFOptions.PDFTitle"), "split 2");
+    jPanel1.add(new MyCellarLabel(PDFOPTIONS_PDFTITLE), "split 2");
     jPanel1.add(pdf_title, "grow, wrap");
-    jPanel1.add(new MyCellarLabel("Options.TextSize"), "split 4");
+    jPanel1.add(new MyCellarLabel(OPTIONS_TEXTSIZE), "split 4");
     jPanel1.add(titleSize);
     jPanel1.add(new MyCellarSimpleLabel("pt"));
     jPanel1.add(boldCheck, "grow, align right");
     add(jPanel1, "grow, wrap");
-    jPanel2.add(new MyCellarLabel("Options.TextSize"), "split 4, span 3");
+    jPanel2.add(new MyCellarLabel(OPTIONS_TEXTSIZE), "split 4, span 3");
     jPanel2.add(textSize);
     jPanel2.add(new MyCellarSimpleLabel("pt"));
     jPanel2.add(borderCheck, "push, align right, gapbottom 15px");
@@ -121,7 +132,7 @@ public final class PDFOptions extends JDialog {
     }
 
     JScrollPane jScrollPane = new JScrollPane(jPanel2);
-    jScrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
+    jScrollPane.setBorder(BorderFactory.createTitledBorder(getLabel(OPTIONS_TABLECOLUMNS)));
     add(jScrollPane, "grow, wrap");
     add(valider, "gaptop 15px, split 2, center");
     add(annuler);
@@ -151,7 +162,7 @@ public final class PDFOptions extends JDialog {
       }
       dispose();
       if (col_size_max > 19) {
-        Erreur.showInformationMessage(MessageFormat.format(getLabel("PDFOptions.ErrorTotalColumnWidth"), col_size_max));
+        Erreur.showInformationMessage(getLabel(PDFOPTIONS_ERRORTOTALCOLUMNWIDTH, col_size_max));
       }
     } catch (NumberFormatException e1) {
       Program.Debug("PDFOptions: ERROR: " + e1.getMessage());

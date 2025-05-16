@@ -12,7 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
+import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_COPY;
+import static mycellar.general.ResourceKey.MAIN_CUT;
+import static mycellar.general.ResourceKey.MAIN_PASTE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -21,20 +24,20 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabelCode;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 26/12/23
+ * @version 0.8
+ * @since 14/03/25
  */
 public class PopupListener extends MouseAdapter {
 
   private final JPopupMenu popup = new JPopupMenu();
-  private final JMenuItem cut = new JMenuItem(getLabelCode("Main.Cut"), MyCellarImage.CUT);
-  private final JMenuItem copy = new JMenuItem(getLabelCode("Main.Copy"), MyCellarImage.COPY);
+  private final JMenuItem cut = new JMenuItem(getLabel(MAIN_CUT), MyCellarImage.CUT);
+  private final JMenuItem copy = new JMenuItem(getLabel(MAIN_COPY), MyCellarImage.COPY);
   private JComponent textField;
 
   public PopupListener() {
     popup.add(cut);
     popup.add(copy);
-    JMenuItem paste = new JMenuItem(getLabelCode("Main.Paste"), MyCellarImage.PASTE);
+    JMenuItem paste = new JMenuItem(getLabel(MAIN_PASTE), MyCellarImage.PASTE);
     popup.add(paste);
     cut.addActionListener(this::cut_actionPerformed);
     copy.addActionListener(this::copy_actionPerformed);

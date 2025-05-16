@@ -1,13 +1,17 @@
 package mycellar.core;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.BOTTLESSTATUS_CREATED;
+import static mycellar.general.ResourceKey.BOTTLESSTATUS_MODIFIED;
+import static mycellar.general.ResourceKey.BOTTLESSTATUS_TOCHECK;
+import static mycellar.general.ResourceKey.BOTTLESSTATUS_VERIFIED;
 
 public enum BottlesStatus {
   NONE(""),
-  CREATED(getLabel("BottlesStatus.Created")),
-  MODIFIED(getLabel("BottlesStatus.Modified")),
-  VERIFIED(getLabel("BottlesStatus.Verified")),
-  TOCHECK(getLabel("BottlesStatus.ToCheck"));
+  CREATED(getLabel(BOTTLESSTATUS_CREATED)),
+  MODIFIED(getLabel(BOTTLESSTATUS_MODIFIED)),
+  VERIFIED(getLabel(BOTTLESSTATUS_VERIFIED)),
+  TOCHECK(getLabel(BOTTLESSTATUS_TOCHECK));
 
   private final String label;
 

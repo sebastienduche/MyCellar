@@ -2,12 +2,11 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.IResource;
+import mycellar.general.ResourceKey;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -19,56 +18,47 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 06/05/22
+ * @version 1.0
+ * @since 18/03/25
  */
 public abstract class MyCellarAction extends AbstractAction implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
-  private String descriptionLabelCode;
-  private LabelProperty descriptionLabelProperty;
+  private IResource resource;
 
   private boolean withText = true;
 
-  public MyCellarAction(String code, LabelProperty textLabelProperty) {
-    labelKey = new LabelKey(code, textLabelProperty);
+  public MyCellarAction(ResourceKey key) {
+    labelKey = new LabelKey(key);
+    resource = key;
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(String code, LabelProperty textLabelProperty, Icon icon) {
+  public MyCellarAction(ResourceKey key, Icon icon) {
     super("", icon);
-    labelKey = new LabelKey(code, textLabelProperty);
+    labelKey = new LabelKey(key);
+    resource = key;
     updateText();
     MyCellarLabelManagement.add(this);
   }
 
-  public MyCellarAction(String code, Icon icon) {
-    this(code, LabelProperty.SINGLE, icon);
-  }
-
-
-  public LabelKey getLabelKey() {
+  LabelKey getLabelKey() {
     return labelKey;
   }
 
   @Override
   public void setText(String text) {
-    putValue(Action.NAME, withText ? text : "");
-    putValue(Action.SHORT_DESCRIPTION, getLabel(LabelType.LABEL, descriptionLabelCode, descriptionLabelProperty, null));
+    putValue(NAME, withText ? text : "");
+    putValue(SHORT_DESCRIPTION, getLabel(resource));
   }
 
-  public void setDescriptionLabel(String labelCode) {
-    setDescriptionLabel(labelCode, null);
+  protected void setDescriptionLabel(ResourceKey key) {
+    resource = key;
   }
 
-  public void setDescriptionLabel(String labelCode, LabelProperty labelProperty) {
-    descriptionLabelCode = labelCode;
-    descriptionLabelProperty = labelProperty;
-  }
-
-  public void setWithText(boolean withText) {
+  protected void setWithText(boolean withText) {
     this.withText = withText;
     if (!withText) {
       setText("");

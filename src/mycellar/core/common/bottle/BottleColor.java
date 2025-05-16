@@ -1,18 +1,24 @@
 package mycellar.core.common.bottle;
 
+import mycellar.general.ResourceKey;
+
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.BOTTLECOLOR_PINK;
+import static mycellar.general.ResourceKey.BOTTLECOLOR_RED;
+import static mycellar.general.ResourceKey.BOTTLECOLOR_WHITE;
+import static mycellar.general.ResourceKey.EMPTY;
 
 public enum BottleColor {
-  NONE(""),
-  RED("BottleColor.Red"),
-  PINK("BottleColor.Pink"),
-  WHITE("BottleColor.White");
+  NONE(EMPTY),
+  RED(BOTTLECOLOR_RED),
+  PINK(BOTTLECOLOR_PINK),
+  WHITE(BOTTLECOLOR_WHITE);
 
-  private final String label;
+  private final ResourceKey resourceKey;
 
-  BottleColor(String label) {
-    this.label = label;
+  BottleColor(ResourceKey resourceKey) {
+    this.resourceKey = resourceKey;
   }
 
   public static BottleColor getColor(String value) {
@@ -22,11 +28,11 @@ public enum BottleColor {
     try {
       return valueOf(value);
     } catch (IllegalArgumentException e) {
-      if (value.equals(RED.label)) {
+      if (value.equals(RED.resourceKey.getKey())) {
         return RED;
-      } else if (value.equals(WHITE.label)) {
+      } else if (value.equals(WHITE.resourceKey.getKey())) {
         return WHITE;
-      } else if (value.equals(PINK.label)) {
+      } else if (value.equals(PINK.resourceKey.getKey())) {
         return PINK;
       }
     }
@@ -35,10 +41,10 @@ public enum BottleColor {
 
   @Override
   public String toString() {
-    if (isNullOrEmpty(label)) {
+    if (isNullOrEmpty(resourceKey.getKey())) {
       return "";
     }
-    return getLabel(label);
+    return getLabel(resourceKey);
   }
 
 }

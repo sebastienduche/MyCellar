@@ -4,8 +4,8 @@ package mycellar.showfile;
 import mycellar.ITabListener;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.uicomponents.MyCellarButton;
 import net.miginfocom.swing.MigLayout;
@@ -19,6 +19,10 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_COLUMNS;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.SHOWFILE_CLEARWORKSHEET;
+import static mycellar.general.ResourceKey.SHOWFILE_REMOVEFROMWORKSHEET;
 
 /**
  * Titre : Cave &agrave; vin
@@ -27,15 +31,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.7
- * @since 31/12/23
+ * @version 13.0
+ * @since 21/03/25
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
 
-  private final MyCellarButton manageColumnsButton = new MyCellarButton("Main.Columns", new ManageColumnsAction(true));
-  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton("ShowFile.RemoveFromWorksheet", new RemoveFromWorksheetAction());
-  private final MyCellarButton clearWorksheetButton = new MyCellarButton("ShowFile.ClearWorksheet", new ClearWorksheetAction());
+  private final MyCellarButton manageColumnsButton = new MyCellarButton(MAIN_COLUMNS, new ManageColumnsAction(true));
+  private final MyCellarButton removeFromWorksheetButton = new MyCellarButton(SHOWFILE_REMOVEFROMWORKSHEET, new RemoveFromWorksheetAction());
+  private final MyCellarButton clearWorksheetButton = new MyCellarButton(SHOWFILE_CLEARWORKSHEET, new ClearWorksheetAction());
 
   public WorksheetPanel() {
     super(true);
@@ -47,12 +51,12 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     init();
   }
 
-  public void addToWorksheet(List<MyCellarObject> list) {
-    final List<MyCellarObject> myCellarObjects = list
+  public void addToWorksheet(List<IMyCellarObject> list) {
+    final List<IMyCellarObject> myCellarObjects = list
         .stream()
         .filter(bouteille -> !workingBottles.contains(bouteille))
         .toList();
-    for (MyCellarObject myCellarObject : myCellarObjects) {
+    for (IMyCellarObject myCellarObject : myCellarObjects) {
       Program.getStorage().addToWorksheet(myCellarObject);
     }
     workingBottles.addAll(myCellarObjects);
@@ -69,7 +73,7 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     add(removeFromWorksheetButton, "align right");
     add(modifyButton, "align right");
 
-    deleteButton.setText(getLabel("Main.Delete"));
+    deleteButton.setText(getLabel(MAIN_DELETE));
     deleteButton.addActionListener(e -> delete());
     add(deleteButton, "align right, wrap");
 

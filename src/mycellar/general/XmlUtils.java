@@ -3,7 +3,6 @@ package mycellar.general;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.IMyCellarObject;
-import mycellar.core.text.LabelProperty;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
@@ -31,13 +30,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
+import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
 /**
  * Titre : Cave &agrave; vin
@@ -46,8 +46,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 07/03/25
+ * @version 4.6
+ * @since 18/03/25
  */
 
 public class XmlUtils {
@@ -264,28 +264,26 @@ public class XmlUtils {
         r.appendChild(name);
 
         if (rangement.isSimplePlace()) {
+          SimplePlace simplePlace = (SimplePlace) rangement;
           r.setAttribute(COLUMNS, "1");
           for (int i = 0; i < rangement.getPartCount(); i++) {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + ((SimplePlace) rangement).getPartNumberIncrement()));
+            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + simplePlace.getPartNumberIncrement()));
             partie.appendChild(name);
             Element caisse = doc.createElement(CAISSE);
             partie.appendChild(caisse);
             for (int j = 0; j < rangement.getCountCellUsed(i); j++) {
               Element vin = doc.createElement(VIN);
               caisse.appendChild(vin);
-              Element vin_name = doc.createElement(VIN_1);
-              vin.appendChild(vin_name);
+              Element cellText = doc.createElement(VIN_1);
+              vin.appendChild(cellText);
               if (preview) {
-                vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
+                cellText.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
               } else {
-                IMyCellarObject b = ((SimplePlace) rangement).getObjectAt(i, j);
-                if (b != null)
-                  vin_name.setTextContent(b.getNom());
-                else
-                  vin_name.setTextContent(DASH);
+                IMyCellarObject b = simplePlace.getObjectAt(i, j);
+                cellText.setTextContent(b != null ? b.getNom() : DASH);
               }
             }
           }
@@ -296,7 +294,7 @@ public class XmlUtils {
             Element partie = doc.createElement(PARTIE);
             r.appendChild(partie);
             name = doc.createElement(NOM_PARTIE);
-            name.setTextContent(MessageFormat.format(getLabel("Storage.ShelveNumber"), i + 1));
+            name.setTextContent(getLabel(STORAGE_SHELVENUMBER, i + 1));
             partie.appendChild(name);
             int lig = complexPlace.getLineCountAt(i);
             for (int j = 0; j < lig; j++) {
@@ -309,7 +307,7 @@ public class XmlUtils {
                 Element vin_name = doc.createElement(VIN_1);
                 vin.appendChild(vin_name);
                 if (preview) {
-                  vin_name.setTextContent(getLabel("MyXmlDom.ItemHere", LabelProperty.A_SINGLE.withCapital()));
+                  vin_name.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
                 } else {
                   complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                           .withNumPlace(i)

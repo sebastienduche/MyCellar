@@ -18,6 +18,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+
 /**
  * Titre : Cave &agrave; vin
  * Description : Votre description
@@ -25,8 +27,8 @@ import java.awt.event.MouseListener;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.4
- * @since 26/12/23
+ * @version 0.5
+ * @since 08/03/25
  */
 public abstract class PanelCloseButton extends JButton implements ActionListener {
 
@@ -51,7 +53,7 @@ public abstract class PanelCloseButton extends JButton implements ActionListener
   protected PanelCloseButton() {
     int size = 17;
     setPreferredSize(new Dimension(size, size));
-    setToolTipText(MyCellarLabelManagement.getLabel("Main.Delete"));
+    setToolTipText(MyCellarLabelManagement.getLabel(MAIN_DELETE));
     // Make the button looks the same for all Laf's
     setUI(new BasicButtonUI());
     // Make it transparent

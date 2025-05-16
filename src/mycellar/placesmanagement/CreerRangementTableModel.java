@@ -6,14 +6,16 @@ import mycellar.placesmanagement.places.Row;
 
 import javax.swing.table.AbstractTableModel;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.STORAGE_NUMBERCOLUMNS;
+import static mycellar.general.ResourceKey.STORAGE_NUMBERLINES;
+import static mycellar.general.ResourceKey.STORAGE_SHELVE;
+import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
 /**
  * Titre : Cave &agrave; vin
@@ -22,8 +24,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 07/03/25
+ * @version 1.7
+ * @since 19/03/25
  */
 
 class CreerRangementTableModel extends AbstractTableModel {
@@ -41,9 +43,9 @@ class CreerRangementTableModel extends AbstractTableModel {
   private boolean modified = false;
 
   CreerRangementTableModel() {
-    columns.add(new Column(NAME, getLabel("Storage.Shelve")));
-    columns.add(new Column(ROW, getLabel("Storage.NumberLines")));
-    columns.add(new Column(COLUMN, getLabel("Storage.NumberColumns")));
+    columns.add(new Column(NAME, getLabel(STORAGE_SHELVE)));
+    columns.add(new Column(ROW, getLabel(STORAGE_NUMBERLINES)));
+    columns.add(new Column(COLUMN, getLabel(STORAGE_NUMBERCOLUMNS)));
   }
 
   @Override
@@ -76,7 +78,7 @@ class CreerRangementTableModel extends AbstractTableModel {
         return "";
       }
       return switch (col) {
-        case NAME -> MessageFormat.format(getLabel("Storage.ShelveNumber"), p.getNumberAsDisplay());
+        case NAME -> getLabel(STORAGE_SHELVENUMBER, p.getNumberAsDisplay());
         case ROW -> p.rows().size();
         case COLUMN -> {
           if (!p.rows().isEmpty()) {
@@ -94,8 +96,7 @@ class CreerRangementTableModel extends AbstractTableModel {
         return "";
       }
       return switch (col) {
-        case NAME ->
-            MessageFormat.format(getLabel("Storage.ShelveNumber"), p.getNumberAsDisplay()) + SPACE + getLabel("Storage.NumberLines");
+        case NAME -> String.format("%s %s", getLabel(STORAGE_SHELVENUMBER, p.getNumberAsDisplay()), getLabel(STORAGE_NUMBERLINES));
         case ROW -> line;
         case COLUMN -> {
           if (p.getRowAt(line - 1) != null) {

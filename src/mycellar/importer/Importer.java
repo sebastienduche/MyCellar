@@ -8,20 +8,20 @@ import mycellar.ITabListener;
 import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
-import mycellar.MyOptions;
 import mycellar.Options;
 import mycellar.Program;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.exceptions.NoITunesFileException;
 import mycellar.core.storage.ListeBouteille;
-import mycellar.core.text.LabelProperty;
+import mycellar.core.text.LabelKey;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
 import mycellar.core.uicomponents.MyCellarComboBox;
@@ -30,6 +30,9 @@ import mycellar.core.uicomponents.MyCellarRadioButton;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.frame.MainFrame;
+import mycellar.myoptions.MyOptionKey;
+import mycellar.myoptions.MyOptionObjectType;
+import mycellar.myoptions.MyOptions;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
@@ -57,7 +60,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
@@ -74,10 +76,61 @@ import static mycellar.ProgramConstants.COLUMNS_SEPARATOR;
 import static mycellar.ProgramConstants.COMMA;
 import static mycellar.ProgramConstants.DOUBLE_DOT;
 import static mycellar.ProgramConstants.IMPORT_COMBO_COUNT;
-import static mycellar.ProgramConstants.KEY_TYPE;
 import static mycellar.ProgramConstants.SLASH;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_CANTSELECTFIELDTWICE;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
+import static mycellar.general.ResourceErrorKey.ERROR_DEFAULTSTORAGETOCREATE;
+import static mycellar.general.ResourceErrorKey.ERROR_DELIMITERNOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_ERRORSINTHEFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENAMESHOULDNTBEEMPTY;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_FORBIDDENCHARACTERS;
+import static mycellar.general.ResourceErrorKey.ERROR_IMPORTCHOOSEUNIQUECOLUMN;
+import static mycellar.general.ResourceErrorKey.ERROR_IMPORTSELECTFIELDS;
+import static mycellar.general.ResourceErrorKey.ERROR_NOCOLUMNSELECTEDFORNAME;
+import static mycellar.general.ResourceErrorKey.ERROR_NOFIELDSELECTED;
+import static mycellar.general.ResourceErrorKey.ERROR_NOSTORAGEINFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTAXMLFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTITUNESFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_REQUIRESTORAGENAME;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTANEXCELFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTCOLUMNFORBOTTLEIMPORT;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTFILEDELIMITER;
+import static mycellar.general.ResourceErrorKey.ERROR_SELECTXMLFILE;
+import static mycellar.general.ResourceErrorKey.ERROR_STORAGENAMEALREADYUSED;
+import static mycellar.general.ResourceErrorKey.ERROR_UNKNOWNCELLTYPE;
+import static mycellar.general.ResourceKey.CREATESTORAGE_TITLE;
+import static mycellar.general.ResourceKey.CSV_SEPARATORCOMMA;
+import static mycellar.general.ResourceKey.CSV_SEPARATORDOTCOMMA;
+import static mycellar.general.ResourceKey.CSV_SEPARATORDOUBLEDOT;
+import static mycellar.general.ResourceKey.CSV_SEPARATORSLASH;
+import static mycellar.general.ResourceKey.FILTER_XML;
+import static mycellar.general.ResourceKey.IMPORT;
+import static mycellar.general.ResourceKey.IMPORT_ACTION;
+import static mycellar.general.ResourceKey.IMPORT_CHOOSECOLUMNS;
+import static mycellar.general.ResourceKey.IMPORT_DEFAULTSTORAGENAME;
+import static mycellar.general.ResourceKey.IMPORT_DONE;
+import static mycellar.general.ResourceKey.IMPORT_ERROR;
+import static mycellar.general.ResourceKey.IMPORT_FILETYPE;
+import static mycellar.general.ResourceKey.IMPORT_FILLSTORAGENAME;
+import static mycellar.general.ResourceKey.IMPORT_INPROGRESS;
+import static mycellar.general.ResourceKey.IMPORT_ITUNES;
+import static mycellar.general.ResourceKey.IMPORT_PATH;
+import static mycellar.general.ResourceKey.IMPORT_SELECTSTORAGENAME;
+import static mycellar.general.ResourceKey.IMPORT_SEPARATOR;
+import static mycellar.general.ResourceKey.IMPORT_STORAGENAME;
+import static mycellar.general.ResourceKey.IMPORT_SUCCESSFUL;
+import static mycellar.general.ResourceKey.IMPORT_TITLE;
+import static mycellar.general.ResourceKey.IMPORT_TXTCSV;
+import static mycellar.general.ResourceKey.IMPORT_WITHTITLE;
+import static mycellar.general.ResourceKey.IMPORT_XLS;
+import static mycellar.general.ResourceKey.MAIN_BROWSE;
+import static mycellar.general.ResourceKey.MAIN_NEWVALUE;
+import static mycellar.general.ResourceKey.MAIN_OPENTHEFILE;
+import static mycellar.general.ResourceKey.OUVRIR;
 
 
 /**
@@ -87,36 +140,36 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 16.3
- * @since 13/01/24
+ * @version 17.0
+ * @since 03/04/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
-  private final MyCellarButton importe = new MyCellarButton("Import.Title");
-  private final MyCellarRadioButton type_txt = new MyCellarRadioButton("Import.TxtCsv", true);
-  private final MyCellarRadioButton type_xls = new MyCellarRadioButton("Import.Xls", false);
-  private final MyCellarRadioButton type_xml = new MyCellarRadioButton("Filter.Xml", false);
-  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton("Import.ITunes", false);
-  private final char importChar = getLabel("IMPORT").charAt(0);
-  private final char ouvrirChar = getLabel("OUVRIR").charAt(0);
+  private final MyCellarButton importe = new MyCellarButton(IMPORT_TITLE);
+  private final MyCellarRadioButton type_txt = new MyCellarRadioButton(IMPORT_TXTCSV, true);
+  private final MyCellarRadioButton type_xls = new MyCellarRadioButton(IMPORT_XLS, false);
+  private final MyCellarRadioButton type_xml = new MyCellarRadioButton(FILTER_XML, false);
+  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton(IMPORT_ITUNES, false);
+  private final char importChar = getLabel(IMPORT).charAt(0);
+  private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);
-  private final MyCellarCheckBox labelTitle = new MyCellarCheckBox("Import.WithTitle");
-  private final MyCellarLabel labelTitle2 = new MyCellarLabel("Import.ChooseColumns");
+  private final MyCellarCheckBox labelTitle = new MyCellarCheckBox(IMPORT_WITHTITLE);
+  private final MyCellarLabel labelTitle2 = new MyCellarLabel(IMPORT_CHOOSECOLUMNS);
   private final MyCellarSimpleLabel label_progression = new MyCellarSimpleLabel();
-  private final MyCellarLabel label2 = new MyCellarLabel("Import.Separator");
+  private final MyCellarLabel label2 = new MyCellarLabel(IMPORT_SEPARATOR);
   private final MyCellarComboBox<String> separatorCombo = new MyCellarComboBox<>();
   private final JTextField file = new JTextField();
 
 
   public Importer() {
     Debug("Constructor");
-    MyCellarButton openItButton = new MyCellarButton("Main.OpenTheFile");
-    openItButton.setToolTipText(getLabel("Main.OpenTheFile"));
+    MyCellarButton openItButton = new MyCellarButton(MAIN_OPENTHEFILE);
+    openItButton.setToolTipText(getLabel(MAIN_OPENTHEFILE));
     MyCellarButton browseButton = new MyCellarButton(OPEN);
-    browseButton.setToolTipText(getLabel("Main.Browse"));
+    browseButton.setToolTipText(getLabel(MAIN_BROWSE));
     importe.setMnemonic(importChar);
     openItButton.setMnemonic(ouvrirChar);
-    importe.setText(getLabel("Import.Action"));
+    importe.setText(getLabel(IMPORT_ACTION));
     importe.addActionListener(this::runImport);
     labelTitle.setHorizontalTextPosition(SwingConstants.LEFT);
     label_progression.setForeground(Color.red);
@@ -156,7 +209,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     if (Program.isMusicType()) {
       panelFileType.add(type_iTunes, "gapleft 15px");
     }
-    panelFileType.setBorder(BorderFactory.createTitledBorder(getLabel("Import.FileType")));
+    panelFileType.setBorder(BorderFactory.createTitledBorder(getLabel(IMPORT_FILETYPE)));
     panelType.add(panelFileType);
     JPanel panelSeparator = new JPanel();
     panelSeparator.setLayout(new MigLayout("", "", ""));
@@ -166,7 +219,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     add(panelType, "grow, wrap");
     JPanel panelFile = new JPanel();
     panelFile.setLayout(new MigLayout("", "[grow][][]", "[]"));
-    panelFile.add(new MyCellarLabel("Import.Path"), "wrap");
+    panelFile.add(new MyCellarLabel(IMPORT_PATH), "wrap");
     panelFile.add(file, "grow");
     panelFile.add(browseButton);
     panelFile.add(openItButton);
@@ -196,10 +249,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     add(label_progression, "grow, center, hidemode 3, wrap");
     add(importe, "center");
 
-    separatorCombo.addItem(getLabel("CSV.SeparatorDotComma"));
-    separatorCombo.addItem(getLabel("CSV.SeparatorDoubleDot"));
-    separatorCombo.addItem(getLabel("CSV.SeparatorSlash"));
-    separatorCombo.addItem(getLabel("CSV.SeparatorComma"));
+    separatorCombo.addItem(getLabel(CSV_SEPARATORDOTCOMMA));
+    separatorCombo.addItem(getLabel(CSV_SEPARATORDOUBLEDOT));
+    separatorCombo.addItem(getLabel(CSV_SEPARATORSLASH));
+    separatorCombo.addItem(getLabel(CSV_SEPARATORCOMMA));
 
     Debug("Constructor Done");
   }
@@ -209,7 +262,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   /**
-   * type_txt_itemStateChanged: Selection d'un type de fichier
+   * type_txt_itemStateChanged: Select a file type
    *
    * @param e ItemEvent
    */
@@ -256,7 +309,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       } else if (cell.getCellType() == CellType.STRING) {
         valueList.add(cell.getStringCellValue());
       } else {
-        throw new UnsupportedOperationException(MessageFormat.format(getError("Importer.unknownCellType"), cell.getCellType()));
+        throw new UnsupportedOperationException(getError(ERROR_UNKNOWNCELLTYPE, cell.getCellType()));
       }
     }
     return valueList;
@@ -281,7 +334,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       File nomFichier = boiteFichier.getSelectedFile();
       if (nomFichier == null) {
         setCursor(Cursor.getDefaultCursor());
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), ""));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, ""));
         Debug("ERROR: browseFile: File not found during Opening!");
         return;
       }
@@ -294,9 +347,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   /**
-   * openit_actionPerformed: Ouverture du fichier a importer
-   *
-   * @param e ActionEvent
+   * Open the file to import
    */
   private void openit_actionPerformed(ActionEvent e) {
     Debug("openit_actionPerforming...");
@@ -324,7 +375,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (filename.isBlank()) {
         Debug("ERROR: filename cannot be empty");
         resetLabelProgress();
-        Erreur.showSimpleErreur(getError("Error.fileNameShouldntBeEmpty"));
+        Erreur.showSimpleErreur(getError(ERROR_FILENAMESHOULDNTBEEMPTY));
         importe.setEnabled(true);
         return;
       }
@@ -354,7 +405,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (!f.exists()) {
         resetLabelProgress();
         Debug("ERROR: File not found: " + filename);
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, filename), getError(ERROR_CHECKFILEPATH));
         importe.setEnabled(true);
         return;
       }
@@ -363,7 +414,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         resetLabelProgress();
         Debug("ERROR: No field selected");
         // Please select fields
-        Erreur.showSimpleErreur(getError("Error025"), getError("Error026"));
+        Erreur.showSimpleErreur(ERROR_NOFIELDSELECTED, ERROR_IMPORTSELECTFIELDS);
         importe.setEnabled(true);
         return;
       }
@@ -372,7 +423,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_XLSX, Filtre.FILTRE_XLS, Filtre.FILTRE_ODS))) {
           resetLabelProgress();
           Debug("ERROR: Not a XLS File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error.notAnExcelFile"), filename), getError("Error.selectAnExcelFile"));
+          Erreur.showSimpleErreur(getError(ERROR_NOTANEXCELFILE, filename), getError(ERROR_SELECTANEXCELFILE));
           importe.setEnabled(true);
           return;
         }
@@ -380,7 +431,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, asList(Filtre.FILTRE_TXT, Filtre.FILTRE_CSV))) {
           resetLabelProgress();
           Debug("ERROR: Not a Text File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error023"), filename), getError("Error024"));
           importe.setEnabled(true);
           return;
         }
@@ -388,7 +438,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         if (MyCellarControl.hasInvalidExtension(filename, List.of(Filtre.FILTRE_XML))) {
           resetLabelProgress();
           Debug("ERROR: Not a XML File");
-          Erreur.showSimpleErreur(MessageFormat.format(getError("Error204"), filename), getError("Error205"));
+          Erreur.showSimpleErreur(getError(ERROR_NOTAXMLFILE, filename), getError(ERROR_SELECTXMLFILE));
           importe.setEnabled(true);
           return;
         }
@@ -414,9 +464,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (isMoreThanOne) {
         resetLabelProgress();
         Debug("ERROR: fields cannot be selected more than one time");
-        //"Un champ ne doit pas etre selectionne 2 fois.
-        //"Veuillez choisir un champ different pour chaque colonne.
-        Erreur.showSimpleErreur(getError("Error017"), getError("Error018"));
+        Erreur.showSimpleErreur(ERROR_CANTSELECTFIELDTWICE, ERROR_IMPORTCHOOSEUNIQUECOLUMN);
         importe.setEnabled(true);
         return;
       }
@@ -424,9 +472,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       if (mapFieldCount.get(MyCellarFields.NAME) == null) {
         resetLabelProgress();
         Debug("ERROR: No column for wine name");
-        //"Aucune colonne n'indique le nom du vin.
-        //"Veuillez selectionner une colonne avec le nom du vin
-        Erreur.showSimpleErreur(getError("Error.NoColumnSelectedForName", LabelProperty.OF_THE_SINGLE), getError("Error143", LabelProperty.SINGLE));
+        Erreur.showSimpleErreur(ERROR_NOCOLUMNSELECTEDFORNAME, ERROR_SELECTCOLUMNFORBOTTLEIMPORT);
         importe.setEnabled(true);
         return;
       }
@@ -434,36 +480,19 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       AbstractPlace new_rangement = null;
       if (mapFieldCount.get(MyCellarFields.PLACE) == null) {
         resetLabelProgress();
-        Debug("ERROR: No place defined, a place will be create");
-        //Il n'y a pas de rangements definis dans le fichier.
-        //Un rangement par defaut va etre cree.
-        Erreur.showInformationMessage(getError("Error140"), getError("Error141"));
+        Debug("ERROR: No place defined, a default place will be create");
+        Erreur.showInformationMessage(ERROR_NOSTORAGEINFILE, ERROR_DEFAULTSTORAGETOCREATE);
 
-        int nb_caisse = Program.getSimplePlaceCount() + 2;
-
-        String[] titre_properties = new String[nb_caisse];
-        String[] default_value = new String[nb_caisse];
-        String[] key_properties = new String[nb_caisse];
-        String[] type_objet = new String[nb_caisse];
+        List<MyOptionKey> myOptionKeys = new ArrayList<>();
         int i;
         List<AbstractPlace> simplePlaces = Program.getSimplePlaces();
         for (i = 0; i < simplePlaces.size(); i++) {
           AbstractPlace cave = simplePlaces.get(i);
-          titre_properties[i] = KEY_TYPE + cave.getName();
-          key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
-          default_value[i] = "false";
-          type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;
+          myOptionKeys.add(new MyOptionKey(new LabelKey(cave.getName()), MyOptionObjectType.MY_CELLAR_RADIO_BUTTON, MyCellarSettings.RANGEMENT_DEFAULT, "false"));
         }
-        titre_properties[i] = "Main.NewValue";
-        key_properties[i] = MyCellarSettings.RANGEMENT_DEFAULT;
-        default_value[i] = "true";
-        type_objet[i] = MyOptions.MY_CELLAR_RADIO_BUTTON;
-        i++;
-        titre_properties[i] = getLabel("Import.DefaultStorageName");
-        key_properties[i] = MyCellarSettings.RANGEMENT_NAME;
-        default_value[i] = "";
-        type_objet[i] = MyOptions.JTEXT_FIELD;
-        MyOptions myoptions = new MyOptions(getLabel("CreateStorage.Title"), getLabel("Import.SelectStorageName"), List.of(titre_properties), List.of(default_value), List.of(key_properties), List.of(type_objet), false);
+        myOptionKeys.add(new MyOptionKey(MAIN_NEWVALUE, "true", MyCellarSettings.RANGEMENT_DEFAULT, MyOptionObjectType.MY_CELLAR_RADIO_BUTTON));
+        myOptionKeys.add(new MyOptionKey(IMPORT_DEFAULTSTORAGENAME, "", MyCellarSettings.RANGEMENT_NAME, MyOptionObjectType.JTEXT_FIELD));
+        MyOptions myoptions = new MyOptions(getLabel(CREATESTORAGE_TITLE), getLabel(IMPORT_SELECTSTORAGENAME), myOptionKeys);
         myoptions.setVisible(true);
         int num_r = Program.getCaveConfigInt(MyCellarSettings.RANGEMENT_DEFAULT, -1);
         if (num_r == Program.getPlaceLength()) {
@@ -475,8 +504,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
               resul = true;
               if (nom1.contains("\"") || nom1.contains(COLUMNS_SEPARATOR) || nom1.contains("<") || nom1.contains(">") || nom1.contains("?") || nom1.contains("\\") ||
                   nom1.contains(SLASH) || nom1.contains("|") || nom1.contains("*")) {
-                Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                    getError("Error.forbiddenCharacters"), false);
+                Options options = new Options(getLabel(IMPORT_STORAGENAME), getLabel(IMPORT_FILLSTORAGENAME), getLabel(IMPORT_STORAGENAME), nom1,
+                    getError(ERROR_FORBIDDENCHARACTERS), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -485,8 +514,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             do {
               // Controle sur la longueur du filename
               if (nom1.isEmpty()) {
-                Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                    getError("Error.requireStorageName"), false);
+                Options options = new Options(getLabel(IMPORT_STORAGENAME), getLabel(IMPORT_FILLSTORAGENAME), getLabel(IMPORT_STORAGENAME), nom1,
+                    getError(ERROR_REQUIRESTORAGENAME), false);
                 options.setVisible(true);
                 nom1 = options.getValue();
                 resul = false;
@@ -498,8 +527,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
                 resul = true;
                 if (!nom1.isEmpty()) {
                   if (PlaceUtils.isExistingPlace(nom1)) {
-                    Options options = new Options(getLabel("Import.StorageName"), getLabel("Import.FillStorageName"), getLabel("Import.StorageName"), nom1,
-                        getError("Error.storageNameAlreadyUsed"), false);
+                    Options options = new Options(getLabel(IMPORT_STORAGENAME), getLabel(IMPORT_FILLSTORAGENAME), getLabel(IMPORT_STORAGENAME), nom1,
+                        getError(ERROR_STORAGENAMEALREADYUSED), false);
                     options.setVisible(true);
                     nom1 = options.getValue();
                     resul = false;
@@ -532,7 +561,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
             if (line.split(fieldSeparator).length <= 1) {
               resetLabelProgress();
               Debug("ERROR: No separator found");
-              Erreur.showSimpleErreur(getError("Error042"), getError("Error043"));
+              Erreur.showSimpleErreur(ERROR_DELIMITERNOTFOUND, ERROR_SELECTFILEDELIMITER);
               importe.setEnabled(true);
               reader.close();
               return;
@@ -546,7 +575,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           int maxNumPlace = 0;
           while (line != null) {
             String[] readValues = line.split(fieldSeparator);
-            MyCellarObject bottle = createObject();
+            IMyCellarObject bottle = createObject();
             bottle.updateID();
             for (int i = 0; i < readValues.length; i++) {
               String value = removeQuotes(readValues[i]);
@@ -586,16 +615,16 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         MyCellarBottleContenance.load();
       }
     } else {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
     Debug("Importing... Done");
   }
 
   private void setLabelInProgress() {
-    label_progression.setText(getLabel("Import.InProgress"));
+    label_progression.setText(getLabel(IMPORT_INPROGRESS));
   }
 
-  private MyCellarObject createObject() {
+  private IMyCellarObject createObject() {
     if (Program.isWineType()) {
       return new Bouteille();
     }
@@ -607,12 +636,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   }
 
   private void displayImportDone() {
-    label_progression.setText(getLabel("Import.Successful"), true);
+    label_progression.setText(getLabel(IMPORT_SUCCESSFUL), true);
     Debug("Import OK.");
   }
 
   private void displayImportError() {
-    label_progression.setText(getLabel("Import.Error"), true);
+    label_progression.setText(getLabel(IMPORT_ERROR), true);
     Debug("Import Error.");
   }
 
@@ -639,7 +668,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           continue;
         }
         if (count > 0) {
-          MyCellarObject myCellarObject = createObject();
+          IMyCellarObject myCellarObject = createObject();
           myCellarObject.updateID();
 
           int i = 0;
@@ -665,14 +694,14 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       resetLabelProgress();
       Debug("ERROR: File not found: " + nom);
       //Fichier non trouve. Verifier le chemin
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), nom), getError("Error.checkFilePath"));
+      Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, nom), getError(ERROR_CHECKFILEPATH));
       importe.setEnabled(true);
       return false;
     } catch (Exception e) {
       Program.showException(e, false);
       resetLabelProgress();
       Debug("ERROR: " + e);
-      Erreur.showSimpleErreur(getError("Error082"));
+      Erreur.showSimpleErreur(getError(ERROR_ERRORSINTHEFILE));
       importe.setEnabled(true);
       return false;
     }
@@ -695,7 +724,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       list = new ItunesLibraryImporter().loadItunesLibrary(f);
     } catch (NoITunesFileException e) {
       Debug("ERROR:" + e);
-      Erreur.showSimpleErreur(getError("Import.NotITunesFile"));
+      Erreur.showSimpleErreur(getError(ERROR_NOTITUNESFILE));
       resetLabelProgress();
       importe.setEnabled(true);
       return;
@@ -707,9 +736,9 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   private void showImportDone() {
     importe.setEnabled(true);
-    label_progression.setText(getLabel("Import.Done"), true);
+    label_progression.setText(getLabel(IMPORT_DONE), true);
     if (!PlaceUtils.putTabStock()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
   }
 

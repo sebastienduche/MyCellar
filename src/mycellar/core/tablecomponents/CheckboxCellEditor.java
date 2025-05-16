@@ -8,12 +8,12 @@ import java.awt.Component;
 import java.util.EventObject;
 
 /**
- * <p>Titre : Cave à vin</p>
- * <p>Description : Votre description</p>
- * <p>Copyright : Copyright (c) 2004</p>
- * <p>Société : Seb Informatique</p>
+ * <p>Titre : Cave &agrave; vin
+ * <p>Description : Votre description
+ * <p>Copyright : Copyright (c) 1998
+ * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
- * @author Sébastien Duché
+ * @author S&eacute;bastien Duch&eacute;
  * @version 0.5
  * @since 27/05/21
  */

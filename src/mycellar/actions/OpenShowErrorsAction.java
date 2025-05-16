@@ -5,19 +5,18 @@ import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.ErrorShowPanel;
 
-import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
-import java.awt.event.ActionEvent;
 
-public class OpenShowErrorsAction extends AbstractAction {
+import static mycellar.general.ResourceKey.SHOWFILE_ERRORTITLE;
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
+public class OpenShowErrorsAction {
+
+  public static void open() {
     SwingUtilities.invokeLater(() -> {
       final ErrorShowPanel showErrors = ProgramPanels.createShowErrors();
       showErrors.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.ERROR, null);
-      final String label = MyCellarLabelManagement.getLabel("ShowFile.ErrorTitle");
+      final String label = MyCellarLabelManagement.getLabel(SHOWFILE_ERRORTITLE);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

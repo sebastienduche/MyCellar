@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.SHOWFILE_RESTORE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -21,8 +22,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 31/12/23
+ * @version 0.2
+ * @since 14/03/25
  */
 
 public class TrashPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -37,7 +38,7 @@ public class TrashPanel extends AbstractShowFilePanel implements ITabListener, I
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
     add(titleLabel, "align left");
 
-    deleteButton.setText(getLabel("ShowFile.Restore"));
+    deleteButton.setText(getLabel(SHOWFILE_RESTORE));
     deleteButton.setIcon(MyCellarImage.RESTORE);
     deleteButton.addActionListener(e -> restore());
     add(deleteButton, "align right, wrap");

@@ -23,8 +23,8 @@ import java.util.ResourceBundle.Control;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 28/12/21
+ * @version 1.4
+ * @since 18/03/25
  */
 public final class LanguageFileLoader {
 
@@ -33,12 +33,35 @@ public final class LanguageFileLoader {
   private static final String CODE_LANG = "CodeLang";
   private Language language;
   private ResourceBundle bundleTitle;
+  private ResourceBundle bundleWine;
+  private ResourceBundle bundleWineError;
   private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
+  private ResourceBundle bundleKeyboard;
 
   private LanguageFileLoader() {
     loadLanguageFiles(Language.ENGLISH);
+  }
+
+  public ResourceBundle getBundleTitle() {
+    return bundleTitle;
+  }
+
+  public ResourceBundle getBundleWine() {
+    return bundleWine;
+  }
+
+  public ResourceBundle getBundleWineError() {
+    return bundleWineError;
+  }
+
+  public ResourceBundle getBundleError() {
+    return bundleError;
+  }
+
+  public ResourceBundle getBundleKeyboard() {
+    return bundleKeyboard;
   }
 
   public static LanguageFileLoader getInstance() {
@@ -47,7 +70,7 @@ public final class LanguageFileLoader {
 
   static String getLabel(String id) {
     if (INSTANCE.bundleTitle == null) {
-      Debug("ERROR: Labels' map not intialized!");
+      Debug("ERROR: 'Label' map not intialized!");
       return "";
     }
     if (Program.isMusicType()) {
@@ -56,20 +79,47 @@ public final class LanguageFileLoader {
       } catch (MissingResourceException ignored) {
       }
     }
-    return INSTANCE.bundleTitle.getString(id);
+    if (INSTANCE.bundleTitle.containsKey(id)) {
+      return INSTANCE.bundleTitle.getString(id);
+    }
+    if (INSTANCE.bundleKeyboard.containsKey(id)) {
+      return INSTANCE.bundleKeyboard.getString(id);
+    }
+    if (Program.isWineType()) {
+      if (INSTANCE.bundleWine == null) {
+        Debug("ERROR: 'Wine' map not intialized!");
+        return "";
+      }
+      if (INSTANCE.bundleWine.containsKey(id)) {
+        return INSTANCE.bundleWine.getString(id);
+      }
+    }
+    return "";
   }
 
   static String getError(String id) {
     if (INSTANCE.bundleError == null) {
-      Debug("ERROR: Errors' map not intialized!");
+      Debug("ERROR: 'Error' map not intialized!");
       return "";
     }
-    return INSTANCE.bundleError.getString(id);
+    if (INSTANCE.bundleError.containsKey(id)) {
+      return INSTANCE.bundleError.getString(id);
+    }
+    if (Program.isWineType()) {
+      if (INSTANCE.bundleWineError == null) {
+        Debug("ERROR: 'Wine Error' map not intialized!");
+        return "";
+      }
+      if (INSTANCE.bundleWineError.containsKey(id)) {
+        return INSTANCE.bundleWineError.getString(id);
+      }
+    }
+    return "";
   }
 
   public static int getLanguageIndex(String language) {
     if (INSTANCE.bundleLanguage == null) {
-      Debug("ERROR: Language' map not intialized!");
+      Debug("ERROR: 'Language' map not intialized!");
       return -1;
     }
     int i = 1;
@@ -90,7 +140,7 @@ public final class LanguageFileLoader {
   public static List<String> getLanguages() {
     ArrayList<String> list = new ArrayList<>();
     if (INSTANCE.bundleLanguage == null) {
-      Debug("ERROR: Language' map not intialized!");
+      Debug("ERROR: 'Language' map not intialized!");
       return list;
     }
     int i = 1;
@@ -120,8 +170,11 @@ public final class LanguageFileLoader {
       locale = Locale.ENGLISH;
     }
     bundleTitle = ResourceBundle.getBundle("title", locale, new UTF8Control());
+    bundleWine = ResourceBundle.getBundle("wine", locale, new UTF8Control());
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
+    bundleWineError = ResourceBundle.getBundle("wineError", locale, new UTF8Control());
     bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
+    bundleKeyboard = ResourceBundle.getBundle("keyboard", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }
 

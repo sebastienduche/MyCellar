@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 
 import static mycellar.MyCellarUtils.isDefined;
@@ -17,17 +18,10 @@ import static mycellar.MyCellarUtils.isDefined;
 
 public class MyLinkedHashMap extends LinkedHashMap<String, Object> {
 
-  static final long serialVersionUID = 123;
+  @Serial
+  private static final long serialVersionUID = 8042502398856598188L;
 
   public MyLinkedHashMap() {
-  }
-
-  public String getString(String cle) {
-    try {
-      return super.get(cle).toString();
-    } catch (RuntimeException e) {
-      return null;
-    }
   }
 
   public String getString(String cle, String defaut) {

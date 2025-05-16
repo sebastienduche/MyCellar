@@ -24,6 +24,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serial;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
 import static mycellar.ProgramConstants.isVK_ENTER;
@@ -42,6 +43,23 @@ import static mycellar.core.MyCellarSettings.XLSTAB_COL2;
 import static mycellar.core.MyCellarSettings.XLSTAB_COL3;
 import static mycellar.core.MyCellarSettings.XLS_TAB_TITLE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_CANCEL;
+import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
+import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.MAIN_PRICE;
+import static mycellar.general.ResourceKey.MAIN_YEAR;
+import static mycellar.general.ResourceKey.OPTIONS_BOLD;
+import static mycellar.general.ResourceKey.OPTIONS_TEXTSIZE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_COLUMNSTOUSE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_COLUMNSWIDTH;
+import static mycellar.general.ResourceKey.XLSOPTIONS_FILETITLE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_NBLINESBETWEENPART;
+import static mycellar.general.ResourceKey.XLSOPTIONS_NBLINESBETWEENPLACE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_ONEPLACEPERSHEET;
+import static mycellar.general.ResourceKey.XLSOPTIONS_STORAGEPROPERTIES;
+import static mycellar.general.ResourceKey.XLSOPTIONS_TITLE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_XLSTITLE;
 
 
 /**
@@ -51,16 +69,17 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 25/05/22
+ * @version 2.2
+ * @since 13/03/25
  */
 public final class XLSTabOptions extends JDialog {
+  @Serial
   private static final long serialVersionUID = 260706;
   private static final int LARGEUR = 480;
   private static final int HAUTEUR = 550;
   private final MyCellarSpinner title_size = new MyCellarSpinner(1, 99);
-  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox("Options.Bold");
-  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox("XLSOptions.OnePlacePerSheet");
+  private final MyCellarCheckBox boldTitleCheckBox = new MyCellarCheckBox(OPTIONS_BOLD);
+  private final MyCellarCheckBox onePlacePerSheetCheckBox = new MyCellarCheckBox(XLSOPTIONS_ONEPLACEPERSHEET);
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner text_size = new MyCellarSpinner(1, 99);
   private final MyCellarSpinner column_size = new MyCellarSpinner(1, 99);
@@ -73,7 +92,7 @@ public final class XLSTabOptions extends JDialog {
     setModal(true);
     xlsOptionsTableValues = new XLSOptionsValues();
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("XLSOptions.Title"));
+    setTitle(getLabel(XLSOPTIONS_TITLE));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -92,11 +111,11 @@ public final class XLSTabOptions extends JDialog {
     final JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEtchedBorder());
     panel.setFont(FONT_PANEL);
-    panel.setBorder(BorderFactory.createTitledBorder(getLabel("XLSOptions.FileTitle")));
-    MyCellarLabel titleLabel = new MyCellarLabel("XLSOptions.XLSTitle");
+    panel.setBorder(BorderFactory.createTitledBorder(getLabel(XLSOPTIONS_FILETITLE)));
+    MyCellarLabel titleLabel = new MyCellarLabel(XLSOPTIONS_XLSTITLE);
     String xls_title = Program.getCaveConfigString(XLS_TAB_TITLE, "");
     pdf_title.setText(xls_title);
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Options.TextSize");
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(OPTIONS_TEXTSIZE);
 
     onePlacePerSheetCheckBox.addActionListener(e -> updatePlaceSettings(onePlacePerSheetCheckBox.isSelected()));
 
@@ -121,26 +140,26 @@ public final class XLSTabOptions extends JDialog {
     table.setSize(460, 100);
     JScrollPane scrollPane = new JScrollPane(table);
 
-    xlsOptionsTableValues.addString(getLabel("Main.Name"), Program.getCaveConfigBool(XLSTAB_COL0, true));
-    xlsOptionsTableValues.addString(getLabel("Main.Year"), Program.getCaveConfigBool(XLSTAB_COL1, false));
-    xlsOptionsTableValues.addString(getLabel("Main.CapacityOrSupport"), Program.getCaveConfigBool(XLSTAB_COL2, false));
-    xlsOptionsTableValues.addString(getLabel("Main.Price"), Program.getCaveConfigBool(XLSTAB_COL3, false));
+    xlsOptionsTableValues.addString(getLabel(MAIN_NAME), Program.getCaveConfigBool(XLSTAB_COL0, true));
+    xlsOptionsTableValues.addString(getLabel(MAIN_YEAR), Program.getCaveConfigBool(XLSTAB_COL1, false));
+    xlsOptionsTableValues.addString(getLabel(MAIN_CAPACITYORSUPPORT), Program.getCaveConfigBool(XLSTAB_COL2, false));
+    xlsOptionsTableValues.addString(getLabel(MAIN_PRICE), Program.getCaveConfigBool(XLSTAB_COL3, false));
 
     final JPanel panel1 = new JPanel();
     panel1.setFont(FONT_PANEL);
-    panel1.setBorder(BorderFactory.createTitledBorder(getLabel("XLSOptions.StorageProperties")));
-    MyCellarButton valider = new MyCellarButton("Main.OK");
+    panel1.setBorder(BorderFactory.createTitledBorder(getLabel(XLSOPTIONS_STORAGEPROPERTIES)));
+    MyCellarButton valider = new MyCellarButton(MAIN_OK);
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
+    MyCellarButton annuler = new MyCellarButton(MAIN_CANCEL);
     annuler.addActionListener((e) -> dispose());
     MyCellarSimpleLabel pt_label1 = new MyCellarSimpleLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel("Options.TextSize");
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(OPTIONS_TEXTSIZE);
     MyCellarSimpleLabel pt_label2 = new MyCellarSimpleLabel("pt");
-    MyCellarLabel column_size_label = new MyCellarLabel("XLSOptions.ColumnsWidth");
+    MyCellarLabel column_size_label = new MyCellarLabel(XLSOPTIONS_COLUMNSWIDTH);
     MyCellarSimpleLabel pt_label3 = new MyCellarSimpleLabel("px");
-    MyCellarLabel empty_line_part_label = new MyCellarLabel("XLSOptions.NbLinesBetweenPart");
-    empty_line_place_label = new MyCellarLabel("XLSOptions.NbLinesBetweenPlace");
-    MyCellarLabel column_label = new MyCellarLabel("XLSOptions.ColumnsToUse");
+    MyCellarLabel empty_line_part_label = new MyCellarLabel(XLSOPTIONS_NBLINESBETWEENPART);
+    empty_line_place_label = new MyCellarLabel(XLSOPTIONS_NBLINESBETWEENPLACE);
+    MyCellarLabel column_label = new MyCellarLabel(XLSOPTIONS_COLUMNSTOUSE);
 
     if (Program.getCaveConfigBool(ONE_PER_SHEET_XLS, false)) {
       updatePlaceSettings(true);

@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.AJOUTER;
+import static mycellar.general.ResourceKey.MAIN_COMMENT;
 
 /**
  * Titre : Cave &agrave; vin
@@ -24,24 +26,24 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.5
- * @since 09/10/22
+ * @version 5.7
+ * @since 21/03/25
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel("Main.Comment");
+  protected final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
   protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
-  protected final char ajouterChar = getLabel("AJOUTER").charAt(0);
+  protected final char ajouterChar = getLabel(AJOUTER).charAt(0);
   protected int selectedPaneIndex;
   protected MyCellarButton addButton;
   protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
-  protected MyCellarObject myCellarObject = null;
+  protected IMyCellarObject myCellarObject = null;
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
 
@@ -119,8 +121,6 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
 
   /**
    * Select a place in the lists (used from CellarOrganizerPanel)
-   *
-   * @param place
    */
   @Override
   public void selectPlace(PlacePosition place) {

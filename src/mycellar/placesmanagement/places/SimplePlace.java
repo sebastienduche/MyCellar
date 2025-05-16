@@ -1,7 +1,7 @@
 package mycellar.placesmanagement.places;
 
 import mycellar.Program;
-import mycellar.core.MyCellarObject;
+import mycellar.core.IMyCellarObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,15 +15,15 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 11/09/24
+ * @version 0.9
+ * @since 21/03/25
  */
 public final class SimplePlace extends AbstractPlace {
 
   private int partNumberIncrement;
   private boolean limited;
   private int maxItemCount;
-  private Map<Integer, ArrayList<MyCellarObject>> storage;
+  private Map<Integer, ArrayList<IMyCellarObject>> storage;
 
   public SimplePlace(String name, int partCount) {
     super(name);
@@ -79,7 +79,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public boolean addObject(MyCellarObject myCellarObject) {
+  public boolean addObject(IMyCellarObject myCellarObject) {
     if (myCellarObject.hasNoStatus()) {
       myCellarObject.setCreated();
     }
@@ -103,9 +103,9 @@ public final class SimplePlace extends AbstractPlace {
    *
    * @param num_empl int: num&eacute;ro d'emplacement (0...n)
    * @param index    int: index de l'objet (0...n)
-   * @return MyCellarObject
+   * @return IMyCellarObject
    */
-  public MyCellarObject getObjectAt(int num_empl, int index) {
+  public IMyCellarObject getObjectAt(int num_empl, int index) {
     return storage.get(num_empl).get(index);
   }
 
@@ -113,8 +113,8 @@ public final class SimplePlace extends AbstractPlace {
     return hasFreeSpace(place.getPlaceNumIndex());
   }
 
-  public boolean hasFreeSpace(int part) {
-    return (!isLimited() || getCountCellUsed(part) < maxItemCount);
+  private boolean hasFreeSpace(int part) {
+    return !isLimited() || getCountCellUsed(part) < maxItemCount;
   }
 
   @Override
@@ -132,7 +132,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void updateToStock(MyCellarObject myCellarObject) {
+  public void updateToStock(IMyCellarObject myCellarObject) {
     storage.get(myCellarObject.getNumLieu() - partNumberIncrement).add(myCellarObject);
   }
 
@@ -141,7 +141,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(MyCellarObject myCellarObject, PlacePosition place) {
+  public void clearStorage(IMyCellarObject myCellarObject, PlacePosition place) {
     storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
   }
 

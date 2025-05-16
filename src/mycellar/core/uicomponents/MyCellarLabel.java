@@ -2,8 +2,8 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.IResource;
 
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -19,30 +19,23 @@ import static mycellar.ProgramConstants.FONT_PANEL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 24/05/22
+ * @version 1.7
+ * @since 18/03/25
  */
 
 public class MyCellarLabel extends JLabel implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
-  public MyCellarLabel(String code) {
-    labelKey = new LabelKey(code);
+  public MyCellarLabel(IResource resourceKey) {
+    labelKey = new LabelKey(resourceKey);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);
   }
 
-  public MyCellarLabel(String code, LabelProperty labelProperty) {
-    labelKey = new LabelKey(code, labelProperty);
-    updateText();
-    MyCellarLabelManagement.add(this);
-    setFont(FONT_PANEL);
-  }
-
-  public MyCellarLabel(String code, LabelProperty labelProperty, String value) {
-    labelKey = new LabelKey(code, labelProperty, value);
+  public MyCellarLabel(IResource resourceKey, String parameter) {
+    labelKey = new LabelKey(resourceKey, parameter);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

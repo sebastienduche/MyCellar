@@ -1,12 +1,10 @@
 package mycellar;
 
 import mycellar.core.IMyCellarObject;
-import mycellar.core.MyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +15,17 @@ import java.util.List;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
+import static mycellar.general.ResourceKey.HISTORY_ACTION;
+import static mycellar.general.ResourceKey.HISTORY_DATE;
+import static mycellar.general.ResourceKey.HISTORY_ENTERED;
+import static mycellar.general.ResourceKey.HISTORY_EXITED;
+import static mycellar.general.ResourceKey.HISTORY_LABEL;
+import static mycellar.general.ResourceKey.HISTORY_LABELFROM;
+import static mycellar.general.ResourceKey.HISTORY_LABELIN;
+import static mycellar.general.ResourceKey.HISTORY_MODIFIED;
+import static mycellar.general.ResourceKey.HISTORY_TOCHECK;
+import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
 
 /**
  * Titre : Cave &agrave; vin
@@ -25,8 +34,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.5
- * @since 08/09/24
+ * @version 3.7
+ * @since 21/03/25
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -51,9 +60,9 @@ class TableHistoryValues extends AbstractTableModel {
     if (withFirstColumnEmpty) {
       columnList.add("");
     }
-    columnList.add(getLabel("History.Date"));
-    columnList.add(getLabel("History.Action"));
-    columnList.add(getLabel("History.Label"));
+    columnList.add(getLabel(HISTORY_DATE));
+    columnList.add(getLabel(HISTORY_ACTION));
+    columnList.add(getLabel(HISTORY_LABEL));
     columnList.add("");
   }
 
@@ -96,7 +105,7 @@ class TableHistoryValues extends AbstractTableModel {
         }
         String emplacement;
         if (b.isInTemporaryStock()) {
-          emplacement = getLabel("Bouteille.TemporaryPlace");
+          emplacement = getLabel(BOUTEILLE_TEMPORARYPLACE);
         } else {
           emplacement = convertStringFromHTMLString(b.getEmplacement());
         }
@@ -104,24 +113,24 @@ class TableHistoryValues extends AbstractTableModel {
         String sLabel = "";
         switch (h.getState()) {
           case ADD:
-            sType = getLabel("History.Entered");
-            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel(HISTORY_ENTERED);
+            sLabel = getLabel(HISTORY_LABELIN, convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case VALIDATED:
-            sType = getLabel("History.Validated");
-            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel(HISTORY_VALIDATED);
+            sLabel = getLabel(HISTORY_LABELIN, convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case TOCHECK:
-            sType = getLabel("History.ToCheck");
-            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel(HISTORY_TOCHECK);
+            sLabel = getLabel(HISTORY_LABELIN, convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case MODIFY:
-            sType = getLabel("History.Modified");
-            sLabel = MessageFormat.format(getLabel("History.LabelIn"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel(HISTORY_MODIFIED);
+            sLabel = getLabel(HISTORY_LABELIN, convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case DEL:
-            sType = getLabel("History.Exited");
-            sLabel = MessageFormat.format(getLabel("History.LabelFrom"), convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
+            sType = getLabel(HISTORY_EXITED);
+            sLabel = getLabel(HISTORY_LABELFROM, convertStringFromHTMLString(b.getNom()), b.getAnnee(), emplacement);
             break;
           case ALL:
             break;
@@ -171,7 +180,7 @@ class TableHistoryValues extends AbstractTableModel {
       case ACTION:
         History h = displayList.get(row);
         if (Program.isWineType()) {
-          MyCellarObject bottle = h.getBouteille();
+          IMyCellarObject bottle = h.getBouteille();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(bottle, false);
           } else {
@@ -182,7 +191,7 @@ class TableHistoryValues extends AbstractTableModel {
                     () -> ProgramPanels.showBottle(bottle, false));
           }
         } else if (Program.isMusicType()) {
-          MyCellarObject music = h.getMusic();
+          IMyCellarObject music = h.getMusic();
           if (h.isDeleted()) {
             ProgramPanels.showBottle(music, false);
           } else {
@@ -269,7 +278,7 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  MyCellarObject getObject(int row) {
+  IMyCellarObject getObject(int row) {
     if (Program.isMusicType()) {
       return displayList.get(row).getMusic();
     } else if (Program.isWineType()) {

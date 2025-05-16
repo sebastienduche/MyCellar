@@ -2,6 +2,7 @@ package mycellar.importer;
 
 import mycellar.Music;
 import mycellar.core.common.MyCellarFields;
+import mycellar.core.exceptions.NoITunesFileException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

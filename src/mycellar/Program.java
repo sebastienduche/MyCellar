@@ -3,12 +3,10 @@ package mycellar;
 import com.sebastienduche.pdf.PDFColumn;
 import com.sebastienduche.pdf.PDFProperties;
 import com.sebastienduche.pdf.PDFRow;
-import mycellar.actions.OpenAddVinAction;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.core.MyCellarFile;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
@@ -58,7 +56,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,6 +98,12 @@ import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
+import static mycellar.general.ResourceErrorKey.ERROR_FILENOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_HELPNOTFOUND;
+import static mycellar.general.ResourceErrorKey.ERROR_NOTSUPPORTEDVERSION;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONSAVEMODIFICATIONS;
+import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
 
 /**
  * Titre : Cave &agrave; vin
@@ -109,8 +112,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.3
- * @since 08/07/22
+ * @version 29.8
+ * @since 03/04/25
  */
 
 public final class Program {
@@ -127,7 +130,7 @@ public final class Program {
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
   private static final List<AbstractPlace> PLACES = new LinkedList<>();
-  private static final List<MyCellarObject> TRASH = new LinkedList<>();
+  private static final List<IMyCellarObject> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
   private static ProgramType programType = ProgramType.WINE;
@@ -221,11 +224,11 @@ public final class Program {
     return getGlobalDir() + CONFIG_INI;
   }
 
-  public static List<MyCellarObject> getTrash() {
+  public static List<IMyCellarObject> getTrash() {
     return TRASH;
   }
 
-  public static void setToTrash(MyCellarObject b) {
+  public static void setToTrash(IMyCellarObject b) {
     TRASH.add(b);
   }
 
@@ -310,7 +313,7 @@ public final class Program {
     }
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
     if (currentVersion > VERSION) {
-      Erreur.showSimpleErreur(getError("Program.NotSupportedVersion"));
+      Erreur.showSimpleErreur(getError(ERROR_NOTSUPPORTEDVERSION));
       throw new UnableToOpenMyCellarFileException("The file version '" + currentVersion + "' is not supported by this program version: " + VERSION);
     }
   }
@@ -454,7 +457,7 @@ public final class Program {
       }
 
     } else {
-      Erreur.showSimpleErreur(getError("Error162"));
+      Erreur.showSimpleErreur(getError(ERROR_HELPNOTFOUND));
     }
   }
 
@@ -623,7 +626,7 @@ public final class Program {
     }
 
     if (!myCellarFile.exists()) {
-      Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), myCellarFile.getFile().getAbsolutePath()));
+      Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, myCellarFile.getFile().getAbsolutePath()));
 
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN1, list.pop());
       putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2, list.pop());
@@ -673,7 +676,7 @@ public final class Program {
 
     PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
-      new OpenShowErrorsAction().actionPerformed(null);
+      OpenShowErrorsAction.open();
     }
 
     if (openedFile.isFileSavable()) {
@@ -704,7 +707,7 @@ public final class Program {
     boolean bSave = false;
     File newFile = null;
     if (openedFile.exists() && isModified()) {
-      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError("SaveModifications"), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(null, getError(ERROR_QUESTIONSAVEMODIFICATIONS), getLabel(MAIN_ASKCONFIRMATION), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
         bSave = true;
         if (!openedFile.isFileSavable()) {
           JFileChooser boiteFichier = new JFileChooser();
@@ -1011,7 +1014,7 @@ public final class Program {
     if (check) {
       if (!file.exists() || file.isDirectory()) {
         //Fichier non trouve Verifier le chemin
-        Erreur.showSimpleErreur(MessageFormat.format(getError("Error.fileNotFound"), filename), getError("Error.checkFilePath"));
+        Erreur.showSimpleErreur(getError(ERROR_FILENOTFOUND, filename), getError(ERROR_CHECKFILEPATH));
         return false;
       }
     }
@@ -1056,7 +1059,7 @@ public final class Program {
     return listCaveModified;
   }
 
-  public static PDFProperties getPDFProperties() {
+  static PDFProperties getPDFProperties() {
     String title = getCaveConfigString(MyCellarSettings.PDF_TITLE, "");
     int titleSize = getCaveConfigInt(MyCellarSettings.TITLE_SIZE, 10);
     int textSize = getCaveConfigInt(MyCellarSettings.TEXT_SIZE, 10);
@@ -1084,10 +1087,10 @@ public final class Program {
     return properties;
   }
 
-  static List<PDFRow> getPDFRows(List<? extends MyCellarObject> list, PDFProperties properties) {
+  static List<PDFRow> getPDFRows(List<? extends IMyCellarObject> list, PDFProperties properties) {
     LinkedList<PDFRow> rows = new LinkedList<>();
     LinkedList<PDFColumn> columns = properties.getColumns();
-    for (MyCellarObject myCellarObject : list) {
+    for (IMyCellarObject myCellarObject : list) {
       PDFRow row = new PDFRow();
       for (PDFColumn column : columns) {
         row.addCell(MyCellarFields.getValue(column.getField(), myCellarObject));
@@ -1233,22 +1236,11 @@ public final class Program {
     return nextID;
   }
 
-  public static void modifyBottles(List<MyCellarObject> listToModify) {
-    if (listToModify == null || listToModify.isEmpty()) {
-      return;
-    }
-    if (listToModify.size() == 1) {
-      ProgramPanels.showBottle(listToModify.getFirst(), true);
-    } else {
-      new OpenAddVinAction(listToModify).actionPerformed(null);
-    }
-  }
-
-  public static List<MyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
+  public static List<IMyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
     return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isNotExistingMyCellarObject(MyCellarObject myCellarObject) {
+  public static boolean isNotExistingMyCellarObject(IMyCellarObject myCellarObject) {
     return getStorage().getAllList().stream().noneMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
   }
 
@@ -1264,7 +1256,7 @@ public final class Program {
     return openedFile != null && openedFile.isFileSavable();
   }
 
-  public static void throwNotImplementedIfNotFor(MyCellarObject myCellarObject, Class<?> aClass) {
+  public static void throwNotImplementedIfNotFor(IMyCellarObject myCellarObject, Class<?> aClass) {
     if (!aClass.isInstance(myCellarObject)) {
       throw new NotImplementedException("Not implemented For " + aClass);
     }
@@ -1274,7 +1266,7 @@ public final class Program {
     throw new NotImplementedException("Not implemented For New Type");
   }
 
-  public static void throwNotImplemented() {
+  static void throwNotImplemented() {
     throw new NotImplementedException("Not implemented yet!");
   }
 

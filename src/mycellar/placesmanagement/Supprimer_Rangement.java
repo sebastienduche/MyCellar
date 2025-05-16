@@ -5,13 +5,12 @@ import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
@@ -35,7 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.text.MessageFormat;
+import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +49,30 @@ import static mycellar.Program.open;
 import static mycellar.Program.removePlace;
 import static mycellar.Program.setToTrash;
 import static mycellar.ProgramConstants.FONT_DIALOG_BOLD;
-import static mycellar.ProgramConstants.SPACE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
+import static mycellar.general.ResourceErrorKey.ERROR_FORBIDDENTODELETE;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS;
+import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETESTORAGE;
+import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEM;
+import static mycellar.general.ResourceKey.DELETEPLACE_STILL1ITEMIN;
+import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMS;
+import static mycellar.general.ResourceKey.DELETEPLACE_STILLNITEMSIN;
+import static mycellar.general.ResourceKey.MAIN_DELETE;
+import static mycellar.general.ResourceKey.MAIN_MAX1ITEM;
+import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
+import static mycellar.general.ResourceKey.MAIN_STATE;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.PLACEMANAGEMENT_EMPTYPLACE;
+import static mycellar.general.ResourceKey.PLACEMANAGEMENT_SELECTTODELETE;
+import static mycellar.general.ResourceKey.STORAGE_NBLINE;
+import static mycellar.general.ResourceKey.STORAGE_NBLINES;
+import static mycellar.general.ResourceKey.STORAGE_NUMBERLINES;
+import static mycellar.general.ResourceKey.STORAGE_PREVIEW;
+import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
+import static mycellar.general.ResourceKey.SUPPR;
+import static mycellar.general.ResourceKey.VISUAL;
 
 
 /**
@@ -63,17 +82,17 @@ import static mycellar.general.ProgramPanels.deleteSupprimerRangement;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 10.7
- * @since 07/03/25
+ * @version 11.4
+ * @since 25/03/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
   private final MyCellarComboBox<AbstractPlace> choix = new MyCellarComboBox<>();
   private final MyCellarSimpleLabel label_final = new MyCellarSimpleLabel();
-  private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
-  private final char supprimerChar = getLabel("SUPPR").charAt(0);
-  private final char previewChar = getLabel("VISUAL").charAt(0);
+  private final MyCellarButton preview = new MyCellarButton(STORAGE_PREVIEW);
+  private final char supprimerChar = getLabel(SUPPR).charAt(0);
+  private final char previewChar = getLabel(VISUAL).charAt(0);
   private final JTable table;
   private final LinkedList<SupprimerLine> listSupprimer = new LinkedList<>();
   private final SupprimerModel model;
@@ -85,7 +104,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
   public Supprimer_Rangement() {
     Debug("Initializing...");
     setLayout(new MigLayout("", "[grow]", "20px[]15px[grow]15px[]"));
-    MyCellarButton supprimer = new MyCellarButton("Main.Delete", MyCellarImage.DELETE);
+    MyCellarButton supprimer = new MyCellarButton(MAIN_DELETE, MyCellarImage.DELETE);
     supprimer.setMnemonic(supprimerChar);
     preview.setMnemonic(previewChar);
 
@@ -101,7 +120,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     table = new JTable(model);
     JScrollPane scroll = new JScrollPane(table);
 
-    add(new MyCellarLabel("PlaceManagement.SelectToDelete"), "split 2, gap");
+    add(new MyCellarLabel(PLACEMANAGEMENT_SELECTTODELETE), "split 2, gap");
     add(choix, "wrap");
     add(scroll, "grow, wrap");
     add(label_final, "grow, center, wrap");
@@ -162,12 +181,12 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       label_final.setHorizontalAlignment(SwingConstants.CENTER);
       Debug("There is (are) " + nb_case_use_total + " object(s) in this place!");
       if (nb_case_use_total == 0) {
-        label_final.setText(getLabel("PlaceManagement.EmptyPlace"));
+        label_final.setText(getLabel(PLACEMANAGEMENT_EMPTYPLACE));
       } else {
         if (nb_case_use_total == 1) {
-          label_final.setText(getLabel("DeletePlace.Still1Item", LabelProperty.SINGLE));
+          label_final.setText(getLabel(DELETEPLACE_STILL1ITEM));
         } else {
-          label_final.setText(MessageFormat.format(getLabel("DeletePlace.StillNItems", LabelProperty.PLURAL), nb_case_use_total));
+          label_final.setText(getLabel(DELETEPLACE_STILLNITEMS, nb_case_use_total));
         }
       }
       table.updateUI();
@@ -184,7 +203,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     // Verifier l'etat du rangement avant de le supprimer et demander confirmation
     if (num_select > 0) {
       if (Program.hasOnlyOnePlace()) {
-        Erreur.showSimpleErreur(getError("SupprimerRangement.ForbiddenToDelete"));
+        Erreur.showSimpleErreur(getError(ERROR_FORBIDDENTODELETE));
         return;
       }
       final AbstractPlace abstractPlace = (AbstractPlace) choix.getSelectedItem();
@@ -194,27 +213,27 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       if (nb_case_use_total == 0) {
         String name = abstractPlace.getName();
         Debug("MESSAGE: Delete this place: " + name + "?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, MessageFormat.format(getError("Error.questionDeleteStorage"), name), getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(getError(ERROR_QUESTIONDELETESTORAGE, name))) {
           removeSelectedPlace(abstractPlace, num_select);
         }
       } else {
-        String nom = abstractPlace.getName();
+        String name = abstractPlace.getName();
         String error;
         if (nb_case_use_total == 1) {
-          error = MessageFormat.format(getLabel("DeletePlace.Still1ItemIn", LabelProperty.SINGLE), nom);
+          error = getLabel(DELETEPLACE_STILL1ITEMIN, name);
         } else {
-          error = MessageFormat.format(getLabel("DeletePlace.StillNItemsIn", LabelProperty.PLURAL), nb_case_use_total, nom);
+          error = getLabel(DELETEPLACE_STILLNITEMSIN, nb_case_use_total, name);
         }
         // Delete place and objects in the place
-        String errorPart2 = getError("Error.questionDeleteAllIncludedObjects", LabelProperty.THE_PLURAL);
-        Debug("MESSAGE: Delete this place " + nom + " and all object(s) (" + nb_case_use_total + ")?");
-        if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(this, error + SPACE + errorPart2, getLabel("Main.AskConfirmation"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+        String message = String.format("%s %s", error, getError(ERROR_QUESTIONDELETEALLINCLUDEDOBJECTS));
+        Debug("MESSAGE: Delete this place " + name + " and all object(s) (" + nb_case_use_total + ")?");
+        if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
           new MyCellarSwingWorker() {
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<MyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter((bottle) -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
-              for (MyCellarObject b : myCellarObjectList) {
+              List<IMyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
+              for (IMyCellarObject b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {
                   abstractPlace.removeObject(b);
@@ -292,19 +311,19 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
   static class SupprimerModel extends DefaultTableModel {
 
+    @Serial
     private static final long serialVersionUID = -3295046126691124148L;
     private final List<SupprimerLine> list;
     private final List<Column> columns;
-    private final Column colLine = new Column(Column.LINE, getLabel("Storage.NumberLines"));
+    private final Column colLine = new Column(Column.LINE, getLabel(STORAGE_NUMBERLINES));
     private boolean isCaisse = false;
 
     private SupprimerModel(List<SupprimerLine> list) {
       this.list = list;
       columns = new LinkedList<>();
-      columns.add(new Column(Column.PART, getLabel("Main.Storage")));
+      columns.add(new Column(Column.PART, getLabel(MAIN_STORAGE)));
       columns.add(colLine);
-      columns.add(new Column(Column.WINE, getLabel("Main.State")));
-
+      columns.add(new Column(Column.WINE, getLabel(MAIN_STATE)));
     }
 
     public void setCaisse(boolean caisse) {
@@ -341,16 +360,12 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     public Object getValueAt(int row, int column) {
       SupprimerLine line = list.get(row);
       Column col = columns.get(column);
-      switch (col.getCol()) {
-        case 0:
-          return line.getNumPartLabel();
-        case 1:
-          return line.getNbLineLabel();
-        case 2:
-          return line.getNbWineLabel();
-        default:
-          return "";
-      }
+      return switch (col.getCol()) {
+        case 0 -> line.getNumPartLabel();
+        case 1 -> line.getNbLineLabel();
+        case 2 -> line.getNbWineLabel();
+        default -> "";
+      };
     }
 
     @Override
@@ -393,18 +408,15 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
 
     String getNumPartLabel() {
-      return MessageFormat.format(getLabel("Storage.ShelveNumber"), numPart);
+      return getLabel(STORAGE_SHELVENUMBER, numPart);
     }
 
     String getNbLineLabel() {
-      if (nbLine <= 1) {
-        return MessageFormat.format(getLabel("Storage.NbLine"), nbLine);
-      }
-      return MessageFormat.format(getLabel("Storage.NbLines"), nbLine);
+      return getLabel(nbLine > 1 ? STORAGE_NBLINES : STORAGE_NBLINE, nbLine);
     }
 
     String getNbWineLabel() {
-      return MessageFormat.format(getLabel("Main.SeveralItems", new LabelProperty(nbWine > 1)), nbWine);
+      return getLabel(nbWine > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, nbWine);
     }
   }
 

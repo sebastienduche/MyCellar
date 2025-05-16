@@ -1,55 +1,47 @@
 package mycellar.core.text;
 
+import mycellar.general.IResource;
+
+/**
+ * Titre : Cave &agrave; vin
+ * Description : Votre description
+ * Copyright : Copyright (c) 2016
+ * Soci&eacute;t&eacute; : Seb Informatique
+ *
+ * @author S&eacute;bastien Duch&eacute;
+ * @version 0.7
+ * @since 18/03/25
+ */
 public class LabelKey {
 
   private final LabelType labelType;
-  private final String key;
-  private LabelProperty labelProperty;
   private String value;
+  private final IResource resource;
 
-  /**
-   * Titre : Cave &agrave; vin
-   * Description : Votre description
-   * Copyright : Copyright (c) 2016
-   * Soci&eacute;t&eacute; : Seb Informatique
-   *
-   * @author S&eacute;bastien Duch&eacute;
-   * @version 0.5
-   * @since 24/05/22
-   */
-  public LabelKey(String key) {
+  public LabelKey(IResource resource) {
     labelType = LabelType.LABEL;
-    this.key = key;
+    this.resource = resource;
   }
 
-  public LabelKey(LabelType labelType, String key) {
-    this.labelType = labelType;
-    this.key = key;
-  }
-
-  public LabelKey(String key, LabelProperty labelProperty) {
+  public LabelKey(IResource resource, String value) {
     labelType = LabelType.LABEL;
-    this.key = key;
-    this.labelProperty = labelProperty;
-  }
-
-  public LabelKey(String key, LabelProperty labelProperty, String value) {
-    labelType = LabelType.LABEL;
-    this.key = key;
-    this.labelProperty = labelProperty;
     this.value = value;
+    this.resource = resource;
   }
 
-  public LabelType getLabelType() {
+  // Specific case when the key is a value and not a resource
+  public LabelKey(String value) {
+    labelType = LabelType.NONE;
+    this.value = value;
+    resource = null;
+  }
+
+  LabelType getLabelType() {
     return labelType;
   }
 
-  public String getKey() {
-    return key;
-  }
-
-  public LabelProperty getLabelProperty() {
-    return labelProperty;
+  public IResource getResource() {
+    return resource;
   }
 
   public String getValue() {

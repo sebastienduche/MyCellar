@@ -1,8 +1,7 @@
 package mycellar.actions;
 
 import mycellar.MyCellarImage;
-import mycellar.core.MyCellarObject;
-import mycellar.core.text.LabelProperty;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.WorksheetPanel;
@@ -13,29 +12,26 @@ import java.util.Collections;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.SHOWFILE_WORKSHEET;
 
 public final class OpenWorkSheetAction extends MyCellarAction {
 
-  private static final String LABEL = "ShowFile.Worksheet";
-  private final List<MyCellarObject> myCellarObjects;
-
   public OpenWorkSheetAction() {
-    this(null);
-  }
-
-  public OpenWorkSheetAction(List<MyCellarObject> list) {
-    super(LABEL, LabelProperty.SINGLE, MyCellarImage.WORK);
-    setDescriptionLabel(LABEL, LabelProperty.SINGLE);
-    myCellarObjects = list != null ? list : Collections.emptyList();
+    super(SHOWFILE_WORKSHEET, MyCellarImage.WORK);
+    setDescriptionLabel(SHOWFILE_WORKSHEET);
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    open(Collections.emptyList());
+  }
+
+  public static void open(List<IMyCellarObject> myCellarObjects) {
     SwingUtilities.invokeLater(() -> {
       final WorksheetPanel showWorksheet = ProgramPanels.createWorksheetPanel();
       showWorksheet.updateView();
       int tabIndex = ProgramPanels.findTab(MyCellarImage.WORK, null);
-      final String label = getLabel(LABEL);
+      final String label = getLabel(SHOWFILE_WORKSHEET);
       if (tabIndex != -1) {
         ProgramPanels.setTitleAt(tabIndex, label);
       } else {

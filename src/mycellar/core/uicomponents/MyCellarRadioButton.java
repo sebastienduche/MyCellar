@@ -2,13 +2,12 @@ package mycellar.core.uicomponents;
 
 import mycellar.core.IMyCellarComponent;
 import mycellar.core.text.LabelKey;
-import mycellar.core.text.LabelType;
 import mycellar.core.text.MyCellarLabelManagement;
+import mycellar.general.IResource;
 
 import javax.swing.JRadioButton;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
-import static mycellar.ProgramConstants.KEY_TYPE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -17,21 +16,24 @@ import static mycellar.ProgramConstants.KEY_TYPE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 05/05/22
+ * @version 1.1
+ * @since 14/03/25
  */
 public final class MyCellarRadioButton extends JRadioButton implements IMyCellarComponent {
 
   private final LabelKey labelKey;
 
-  public MyCellarRadioButton(String code, boolean selected) {
+  public MyCellarRadioButton(LabelKey labelKey, boolean selected) {
     super("", selected);
-    LabelType labelType = LabelType.LABEL;
-    if (code.startsWith(KEY_TYPE)) {
-      labelType = LabelType.NONE;
-      code = code.substring(KEY_TYPE.length());
-    }
-    labelKey = new LabelKey(labelType, code);
+    this.labelKey = labelKey;
+    updateText();
+    MyCellarLabelManagement.add(this);
+    setFont(FONT_PANEL);
+  }
+
+  public MyCellarRadioButton(IResource key, boolean selected) {
+    super("", selected);
+    labelKey = new LabelKey(key);
     updateText();
     MyCellarLabelManagement.add(this);
     setFont(FONT_PANEL);

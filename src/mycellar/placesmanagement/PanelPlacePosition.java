@@ -4,10 +4,9 @@ import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
+import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlacePosition;
-import mycellar.core.MyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
-import mycellar.core.text.LabelProperty;
 import mycellar.core.uicomponents.JModifyComboBox;
 import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarCheckBox;
@@ -27,12 +26,25 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.Serial;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.ADDVIN_CHOOSECELL;
+import static mycellar.general.ResourceKey.MAIN_NAME;
+import static mycellar.general.ResourceKey.MAIN_STORAGE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_COLUMN;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_LINE;
+import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
+import static mycellar.general.ResourceKey.PANELPLACE_BEFORE;
+import static mycellar.general.ResourceKey.PANELPLACE_CELLUSEDBY;
+import static mycellar.general.ResourceKey.PANELPLACE_SHELVENUMBER;
+import static mycellar.general.ResourceKey.PREVIEW;
+import static mycellar.general.ResourceKey.SEARCH_ALLBOTTLESINLINE;
+import static mycellar.general.ResourceKey.SEARCH_ALLBOTTLESINPART;
+import static mycellar.general.ResourceKey.SEARCH_ALLBOTTLESINPLACE;
+import static mycellar.general.ResourceKey.STORAGE_PREVIEW;
 
 /**
  * Titre : Cave &agrave; vin
@@ -41,8 +53,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 16/09/22
+ * @version 4.5
+ * @since 21/03/25
  */
 public class PanelPlacePosition extends JPanel implements IPlacePosition {
   @Serial
@@ -53,21 +65,21 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
   private final JModifyComboBox<ComboItem> line = new JModifyComboBox<>();
   private final JModifyComboBox<ComboItem> column = new JModifyComboBox<>();
   private final MyCellarSimpleLabel labelExist = new MyCellarSimpleLabel();
-  private final MyCellarButton preview = new MyCellarButton("Storage.Preview");
-  private final MyCellarLabel labelNumPlace = new MyCellarLabel("MyCellarFields.NumPlace");
-  private final MyCellarLabel labelLine = new MyCellarLabel("MyCellarFields.Line");
-  private final MyCellarLabel labelColumn = new MyCellarLabel("MyCellarFields.Column");
+  private final MyCellarButton preview = new MyCellarButton(STORAGE_PREVIEW);
+  private final MyCellarLabel labelNumPlace = new MyCellarLabel(MYCELLARFIELDS_NUMPLACE);
+  private final MyCellarLabel labelLine = new MyCellarLabel(MYCELLARFIELDS_LINE);
+  private final MyCellarLabel labelColumn = new MyCellarLabel(MYCELLARFIELDS_COLUMN);
 
-  private final MyCellarLabel beforeLabel = new MyCellarLabel("PanelPlace.Before"); // Pour la Modification
+  private final MyCellarLabel beforeLabel = new MyCellarLabel(PANELPLACE_BEFORE); // Pour la Modification
   private final MyCellarSimpleLabel previousPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
   private final MyCellarSimpleLabel previousNumPlaceLabel = new MyCellarSimpleLabel(); // Pour la Modification
   private final MyCellarSimpleLabel previousLineLabel = new MyCellarSimpleLabel(); // Pour la Modification
   private final MyCellarSimpleLabel previousColumnLabel = new MyCellarSimpleLabel(); // Pour la Modification
 
-  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox("Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPlace = getLabel("Search.AllBottlesInPlace", LabelProperty.PLURAL);
-  private final String labelAllObjectsInPart = getLabel("Search.AllBottlesInPart", LabelProperty.PLURAL);
-  private final String labelAllObjectsInLine = getLabel("Search.AllBottlesInLine", LabelProperty.PLURAL);
+  private final MyCellarCheckBox searchSeveralLocation = new MyCellarCheckBox(SEARCH_ALLBOTTLESINPLACE);
+  private final String labelAllObjectsInPlace = getLabel(SEARCH_ALLBOTTLESINPLACE);
+  private final String labelAllObjectsInPart = getLabel(SEARCH_ALLBOTTLESINPART);
+  private final String labelAllObjectsInLine = getLabel(SEARCH_ALLBOTTLESINLINE);
   private final MyCellarButton chooseCell;
   private final boolean columnComboVisible;
   private final boolean onlyComplexPlaces;
@@ -90,15 +102,15 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     this.onlyComplexPlaces = onlyComplexPlaces;
     this.checkExist = checkExist;
     this.showSeveralLocationCheck = showSeveralLocationCheck;
-    char previewChar = getLabel("PREVIEW").charAt(0);
+    char previewChar = getLabel(PREVIEW).charAt(0);
     preview.setMnemonic(previewChar);
     preview.addActionListener(this::preview_actionPerformed);
-    chooseCell = new MyCellarButton("AddVin.ChooseCell", new ChooseCellAction(this));
+    chooseCell = new MyCellarButton(ADDVIN_CHOOSECELL, new ChooseCellAction(this));
     setModificationDetectionActive(false);
     initPlaceCombo();
     setLayout(new MigLayout("", "[]30px[]30px[]30px[]30px[grow]30px[]", ""));
-    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel("Main.Storage")));
-    add(new MyCellarLabel("Main.Name"));
+    setBorder(BorderFactory.createTitledBorder(new EtchedBorder(EtchedBorder.LOWERED), getLabel(MAIN_STORAGE)));
+    add(new MyCellarLabel(MAIN_NAME));
     add(labelNumPlace);
     add(labelLine);
     if (columnComboVisible) {
@@ -215,7 +227,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     }
   }
 
-  public void setBeforeObjectLabels(MyCellarObject myCellarObject) {
+  public void setBeforeObjectLabels(IMyCellarObject myCellarObject) {
     setLineColumnVisible(myCellarObject.getAbstractPlace());
     previousPlaceLabel.setText(myCellarObject.getEmplacement());
     previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
@@ -436,14 +448,14 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
         searchSeveralLocation.setVisible(!abstractPlace.isSimplePlace());
         if (abstractPlace.isSimplePlace()) {
           severalLocationState = SeveralLocationState.PLACE;
-          labelNumPlace.setText(getLabel("PanelPlace.ShelveNumber"));
+          labelNumPlace.setText(getLabel(PANELPLACE_SHELVENUMBER));
           if (abstractPlace.getPartCount() == 1) {
             numPlace.setSelectedIndex(1);
           }
         } else {
           // Need the last place number for complex places
           numPlace.addItem(new ComboItem(abstractPlace.getLastPartNumber()));
-          labelNumPlace.setText(getLabel("MyCellarFields.NumPlace"));
+          labelNumPlace.setText(getLabel(MYCELLARFIELDS_NUMPLACE));
         }
         enablePlaceSelection(true);
         updateMultiCheckboxState();
@@ -558,7 +570,7 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
                   .withLine(nLine)
                   .withColumn(nColumn)
                   .build())
-              .ifPresent(myCellarObject -> labelExist.setText(MessageFormat.format(getLabel("PanelPlace.CellUsedBy"), MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
+              .ifPresent(myCellarObject -> labelExist.setText(getLabel(PANELPLACE_CELLUSEDBY, MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom()))));
         }
         Debug("Column_itemStateChanging... Done");
       }

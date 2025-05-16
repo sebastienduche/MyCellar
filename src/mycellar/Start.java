@@ -23,11 +23,10 @@ import static mycellar.ProgramConstants.SPACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 32.8
- * @since 24/10/22
+ * @version 32.9
+ * @since 19/03/25
  */
 public final class Start {
-// New bottle, set previous vineyard
 
   private Start() {
   }
@@ -55,11 +54,8 @@ public final class Start {
   }
 
   private static void checkProgramParameters(String[] args) {
-    String parameters = "";
+    String parameters = String.join(SPACE, args);
 
-    for (String arg : args) {
-      parameters = parameters.concat(arg + SPACE);
-    }
     if (!parameters.isBlank()) {
       int nIndex = parameters.indexOf(OPTIONS_PARAM);
       if (nIndex == -1) {

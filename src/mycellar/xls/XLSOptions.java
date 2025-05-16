@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.Serial;
 import java.util.List;
 
 import static mycellar.ProgramConstants.FONT_PANEL;
@@ -29,6 +30,14 @@ import static mycellar.core.MyCellarSettings.TEXT_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.TITLE_SIZE_XLS;
 import static mycellar.core.MyCellarSettings.XLS_TITLE;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceKey.MAIN_CANCEL;
+import static mycellar.general.ResourceKey.MAIN_EXPORTED;
+import static mycellar.general.ResourceKey.MAIN_OK;
+import static mycellar.general.ResourceKey.OPTIONS_BOLD;
+import static mycellar.general.ResourceKey.OPTIONS_TABLECOLUMNS;
+import static mycellar.general.ResourceKey.OPTIONS_TEXTSIZE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_TITLE;
+import static mycellar.general.ResourceKey.XLSOPTIONS_XLSTITLE;
 
 /**
  * Titre : Cave &agrave; vin
@@ -37,14 +46,15 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 24/05/22
+ * @version 2.6
+ * @since 13/03/25
  */
 public final class XLSOptions extends JDialog {
 
+  @Serial
   private static final long serialVersionUID = 5307297932934344545L;
   private final MyCellarSpinner titleSize = new MyCellarSpinner(1, 999);
-  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox("Options.Bold");
+  private final MyCellarCheckBox myCellarCheckBox = new MyCellarCheckBox(OPTIONS_BOLD);
   private final MyCellarCheckBox[] export;
   private final JTextField pdf_title = new JTextField();
   private final MyCellarSpinner textSize = new MyCellarSpinner(1, 999);
@@ -53,7 +63,7 @@ public final class XLSOptions extends JDialog {
   public XLSOptions() {
     setModal(true);
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    setTitle(getLabel("XLSOptions.Title"));
+    setTitle(getLabel(XLSOPTIONS_TITLE));
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -80,7 +90,7 @@ public final class XLSOptions extends JDialog {
     export = new MyCellarCheckBox[nb_colonnes];
     MyCellarSimpleLabel[] colonnes = new MyCellarSimpleLabel[nb_colonnes];
     for (int i = 0; i < nb_colonnes; i++) {
-      export[i] = new MyCellarCheckBox("Main.Exported");
+      export[i] = new MyCellarCheckBox(MAIN_EXPORTED);
       export[i].setSelected(1 == Program.getCaveConfigInt(SIZE_COL + i + "EXPORT_XLS", 0));
       colonnes[i] = new MyCellarSimpleLabel(columns.get(i).toString());
 
@@ -88,16 +98,16 @@ public final class XLSOptions extends JDialog {
     JPanel panel1 = new JPanel();
     panel1.setLayout(new MigLayout("", "[grow][grow]", ""));
     panel1.setFont(FONT_PANEL);
-    MyCellarButton valider = new MyCellarButton("Main.OK");
+    MyCellarButton valider = new MyCellarButton(MAIN_OK);
     valider.addActionListener(this::valider_actionPerformed);
-    MyCellarButton annuler = new MyCellarButton("Main.Cancel");
+    MyCellarButton annuler = new MyCellarButton(MAIN_CANCEL);
     annuler.addActionListener((e) -> dispose());
     MyCellarSimpleLabel MyCellarLabel6 = new MyCellarSimpleLabel("pt");
-    MyCellarLabel MyCellarLabel7 = new MyCellarLabel("Options.TextSize");
+    MyCellarLabel MyCellarLabel7 = new MyCellarLabel(OPTIONS_TEXTSIZE);
     MyCellarSimpleLabel MyCellarLabel8 = new MyCellarSimpleLabel("pt");
 
-    MyCellarLabel MyCellarLabel2 = new MyCellarLabel("XLSOptions.XLSTitle");
-    MyCellarLabel MyCellarLabel3 = new MyCellarLabel("Options.TextSize");
+    MyCellarLabel MyCellarLabel2 = new MyCellarLabel(XLSOPTIONS_XLSTITLE);
+    MyCellarLabel MyCellarLabel3 = new MyCellarLabel(OPTIONS_TEXTSIZE);
     panel.add(MyCellarLabel2, "split 2");
     panel.add(pdf_title, "grow, wrap");
     panel.add(MyCellarLabel3, "split 6");
@@ -114,7 +124,7 @@ public final class XLSOptions extends JDialog {
       panel1.add(export[i], "push, align right");
     }
     JScrollPane scrollPane = new JScrollPane(panel1);
-    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel("Options.TableColumns")));
+    scrollPane.setBorder(BorderFactory.createTitledBorder(getLabel(OPTIONS_TABLECOLUMNS)));
     add(scrollPane, "gaptop 15px, grow, wrap");
     add(valider, "split 2, center");
     add(annuler);

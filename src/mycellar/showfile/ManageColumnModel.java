@@ -20,8 +20,8 @@ import static mycellar.general.ResourceKey.MAIN_COLUMN;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 25/03/25
+ * @version 1.4
+ * @since 10/09/25
  */
 
 public class ManageColumnModel extends DefaultTableModel {
@@ -29,6 +29,7 @@ public class ManageColumnModel extends DefaultTableModel {
   private final List<MyCellarFields> list;
   private final List<Integer> selectedColumns = new LinkedList<>();
   private final Boolean[] values;
+  private boolean emptyCheck = true;
 
   public ManageColumnModel(List<MyCellarFields> list, List<?> cols) {
     this.list = list;
@@ -59,10 +60,7 @@ public class ManageColumnModel extends DefaultTableModel {
 
   @Override
   public String getColumnName(int column) {
-    if (column == 0) {
-      return "";
-    }
-    return getLabel(MAIN_COLUMN);
+    return column == 0 ? "" : getLabel(MAIN_COLUMN);
   }
 
   @Override
@@ -72,10 +70,7 @@ public class ManageColumnModel extends DefaultTableModel {
 
   @Override
   public int getRowCount() {
-    if (list == null) {
-      return 0;
-    }
-    return list.size();
+    return list == null ? 0 : list.size();
   }
 
   @Override
@@ -95,11 +90,15 @@ public class ManageColumnModel extends DefaultTableModel {
         selectedColumns.add(list.get(i).getIndex());
       }
     }
-    if (selectedColumns.isEmpty()) {
+    if (emptyCheck && selectedColumns.isEmpty()) {
       Erreur.showSimpleErreur(getError(ERROR_NEEDMINIMUM1COLUMN));
       values[row] = Boolean.TRUE;
       selectedColumns.add(list.get(row).getIndex());
     }
+  }
+
+  public void setEmptyCheck(boolean emptyCheck) {
+    this.emptyCheck = emptyCheck;
   }
 
   public List<Integer> getSelectedColumns() {

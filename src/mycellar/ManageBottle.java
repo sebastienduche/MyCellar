@@ -10,7 +10,6 @@ import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.PopupListener;
 import mycellar.core.uicomponents.TabEvent;
 import mycellar.general.ProgramPanels;
@@ -20,11 +19,11 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.vignobles.CountryVignobleController;
 
+import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.event.ActionEvent;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -47,8 +46,8 @@ import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEMODIFICATIONS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.1
- * @since 03/04/25
+ * @version 11.2
+ * @since 10/09/25
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -59,30 +58,23 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   public ManageBottle(IMyCellarObject bottle) {
     super();
     isEditionMode = true;
-    addButton = new MyCellarButton(MyCellarImage.SAVE);
-    cancelButton = new MyCellarButton(MyCellarImage.SAVE);
+    panelSave.initializeAddButton(MANAGEBOTTLE_SAVEMODIFICATIONS, new SavingAction());
+    panelSave.initializeSecondButton(MANAGEBOTTLE_SAVEEXITMODIFICATIONS, new SavingExitAction());
 
     try {
       Debug("Constructor with Bottle");
       panelGeneral.initializeForEdition();
       panelWineAttribute.initValues();
 
-      addButton.setText(getLabel(MANAGEBOTTLE_SAVEMODIFICATIONS));
-      cancelButton.setText(getLabel(MANAGEBOTTLE_SAVEEXITMODIFICATIONS));
-      addButton.setMnemonic(ajouterChar);
+      panelSave.setFirstButtonMnemonic(ajouterChar);
 
       PopupListener popupListener = new PopupListener();
       panelGeneral.setMouseListener(popupListener);
       panelWineAttribute.setMouseListener(popupListener);
       commentTextArea.addMouseListener(popupListener);
 
-      end.setForeground(Color.red);
-      end.setHorizontalAlignment(SwingConstants.CENTER);
       setLayout(new BorderLayout());
       add(new PanelMain(), BorderLayout.CENTER);
-
-      addButton.addActionListener((e) -> saving());
-      cancelButton.addActionListener((e) -> savingExit());
 
       setVisible(true);
       Debug("Constructor Done");
@@ -116,7 +108,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       initStatusAndTime();
 
       panelPlace.selectPlace(cellarObject.getPlacePosition());
-      end.setText(getLabel(ADDVIN_ENTERCHANGES));
+      panelSave.setEndText(getLabel(ADDVIN_ENTERCHANGES));
       resetModified();
     } catch (RuntimeException e) {
       Program.showException(e);
@@ -261,7 +253,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     }
 
     Program.putCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, panelVignobles.isKeepPreviousVineyardSelected());
-    end.setText(getLabel(ADDVIN_1ITEMMODIFIED), true);
+    panelSave.setEndText(getLabel(ADDVIN_1ITEMMODIFIED), true);
     ProgramPanels.updatePanelsWithoutBottles();
     panelWineAttribute.setModificationDetectionActive(false);
     updateStatusAndTime();
@@ -276,11 +268,11 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   private boolean askToReplaceBottle(IMyCellarObject bouteille, PlacePosition oldPlace) throws MyCellarException {
     if (!bouteille.equals(myCellarObject)) {
       Debug("ERROR: Not an empty place, Replace?");
-      String message = String.format("%s\n%s",getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee()), getError(ERROR_QUESTIONREPLACEIT));
+      String message = String.format("%s\n%s", getError(ERROR_ALREADYINSTORAGE, bouteille.getNom(), bouteille.getAnnee()), getError(ERROR_QUESTIONREPLACEIT));
       if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
         replaceWine(bouteille, oldPlace);
         panelPlace.clearLabelEnd();
-        end.setText(getLabel(ADDVIN_1ITEMADDED));
+        panelSave.setEndText(getLabel(ADDVIN_1ITEMADDED));
       } else {
         return false;
       }
@@ -304,8 +296,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
 
   private boolean runExit() {
     Debug("Processing Quit...");
-    addButton.setEnabled(false);
-    cancelButton.setEnabled(false);
+    panelSave.enableFirstButton(false);
+    panelSave.enableSecondButton(false);
 
     boolean modified = panelGeneral.isModified(myCellarObject);
     modified |= commentTextArea.isModified();
@@ -316,8 +308,8 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String message = String.format("%s %s", getError(ERROR_MODIFICATIONINCOMPLETED), getError(ERROR_CONFIRMQUIT));
     if (modified && JOptionPane.NO_OPTION == Erreur.showAskConfirmationMessage(message)) {
       Debug("Don't Quit.");
-      addButton.setEnabled(true);
-      cancelButton.setEnabled(true);
+      panelSave.enableFirstButton(true);
+      panelSave.enableSecondButton(true);
       return false;
     }
 
@@ -358,5 +350,27 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
       panelPlace.setListenersEnabled(true);
       Debug("updateView Done");
     });
+  }
+
+  class SavingAction extends AbstractAction {
+    public SavingAction() {
+      super("", MyCellarImage.SAVE);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      saving();
+    }
+  }
+
+  class SavingExitAction extends AbstractAction {
+    public SavingExitAction() {
+      super("", MyCellarImage.SAVE);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      savingExit();
+    }
   }
 }

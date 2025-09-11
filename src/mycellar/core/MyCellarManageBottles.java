@@ -1,10 +1,9 @@
 package mycellar.core;
 
 import mycellar.Program;
+import mycellar.core.panel.PanelSave;
 import mycellar.core.uicomponents.JModifyTextArea;
-import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlacePosition;
@@ -26,22 +25,20 @@ import static mycellar.general.ResourceKey.MAIN_COMMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 21/03/25
+ * @version 5.8
+ * @since 10/09/25
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
   protected final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
-  protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
   protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected final char ajouterChar = getLabel(AJOUTER).charAt(0);
+  protected final PanelSave panelSave = new PanelSave();
   protected int selectedPaneIndex;
-  protected MyCellarButton addButton;
-  protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
   protected IMyCellarObject myCellarObject = null;
   protected boolean severalItems = false; //Pour ListVin
@@ -69,13 +66,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
     panelPlace.setEditable(enable);
     panelGeneral.enableAll(enable);
     panelWineAttribute.enableAll(enable, severalItems, isEditionMode);
-    addButton.setEnabled(enable);
-    if (cancelButton != null) {
-      cancelButton.setEnabled(enable);
-    }
+    panelSave.enableAll(enable);
     commentTextArea.setEditable(enable);
     panelVignobles.enableAll(enable);
-    end.setVisible(enable);
   }
 
   public void setUpdateViewType(UpdateViewType updateViewType) {
@@ -150,9 +143,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       }
       add(labelComment, "growx, wrap");
       add(scrollPaneComment, "grow, wrap");
-      add(end, "center, hidemode 3, wrap");
-      add(addButton, "center, split 2");
-      add(cancelButton);
+      add(panelSave, "growx");
     }
   }
 

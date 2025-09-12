@@ -18,8 +18,8 @@ import static javax.swing.SwingConstants.CENTER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.1
- * @since 10/09/25
+ * @version 0.2
+ * @since 12/09/25
  */
 public class PanelSave extends JPanel {
 
@@ -42,7 +42,7 @@ public class PanelSave extends JPanel {
     end.setVisible(enable);
   }
 
-  public void initializeAddButton(ResourceKey resourceKey, AbstractAction action) {
+  public void initializeFirstButton(ResourceKey resourceKey, AbstractAction action) {
     firstButton = new MyCellarButton(resourceKey, action);
     add(firstButton, "center, split 2");
   }
@@ -50,6 +50,12 @@ public class PanelSave extends JPanel {
   public void setFirstButtonMnemonic(char c) {
     if (firstButton != null) {
       firstButton.setMnemonic(c);
+    }
+  }
+
+  public void setSecondButtonMnemonic(char c) {
+    if (secondButton != null) {
+      secondButton.setMnemonic(c);
     }
   }
 
@@ -86,5 +92,13 @@ public class PanelSave extends JPanel {
     if (firstButton != null) {
       firstButton.setText(label);
     }
+  }
+
+  public boolean isFirstButtonEnabled() {
+    return firstButton != null && firstButton.isEnabled();
+  }
+
+  public boolean isSecondButtonEnabled() {
+    return secondButton != null && secondButton.isEnabled();
   }
 }

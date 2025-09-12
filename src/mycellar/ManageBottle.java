@@ -58,7 +58,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
   public ManageBottle(IMyCellarObject bottle) {
     super();
     isEditionMode = true;
-    panelSave.initializeAddButton(MANAGEBOTTLE_SAVEMODIFICATIONS, new SavingAction());
+    panelSave.initializeFirstButton(MANAGEBOTTLE_SAVEMODIFICATIONS, new SavingAction());
     panelSave.initializeSecondButton(MANAGEBOTTLE_SAVEEXITMODIFICATIONS, new SavingExitAction());
 
     try {

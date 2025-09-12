@@ -82,7 +82,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     Debug("Constructor");
     myCellarObject = null;
     panelGeneral.setMyCellarObject(null);
-    panelSave.initializeAddButton(MAIN_ADD, new AddAction());
+    panelSave.initializeFirstButton(MAIN_ADD, new AddAction());
     panelSave.setFirstButtonMnemonic(ajouterChar);
     panelSave.initializeSecondButton(MAIN_CANCEL, new CancelAction());
 

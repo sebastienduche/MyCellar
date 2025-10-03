@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,8 +46,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 25/03/25
+ * @version 8.8
+ * @since 03/10/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -100,6 +101,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 
   public static final String NON_VINTAGE = "NV";
   public static final int NON_VINTAGE_INT = 9999;
+  @Serial
   private static final long serialVersionUID = 7443323147347096230L;
   private int id;
   @XmlElement(required = true)
@@ -472,16 +474,6 @@ public class Bouteille implements IMyCellarObject, Serializable {
     setLastModified(LocalDateTime.now());
   }
 
-  public static Bouteille cast(IMyCellarObject myCellarObject) {
-    assertObjectType(myCellarObject, Bouteille.class);
-    return (Bouteille) myCellarObject;
-  }
-
-  public static Bouteille castCopy(IMyCellarObject myCellarObject) {
-    assertObjectType(myCellarObject, Bouteille.class);
-    return new Bouteille((Bouteille) myCellarObject);
-  }
-
   @Override
   public void setModified() {
     setLastModified(LocalDateTime.now());
@@ -576,15 +568,6 @@ public class Bouteille implements IMyCellarObject, Serializable {
         break;
       case STATUS:
         setStatus(value);
-        break;
-      case DISK_NUMBER:
-      case DISK_COUNT:
-      case RATING:
-      case FILE:
-      case COMPOSER:
-      case ARTIST:
-      case SUPPORT:
-        Program.throwNotImplementedIfNotFor(this, Music.class);
         break;
       default:
         break;

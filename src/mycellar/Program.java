@@ -10,8 +10,6 @@ import mycellar.core.MyCellarFile;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyLinkedHashMap;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.common.bottle.BottleColor;
-import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -37,15 +35,13 @@ import mycellar.placesmanagement.places.SimplePlace;
 import mycellar.placesmanagement.places.SimplePlaceBuilder;
 import mycellar.vignobles.CountryVignobleController;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.Base64;
 import org.kohsuke.github.GHGistBuilder;
 import org.kohsuke.github.GitHub;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import java.awt.Desktop;
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -95,7 +91,6 @@ import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
-import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
@@ -112,8 +107,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.8
- * @since 03/04/25
+ * @version 29.9
+ * @since 03/10/25
  */
 
 public final class Program {
@@ -130,10 +125,9 @@ public final class Program {
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
   private static final List<AbstractPlace> PLACES = new LinkedList<>();
-  private static final List<IMyCellarObject> TRASH = new LinkedList<>();
+  private static final List<Bouteille> TRASH = new LinkedList<>();
   private static final List<MyCellarError> ERRORS = new LinkedList<>();
   private static final List<File> DIR_TO_DELETE = new LinkedList<>();
-  private static ProgramType programType = ProgramType.WINE;
   private static MyCellarFile openedFile = null;
   private static FileWriter oDebugFile = null;
   private static File debugFile = null;
@@ -154,23 +148,18 @@ public final class Program {
     LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
   }
 
-  public static void loadPropertiesAndSetProgramType() {
+  public static void loadPropertiesAndSetLanguage() {
     try {
-      Debug("Program: Initializing Configuration files and Program type");
-      if (loadProperties()) {
-        setProgramType(ProgramType.typeOf(getCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
-      } else {
-        setProgramType(ProgramType.typeOf(getGlobalConfigString(PROGRAM_TYPE, ProgramType.WINE.name())));
-      }
+      Debug("Program: Initializing Configuration files");
+      loadProperties();
     } catch (UnableToOpenFileException e) {
       showException(e);
     }
     String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
-    Debug("Program: Type of managed object: " + programType);
     setLanguage(Language.getLanguage(thelangue.charAt(0)));
   }
 
-  public static void initializeLanguageProgramType() {
+  public static void initializeLanguage() {
     try {
       Debug("Program: Initializing Language and Program type");
       LanguageFileLoader.getInstance().loadLanguageFiles(Language.ENGLISH);
@@ -180,28 +169,11 @@ public final class Program {
       }
 
       String thelangue = getGlobalConfigString(MyCellarSettings.GLOBAL_LANGUAGE, Language.FRENCH.toString());
-      Debug("Program: Type of managed object: " + programType);
       setLanguage(Language.getLanguage(thelangue.charAt(0)));
       cleanAndUpgrade();
     } catch (RuntimeException e) {
       showException(e);
     }
-  }
-
-  public static ProgramType getProgramType() {
-    return programType;
-  }
-
-  static void setProgramType(ProgramType value) {
-    programType = value;
-  }
-
-  public static boolean isMusicType() {
-    return programType == ProgramType.MUSIC;
-  }
-
-  public static boolean isWineType() {
-    return programType == ProgramType.WINE;
   }
 
   static void setNewFile(String file) {
@@ -224,11 +196,11 @@ public final class Program {
     return getGlobalDir() + CONFIG_INI;
   }
 
-  public static List<IMyCellarObject> getTrash() {
+  public static List<Bouteille> getTrash() {
     return TRASH;
   }
 
-  public static void setToTrash(IMyCellarObject b) {
+  public static void setToTrash(Bouteille b) {
     TRASH.add(b);
   }
 
@@ -236,7 +208,7 @@ public final class Program {
     return ERRORS;
   }
 
-  private static boolean loadProperties() throws UnableToOpenFileException {
+  private static void loadProperties() throws UnableToOpenFileException {
     try {
       String configFilePath = getConfigFilePath();
       File f = new File(configFilePath);
@@ -245,7 +217,7 @@ public final class Program {
           Debug("Program: ERROR: Unable to create file " + f.getAbsolutePath());
           throw new UnableToOpenFileException("Unable to create file " + f.getAbsolutePath());
         }
-        return false;
+        return;
       }
       FileInputStream inputStream = new FileInputStream(configFilePath);
       Properties properties = new Properties();
@@ -262,7 +234,6 @@ public final class Program {
     } catch (IOException e) {
       throw new UnableToOpenFileException("Load properties failed: " + e.getMessage());
     }
-    return true;
   }
 
   private static void loadGlobalProperties() throws UnableToOpenFileException {
@@ -299,9 +270,8 @@ public final class Program {
     int currentVersion = getCaveConfigInt(MyCellarSettings.VERSION, VERSION);
     Debug("Program: internal file version: " + currentVersion);
 
-    final String type = getCaveConfigString(PROGRAM_TYPE, "");
-    if (type.isBlank()) {
-      putCaveConfigString(PROGRAM_TYPE, ProgramType.WINE.name());
+    if (hasConfigCaveKey("PROGRAM_TYPE")) {
+      openedFile.getCaveConfig().remove("PROGRAM_TYPE");
     }
 
     Debug("Program: clean and upgrade... Done");
@@ -548,7 +518,6 @@ public final class Program {
     return PLACES.get(index);
   }
 
-
   public static boolean hasOnlyOnePlace() {
     return PLACES.size() == 1;
   }
@@ -639,7 +608,7 @@ public final class Program {
 
     openedFile = myCellarFile;
     openedFile.unzip();
-    loadPropertiesAndSetProgramType();
+    loadPropertiesAndSetLanguage();
     checkFileVersion();
 
     CountryListJaxb.init();
@@ -650,29 +619,8 @@ public final class Program {
       throw new UnableToOpenFileException("Error while reading objects.");
     }
 
-    if (isWineType()) {
-      MyCellarBottleContenance.load();
-      CountryVignobleController.load();
-
-      // TODO Remove version 78
-      Debug("Fixing the color of the bottles");
-      getStorage().getAllList()
-          .stream()
-          .map(o -> (Bouteille) o)
-          .filter(bouteille -> BottleColor.getColor(bouteille.getColor()).equals(BottleColor.NONE))
-          .forEach(bouteille -> {
-            final String color = bouteille.getColor();
-            if ("red".equalsIgnoreCase(color) || "rouge".equalsIgnoreCase(color)) {
-              bouteille.setColor(BottleColor.RED.name());
-            } else if ("white".equalsIgnoreCase(color) || "blanc".equalsIgnoreCase(color)) {
-              bouteille.setColor(BottleColor.WHITE.name());
-            } else if ((color != null && color.toLowerCase().startsWith("ros")) || "pink".equalsIgnoreCase(color)) {
-              bouteille.setColor(BottleColor.PINK.name());
-            }
-          });
-    } else if (isMusicType()) {
-      MyCellarMusicSupport.load();
-    }
+    MyCellarBottleContenance.load();
+    CountryVignobleController.load();
 
     PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
@@ -1184,12 +1132,10 @@ public final class Program {
     String[] fields = s.split(COLUMNS_SEPARATOR);
     for (String field : fields) {
       List<MyCellarFields> fieldsList = MyCellarFields.getFieldsList();
-      if (null != fieldsList) {
-        for (MyCellarFields f : fieldsList) {
-          if (f.name().equals(field)) {
-            cols.add(f);
-            break;
-          }
+      for (MyCellarFields f : fieldsList) {
+        if (f.name().equals(field)) {
+          cols.add(f);
+          break;
         }
       }
     }
@@ -1236,12 +1182,12 @@ public final class Program {
     return nextID;
   }
 
-  public static List<IMyCellarObject> getExistingMyCellarObjects(List<Integer> objectIds) {
-    return getStorage().getAllList().stream().filter(myCellarObject -> objectIds.contains(myCellarObject.getId())).collect(Collectors.toList());
+  public static List<Bouteille> getExistingMyCellarObjects(List<Integer> objectIds) {
+    return getStorage().getAllList().stream().filter(bottle -> objectIds.contains(bottle.getId())).collect(Collectors.toList());
   }
 
-  public static boolean isNotExistingMyCellarObject(IMyCellarObject myCellarObject) {
-    return getStorage().getAllList().stream().noneMatch(myCellarObject1 -> myCellarObject1.getId() == myCellarObject.getId());
+  public static boolean isNotExistingMyCellarObject(Bouteille bottle) {
+    return getStorage().getAllList().stream().noneMatch(obj -> obj.getId() == bottle.getId());
   }
 
   public static void exit() {
@@ -1254,20 +1200,6 @@ public final class Program {
 
   public static boolean isFileSavable() {
     return openedFile != null && openedFile.isFileSavable();
-  }
-
-  public static void throwNotImplementedIfNotFor(IMyCellarObject myCellarObject, Class<?> aClass) {
-    if (!aClass.isInstance(myCellarObject)) {
-      throw new NotImplementedException("Not implemented For " + aClass);
-    }
-  }
-
-  public static void throwNotImplementedForNewType() {
-    throw new NotImplementedException("Not implemented For New Type");
-  }
-
-  static void throwNotImplemented() {
-    throw new NotImplementedException("Not implemented yet!");
   }
 
   public static void addDefaultPlaceIfNeeded() {

@@ -1,11 +1,13 @@
 package mycellar.core;
 
-import javax.swing.SwingWorker;
+import mycellar.Bouteille;
+
+import javax.swing.*;
 import java.util.List;
 
-public class MyCellarObjectSwingWorker extends SwingWorker<List<IMyCellarObject>, IMyCellarObject> {
+public class MyCellarObjectSwingWorker extends SwingWorker<List<Bouteille>, Bouteille> {
   @Override
-  protected List<IMyCellarObject> doInBackground() {
+  protected List<Bouteille> doInBackground() {
     return null;
   }
 }

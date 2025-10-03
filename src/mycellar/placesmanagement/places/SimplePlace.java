@@ -1,7 +1,7 @@
 package mycellar.placesmanagement.places;
 
+import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,15 +15,15 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.9
- * @since 21/03/25
+ * @version 1.0
+ * @since 03/10/25
  */
 public final class SimplePlace extends AbstractPlace {
 
   private int partNumberIncrement;
   private boolean limited;
   private int maxItemCount;
-  private Map<Integer, ArrayList<IMyCellarObject>> storage;
+  private Map<Integer, ArrayList<Bouteille>> storage;
 
   public SimplePlace(String name, int partCount) {
     super(name);
@@ -79,7 +79,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public boolean addObject(IMyCellarObject myCellarObject) {
+  public boolean addObject(Bouteille myCellarObject) {
     if (myCellarObject.hasNoStatus()) {
       myCellarObject.setCreated();
     }
@@ -103,9 +103,9 @@ public final class SimplePlace extends AbstractPlace {
    *
    * @param num_empl int: num&eacute;ro d'emplacement (0...n)
    * @param index    int: index de l'objet (0...n)
-   * @return IMyCellarObject
+   * @return Bouteille
    */
-  public IMyCellarObject getObjectAt(int num_empl, int index) {
+  public Bouteille getObjectAt(int num_empl, int index) {
     return storage.get(num_empl).get(index);
   }
 
@@ -132,7 +132,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void updateToStock(IMyCellarObject myCellarObject) {
+  public void updateToStock(Bouteille myCellarObject) {
     storage.get(myCellarObject.getNumLieu() - partNumberIncrement).add(myCellarObject);
   }
 
@@ -141,7 +141,7 @@ public final class SimplePlace extends AbstractPlace {
   }
 
   @Override
-  public void clearStorage(IMyCellarObject myCellarObject, PlacePosition place) {
+  public void clearStorage(Bouteille myCellarObject, PlacePosition place) {
     storage.get(place.getPart() - partNumberIncrement).remove(myCellarObject);
   }
 

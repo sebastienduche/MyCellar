@@ -1,6 +1,7 @@
 package mycellar.general;
 
 import mycellar.AddVin;
+import mycellar.Bouteille;
 import mycellar.CreateTablePanel;
 import mycellar.Export;
 import mycellar.ITabListener;
@@ -14,7 +15,6 @@ import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
@@ -34,10 +34,8 @@ import mycellar.showfile.TrashPanel;
 import mycellar.showfile.WorksheetPanel;
 import mycellar.vignobles.VineyardPanel;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JTabbedPane;
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -85,8 +83,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 21/03/25
+ * @version 2.5
+ * @since 03/10/25
  */
 public class ProgramPanels {
 
@@ -410,36 +408,36 @@ public class ProgramPanels {
     return object;
   }
 
-  public static void showBottle(IMyCellarObject myCellarObject, boolean edit) {
+  public static void showBottle(Bouteille bottle, boolean edit) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getBottle().equals(bottle)) {
             TABBED_PANE.setSelectedIndex(i);
             return;
           }
         }
-        ManageBottle manage = new ManageBottle(myCellarObject);
+        ManageBottle manage = new ManageBottle(bottle);
         manage.enableAll(edit);
-        UPDATABLE_MYCELLAROBJECTS.put(myCellarObject.getId(), manage);
-        String bottleName = myCellarObject.getNom();
+        UPDATABLE_MYCELLAROBJECTS.put(bottle.getId(), manage);
+        String bottleName = bottle.getNom();
         if (bottleName.length() > 30) {
-          bottleName = String.format("%s%s",bottleName.substring(0, 30),THREE_DOTS);
+          bottleName = String.format("%s%s", bottleName.substring(0, 30), THREE_DOTS);
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
       }
     }.execute();
   }
 
-  public static void removeObjectTab(IMyCellarObject myCellarObject) {
+  public static void removeObjectTab(Bouteille bottle) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getBottle().equals(bottle)) {
             removeTabAt(i);
             return;
           }

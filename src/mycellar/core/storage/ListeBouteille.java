@@ -7,9 +7,7 @@
 package mycellar.core.storage;
 
 import mycellar.Bouteille;
-import mycellar.Music;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,8 +40,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 21/03/25
+ * @version 1.8
+ * @since 03/10/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -65,7 +63,6 @@ import java.util.LinkedList;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "bouteille",
-    "music"
 })
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
@@ -73,9 +70,6 @@ public class ListeBouteille {
 
   @XmlElement(name = "Bouteille")
   LinkedList<Bouteille> bouteille;
-
-  @XmlElement
-  LinkedList<Music> music;
 
   public static boolean loadXML() {
     Debug("Loading JAXB File");
@@ -122,17 +116,6 @@ public class ListeBouteille {
         listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
       }
     }
-
-    NodeList musics = doc.getElementsByTagName("Music");
-
-    for (int i = 0; i < musics.getLength(); i++) {
-      Node node = musics.item(i);
-
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element musicElem = (Element) node;
-        listeBouteille.getMusic().add(Music.fromXml(musicElem));
-      }
-    }
     Program.getStorage().setListMyCellarObject(listeBouteille);
     Debug("Loading Manually File Done");
   }
@@ -167,7 +150,7 @@ public class ListeBouteille {
    *
    * <p>
    * This accessor method returns a reference to the live list,
-   * not a snapshot. Therefore any modification you make to the
+   * not a snapshot. Therefore, any modification you make to the
    * returned list will be present inside the JAXB object.
    * This is why there is not a <CODE>set</CODE> method for the bouteille property.
    *
@@ -189,49 +172,19 @@ public class ListeBouteille {
     return bouteille;
   }
 
-  public LinkedList<Music> getMusic() {
-    if (music == null) {
-      music = new LinkedList<>();
-    }
-    return music;
-  }
-
   void resetBouteille() {
     bouteille = null;
   }
 
-  void resetMusic() {
-    music = null;
-  }
-
   public int getItemsCount() {
-    if (Program.isWineType()) {
-      return bouteille.size();
-    }
-    if (Program.isMusicType()) {
-      return music.size();
-    }
-    Program.throwNotImplementedForNewType();
-    return -1;
+    return bouteille.size();
   }
 
-  public boolean add(IMyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille b) {
-      return getBouteille().add(b);
-    } else if (myCellarObject instanceof Music m) {
-      return getMusic().add(m);
-    }
-    Program.throwNotImplementedForNewType();
-    return false;
+  public boolean add(Bouteille bottle) {
+    return getBouteille().add(bottle);
   }
 
-  public boolean remove(IMyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille b) {
-      return getBouteille().remove(b);
-    } else if (myCellarObject instanceof Music m) {
-      return getMusic().remove(m);
-    }
-    Program.throwNotImplementedForNewType();
-    return false;
+  public boolean remove(Bouteille bottle) {
+    return getBouteille().remove(bottle);
   }
 }

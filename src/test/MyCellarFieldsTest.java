@@ -83,50 +83,6 @@ class MyCellarFieldsTest {
     assertEquals("igp", MyCellarFields.getValue(MyCellarFields.IGP, bouteille));
     assertEquals("", MyCellarFields.getValue(MyCellarFields.EMPTY, bouteille));
     assertEquals("", MyCellarFields.getValue(MyCellarFields.USELESS, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.STYLE, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.COMPOSER, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.ARTIST, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.SUPPORT, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.DISK_COUNT, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.DISK_NUMBER, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.RATING, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.FILE, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.EXTERNAL_ID, bouteille));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.ALBUM, bouteille));
-  }
-
-  @Test
-  void testGetValueMusic() {
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.NAME, null));
-    assertEquals("music", MyCellarFields.getValue(MyCellarFields.NAME, music));
-    assertEquals("armoire1x3x3", MyCellarFields.getValue(MyCellarFields.PLACE, music));
-    assertEquals("1", MyCellarFields.getValue(MyCellarFields.NUM_PLACE, music));
-    assertEquals("2", MyCellarFields.getValue(MyCellarFields.LINE, music));
-    assertEquals("3", MyCellarFields.getValue(MyCellarFields.COLUMN, music));
-    assertEquals("CD", MyCellarFields.getValue(MyCellarFields.TYPE, music));
-    assertEquals("2018", MyCellarFields.getValue(MyCellarFields.YEAR, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.COLOR, music));
-    assertEquals("comment", MyCellarFields.getValue(MyCellarFields.COMMENT, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.MATURITY, music));
-    assertEquals(BottlesStatus.TOCHECK.toString(), MyCellarFields.getValue(MyCellarFields.STATUS, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.PARKER, music));
-    assertEquals("123", MyCellarFields.getValue(MyCellarFields.PRICE, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.COUNTRY, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.VINEYARD, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.AOC, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.IGP, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.EMPTY, music));
-    assertEquals("", MyCellarFields.getValue(MyCellarFields.USELESS, music));
-    assertEquals("genre", MyCellarFields.getValue(MyCellarFields.STYLE, music));
-    assertEquals("composer", MyCellarFields.getValue(MyCellarFields.COMPOSER, music));
-    assertEquals("artist", MyCellarFields.getValue(MyCellarFields.ARTIST, music));
-    assertEquals("CD", MyCellarFields.getValue(MyCellarFields.SUPPORT, music));
-    assertEquals("2", MyCellarFields.getValue(MyCellarFields.DISK_COUNT, music));
-    assertEquals("1", MyCellarFields.getValue(MyCellarFields.DISK_NUMBER, music));
-    assertEquals("5", MyCellarFields.getValue(MyCellarFields.RATING, music));
-    assertEquals("file", MyCellarFields.getValue(MyCellarFields.FILE, music));
-    assertEquals("999", MyCellarFields.getValue(MyCellarFields.EXTERNAL_ID, music));
-    assertEquals("album", MyCellarFields.getValue(MyCellarFields.ALBUM, music));
   }
 
   @Test
@@ -175,8 +131,6 @@ class MyCellarFieldsTest {
     assertTrue(MyCellarFields.isRealField(MyCellarFields.IGP));
     assertFalse(MyCellarFields.isRealField(MyCellarFields.EMPTY));
     assertFalse(MyCellarFields.isRealField(MyCellarFields.USELESS));
-    assertTrue(MyCellarFields.isRealField(MyCellarFields.EXTERNAL_ID));
-    assertTrue(MyCellarFields.isRealField(MyCellarFields.ALBUM));
   }
 
   @Test

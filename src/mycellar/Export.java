@@ -28,19 +28,10 @@ import mycellar.xls.XLSOptions;
 import net.miginfocom.swing.MigLayout;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -101,8 +92,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.5
- * @since 10/09/25
+ * @version 12.6
+ * @since 03/10/25
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -121,15 +112,15 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
   private final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
   private final MyCellarButton openIt = new MyCellarButton(MAIN_OPENTHEFILE);
   private final MyCellarButton settings = new MyCellarButton(MAIN_SETTINGSMENU, new SettingsAction());
-  private final List<? extends IMyCellarObject> myCellarObjects;
+  private final List<Bouteille> bottles;
 
   public Export() {
-    myCellarObjects = Program.getStorage().getAllList();
+    bottles = Program.getStorage().getAllList();
     initialize();
   }
 
-  public Export(final List<IMyCellarObject> myCellarObjects) {
-    this.myCellarObjects = myCellarObjects;
+  public Export(final List<Bouteille> bottles) {
+    this.bottles = bottles;
     initialize();
   }
 
@@ -323,7 +314,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       ListeBouteille liste = new ListeBouteille();
-      myCellarObjects.forEach(liste::add);
+      bottles.forEach(liste::add);
       boolean ok = ListeBouteille.writeXML(liste, aFile);
       if (ok) {
         end.setText(getLabel(EXPORT_ENDED));
@@ -340,7 +331,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         return;
       }
 
-      if (PlaceUtils.writeHTML(aFile, myCellarObjects, Program.getHTMLColumns())) {
+      if (PlaceUtils.writeHTML(aFile, bottles, Program.getHTMLColumns())) {
         end.setText(getLabel(EXPORT_ENDED));
         Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()));
         openIt.setEnabled(true);
@@ -357,7 +348,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       progressBar.setVisible(true);
-      if (PlaceUtils.writeCSV(aFile, myCellarObjects, progressBar)) {
+      if (PlaceUtils.writeCSV(aFile, bottles, progressBar)) {
         end.setText(getLabel(EXPORT_ENDED));
         Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()),
             getLabel(EXPORT_CSVINFO));
@@ -373,7 +364,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
       }
 
       progressBar.setVisible(true);
-      if (PlaceUtils.writeXLS(aFile, myCellarObjects, false, progressBar)) {
+      if (PlaceUtils.writeXLS(aFile, bottles, false, progressBar)) {
         end.setText(getLabel(EXPORT_ENDED));
         Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, aFile.getAbsolutePath()));
         openIt.setEnabled(true);
@@ -391,7 +382,7 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
         return;
       }
 
-      if (exportToPDF(myCellarObjects, aFile)) {
+      if (exportToPDF(bottles, aFile)) {
         end.setText(getLabel(EXPORT_ENDED));
         openIt.setEnabled(true);
       } else {

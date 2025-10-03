@@ -12,13 +12,7 @@ import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.frame.MainFrame;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
@@ -38,8 +32,8 @@ import static mycellar.general.ResourceKey.MAIN_DELETE;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.8
- * @since 13/03/25
+ * @version 12.9
+ * @since 03/10/25
  */
 
 public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,9 +70,10 @@ public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMy
   }
 
 
+  @Override
   protected void refresh() {
     SwingUtilities.invokeLater(() -> {
-      model.setMyCellarObjects(Program.getStorage().getAllList());
+      model.setBottles(Program.getStorage().getAllList());
       labelCount.setValue(Integer.toString(model.getRowCount()));
     });
   }

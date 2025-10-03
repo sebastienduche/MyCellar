@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.general.ProgramPanels;
 
@@ -34,8 +33,8 @@ import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 21/03/25
+ * @version 3.8
+ * @since 03/10/25
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -91,15 +90,7 @@ class TableHistoryValues extends AbstractTableModel {
         return h.getLocaleDate();
       case LABEL:
       case TYPE: {
-        IMyCellarObject b;
-        if (Program.isMusicType()) {
-          b = h.getMusic();
-        } else if (Program.isWineType()) {
-          b = h.getBouteille();
-        } else {
-          b = null;
-          Program.throwNotImplemented();
-        }
+        Bouteille b = h.getBouteille();
         if (b == null) {
           return "";
         }
@@ -179,30 +170,15 @@ class TableHistoryValues extends AbstractTableModel {
     switch (column) {
       case ACTION:
         History h = displayList.get(row);
-        if (Program.isWineType()) {
-          IMyCellarObject bottle = h.getBouteille();
-          if (h.isDeleted()) {
-            ProgramPanels.showBottle(bottle, false);
-          } else {
-            Program.Debug("Bottle Get ID = " + bottle.getId());
-            Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
-                .ifPresentOrElse(
-                    bouteille -> ProgramPanels.showBottle(bouteille, true),
-                    () -> ProgramPanels.showBottle(bottle, false));
-          }
-        } else if (Program.isMusicType()) {
-          IMyCellarObject music = h.getMusic();
-          if (h.isDeleted()) {
-            ProgramPanels.showBottle(music, false);
-          } else {
-            Program.Debug("Music Get ID = " + music.getId());
-            Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == music.getId()).findFirst()
-                .ifPresentOrElse(
-                    m -> ProgramPanels.showBottle(m, true),
-                    () -> ProgramPanels.showBottle(music, false));
-          }
+        Bouteille bottle = h.getBouteille();
+        if (h.isDeleted()) {
+          ProgramPanels.showBottle(bottle, false);
         } else {
-          Program.throwNotImplemented();
+          Program.Debug("Bottle Get ID = " + bottle.getId());
+          Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
+              .ifPresentOrElse(
+                  bouteille -> ProgramPanels.showBottle(bouteille, true),
+                  () -> ProgramPanels.showBottle(bottle, false));
         }
         break;
       case SELECT:
@@ -278,14 +254,8 @@ class TableHistoryValues extends AbstractTableModel {
     }
   }
 
-  IMyCellarObject getObject(int row) {
-    if (Program.isMusicType()) {
-      return displayList.get(row).getMusic();
-    } else if (Program.isWineType()) {
-      return displayList.get(row).getBouteille();
-    }
-    Program.throwNotImplementedForNewType();
-    return null;
+  Bouteille getObject(int row) {
+    return displayList.get(row).getBouteille();
   }
 
   boolean isDeleted(int row) {

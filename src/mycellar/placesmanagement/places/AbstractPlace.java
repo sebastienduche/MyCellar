@@ -1,7 +1,7 @@
 package mycellar.placesmanagement.places;
 
+import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 
 import java.util.Objects;
@@ -13,8 +13,8 @@ import java.util.Objects;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 21/03/25
+ * @version 0.8
+ * @since 03/10/25
  */
 public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstractPlace {
 
@@ -53,14 +53,14 @@ public abstract class AbstractPlace implements Comparable<AbstractPlace>, IAbstr
   }
 
   @Override
-  public void removeObject(IMyCellarObject myCellarObject) throws MyCellarException {
-    clearStorage(myCellarObject);
-    Program.getStorage().deleteWine(myCellarObject);
+  public void removeObject(Bouteille bottle) throws MyCellarException {
+    clearStorage(bottle);
+    Program.getStorage().deleteWine(bottle);
   }
 
   @Override
-  public void clearStorage(IMyCellarObject myCellarObject) {
-    clearStorage(myCellarObject, myCellarObject.getPlacePosition());
+  public void clearStorage(Bouteille bottle) {
+    clearStorage(bottle, bottle.getPlacePosition());
   }
 
   public int getCountCellUsed(PlacePosition place) {

@@ -5,7 +5,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Filtre;
 import mycellar.ITabListener;
-import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Options;
@@ -13,13 +12,10 @@ import mycellar.Program;
 import mycellar.actions.OpenShowErrorsAction;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.MyCellarException;
-import mycellar.core.exceptions.NoITunesFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelKey;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -42,15 +38,8 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
@@ -94,7 +83,6 @@ import static mycellar.general.ResourceErrorKey.ERROR_NOFIELDSELECTED;
 import static mycellar.general.ResourceErrorKey.ERROR_NOSTORAGEINFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTANEXCELFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_NOTAXMLFILE;
-import static mycellar.general.ResourceErrorKey.ERROR_NOTITUNESFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_REQUIRESTORAGENAME;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTANEXCELFILE;
 import static mycellar.general.ResourceErrorKey.ERROR_SELECTCOLUMNFORBOTTLEIMPORT;
@@ -117,7 +105,6 @@ import static mycellar.general.ResourceKey.IMPORT_ERROR;
 import static mycellar.general.ResourceKey.IMPORT_FILETYPE;
 import static mycellar.general.ResourceKey.IMPORT_FILLSTORAGENAME;
 import static mycellar.general.ResourceKey.IMPORT_INPROGRESS;
-import static mycellar.general.ResourceKey.IMPORT_ITUNES;
 import static mycellar.general.ResourceKey.IMPORT_PATH;
 import static mycellar.general.ResourceKey.IMPORT_SELECTSTORAGENAME;
 import static mycellar.general.ResourceKey.IMPORT_SEPARATOR;
@@ -140,8 +127,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.0
- * @since 03/04/25
+ * @version 17.1
+ * @since 03/10/25
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -149,7 +136,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private final MyCellarRadioButton type_txt = new MyCellarRadioButton(IMPORT_TXTCSV, true);
   private final MyCellarRadioButton type_xls = new MyCellarRadioButton(IMPORT_XLS, false);
   private final MyCellarRadioButton type_xml = new MyCellarRadioButton(FILTER_XML, false);
-  private final MyCellarRadioButton type_iTunes = new MyCellarRadioButton(IMPORT_ITUNES, false);
   private final char importChar = getLabel(IMPORT).charAt(0);
   private final char ouvrirChar = getLabel(OUVRIR).charAt(0);
   private final List<MyCellarComboBox<MyCellarFields>> comboBoxList = new ArrayList<>(IMPORT_COMBO_COUNT);
@@ -179,10 +165,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     checkboxGroup1.add(type_txt);
     checkboxGroup1.add(type_xls);
     checkboxGroup1.add(type_xml);
-    if (Program.isMusicType()) {
-      checkboxGroup1.add(type_iTunes);
-      type_iTunes.addItemListener(this::type_itemStateChanged);
-    }
     type_txt.addItemListener(this::type_itemStateChanged);
     openItButton.addActionListener(this::openit_actionPerformed);
     browseButton.addActionListener(this::parcourir_actionPerformed);
@@ -206,9 +188,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     panelFileType.add(type_txt);
     panelFileType.add(type_xls, "gapleft 15px");
     panelFileType.add(type_xml, "gapleft 15px");
-    if (Program.isMusicType()) {
-      panelFileType.add(type_iTunes, "gapleft 15px");
-    }
     panelFileType.setBorder(BorderFactory.createTitledBorder(getLabel(IMPORT_FILETYPE)));
     panelType.add(panelFileType);
     JPanel panelSeparator = new JPanel();
@@ -270,7 +249,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     resetLabelProgress();
     label2.setVisible(type_txt.isSelected());
     separatorCombo.setVisible(type_txt.isSelected());
-    boolean typeXml = type_xml.isSelected() || type_iTunes.isSelected();
+    boolean typeXml = type_xml.isSelected();
     comboBoxList.forEach(c -> c.setVisible(!typeXml));
     labelTitle.setVisible(!typeXml);
     labelTitle2.setVisible(!typeXml);
@@ -326,7 +305,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLSX);
       boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XLS);
       boiteFichier.addChoosableFileFilter(Filtre.FILTRE_ODS);
-    } else if (type_xml.isSelected() || type_iTunes.isSelected()) {
+    } else if (type_xml.isSelected()) {
       boiteFichier.addChoosableFileFilter(Filtre.FILTRE_XML);
     }
 
@@ -446,11 +425,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
       if (type_xml.isSelected()) {
         importFromXML(f);
-        return;
-      }
-
-      if (type_iTunes.isSelected()) {
-        importFromITunes(f);
         return;
       }
 
@@ -575,7 +549,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           int maxNumPlace = 0;
           while (line != null) {
             String[] readValues = line.split(fieldSeparator);
-            IMyCellarObject bottle = createObject();
+            Bouteille bottle = new Bouteille();
             bottle.updateID();
             for (int i = 0; i < readValues.length; i++) {
               String value = removeQuotes(readValues[i]);
@@ -609,11 +583,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
       Program.showException(exc);
     }
     if (PlaceUtils.putTabStock()) {
-      if (Program.isMusicType()) {
-        MyCellarMusicSupport.load();
-      } else {
-        MyCellarBottleContenance.load();
-      }
+      MyCellarBottleContenance.load();
     } else {
       OpenShowErrorsAction.open();
     }
@@ -622,17 +592,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
 
   private void setLabelInProgress() {
     label_progression.setText(getLabel(IMPORT_INPROGRESS));
-  }
-
-  private IMyCellarObject createObject() {
-    if (Program.isWineType()) {
-      return new Bouteille();
-    }
-    if (Program.isMusicType()) {
-      return new Music();
-    }
-    Program.throwNotImplementedForNewType();
-    return null;
   }
 
   private void displayImportDone() {
@@ -668,7 +627,7 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           continue;
         }
         if (count > 0) {
-          IMyCellarObject myCellarObject = createObject();
+          Bouteille myCellarObject = new Bouteille();
           myCellarObject.updateID();
 
           int i = 0;
@@ -714,23 +673,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
   private void importFromXML(File f) {
     setLabelInProgress();
     ListeBouteille.loadXML(f);
-    showImportDone();
-  }
-
-  private void importFromITunes(File f) {
-    setLabelInProgress();
-    final List<Music> list;
-    try {
-      list = new ItunesLibraryImporter().loadItunesLibrary(f);
-    } catch (NoITunesFileException e) {
-      Debug("ERROR:" + e);
-      Erreur.showSimpleErreur(getError(ERROR_NOTITUNESFILE));
-      resetLabelProgress();
-      importe.setEnabled(true);
-      return;
-    }
-    list.forEach(music -> music.setEmplacement(Program.DEFAULT_PLACE.getName()));
-    Program.getStorage().getListMyCellarObject().getMusic().addAll(list);
     showImportDone();
   }
 

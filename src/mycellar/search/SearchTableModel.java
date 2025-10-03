@@ -1,8 +1,8 @@
 package mycellar.search;
 
+import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.general.ProgramPanels;
 
 import javax.swing.table.AbstractTableModel;
@@ -26,8 +26,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 21/03/25
+ * @version 4.1
+ * @since 03/10/25
  */
 class SearchTableModel extends AbstractTableModel {
 
@@ -43,7 +43,7 @@ class SearchTableModel extends AbstractTableModel {
       getLabel(MYCELLARFIELDS_LINE), getLabel(MYCELLARFIELDS_COLUMN), "");
 
   private final List<Boolean> listBoolean = new ArrayList<>();
-  private final List<IMyCellarObject> datas = new ArrayList<>();
+  private final List<Bouteille> datas = new ArrayList<>();
 
   @Override
   public int getRowCount() {
@@ -68,20 +68,20 @@ class SearchTableModel extends AbstractTableModel {
       Program.Debug("SearchTableModel: Error listBoolean index " + row + " > " + datas.size());
       return "";
     }
-    final IMyCellarObject myCellarObject = datas.get(row);
+    var bottle = datas.get(row);
     return switch (column) {
       case ETAT -> listBoolean.get(row);
-      case 1 -> MyCellarUtils.convertStringFromHTMLString(myCellarObject.getNom());
-      case 2 -> myCellarObject.getAnnee();
+      case 1 -> MyCellarUtils.convertStringFromHTMLString(bottle.getNom());
+      case 2 -> bottle.getAnnee();
       case 3 -> {
-        if (myCellarObject.isInTemporaryStock()) {
+        if (bottle.isInTemporaryStock()) {
           yield getLabel(BOUTEILLE_TEMPORARYPLACE);
         }
-        yield myCellarObject.getEmplacement();
+        yield bottle.getEmplacement();
       }
-      case 4 -> Integer.toString(myCellarObject.getNumLieu());
-      case 5 -> Integer.toString(myCellarObject.getLigne());
-      case 6 -> Integer.toString(myCellarObject.getColonne());
+      case 4 -> Integer.toString(bottle.getNumLieu());
+      case 5 -> Integer.toString(bottle.getLigne());
+      case 6 -> Integer.toString(bottle.getColonne());
       case SHOW -> Boolean.FALSE;
       default -> "";
     };
@@ -109,9 +109,9 @@ class SearchTableModel extends AbstractTableModel {
     }
   }
 
-  void addObjects(List<IMyCellarObject> myCellarObjects) {
-    if (myCellarObjects != null) {
-      myCellarObjects.forEach(myCellarObject -> {
+  void addObjects(List<Bouteille> bottles) {
+    if (bottles != null) {
+      bottles.forEach(myCellarObject -> {
         datas.add(myCellarObject);
         listBoolean.add(Boolean.FALSE);
       });
@@ -125,25 +125,25 @@ class SearchTableModel extends AbstractTableModel {
     fireTableDataChanged();
   }
 
-  void removeObject(IMyCellarObject myCellarObject) {
-    int index = datas.indexOf(myCellarObject);
+  void removeObject(Bouteille bottle) {
+    int index = datas.indexOf(bottle);
     if (index != -1) {
-      datas.remove(myCellarObject);
+      datas.remove(bottle);
       listBoolean.remove(index);
       fireTableDataChanged();
     }
   }
 
-  List<IMyCellarObject> getDatas() {
+  List<Bouteille> getDatas() {
     return datas;
   }
 
-  boolean doesNotContain(IMyCellarObject b) {
+  boolean doesNotContain(Bouteille b) {
     return !datas.contains(b);
   }
 
-  List<IMyCellarObject> getSelectedObjects() {
-    List<IMyCellarObject> selectedObjects = new ArrayList<>();
+  List<Bouteille> getSelectedObjects() {
+    List<Bouteille> selectedObjects = new ArrayList<>();
     for (int i = 0; i < listBoolean.size(); i++) {
       if (listBoolean.get(i)) {
         selectedObjects.add(datas.get(i));

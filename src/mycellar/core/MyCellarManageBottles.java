@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.panel.PanelSave;
 import mycellar.core.uicomponents.JModifyTextArea;
@@ -10,9 +11,7 @@ import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.PlacePosition;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.AJOUTER;
@@ -25,8 +24,8 @@ import static mycellar.general.ResourceKey.MAIN_COMMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.8
- * @since 10/09/25
+ * @version 5.9
+ * @since 03/10/25
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
@@ -40,7 +39,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   protected final PanelSave panelSave = new PanelSave();
   protected int selectedPaneIndex;
   protected PanelVignobles panelVignobles;
-  protected IMyCellarObject myCellarObject = null;
+  protected Bouteille bottle = null;
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
 
@@ -57,9 +56,9 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   protected void initializeExtraProperties() {
     enableAll(true);
     panelGeneral.initializeExtraProperties();
-    panelWineAttribute.initializeExtraProperties(myCellarObject, severalItems, isEditionMode);
+    panelWineAttribute.initializeExtraProperties(bottle, severalItems, isEditionMode);
 
-    commentTextArea.setText(myCellarObject.getComment());
+    commentTextArea.setText(bottle.getComment());
   }
 
   public void enableAll(boolean enable) {
@@ -135,12 +134,8 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       add(panelGeneral, "growx, wrap");
       add(panelPlace, "growx, wrap");
       add(panelWineAttribute, "growx, split 2");
-      if (Program.isWineType()) {
-        add(panelVignobles, "growx, wrap");
-        panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
-      } else {
-        add(new JPanel(), "growx, wrap");
-      }
+      add(panelVignobles, "growx, wrap");
+      panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
       add(labelComment, "growx, wrap");
       add(scrollPaneComment, "grow, wrap");
       add(panelSave, "growx");

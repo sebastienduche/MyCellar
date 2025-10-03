@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.general.ResourceErrorKey;
 
@@ -18,31 +19,31 @@ import static mycellar.general.ResourceErrorKey.ERROR_OCCUPIEDCASE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 04/04/25
+ * @version 1.3
+ * @since 03/10/25
  */
 
 public class MyCellarError {
 
   private final ResourceErrorKey error;
-  private final IMyCellarObject myCellarObject;
+  private final Bouteille bottle;
   private final String place;
   private final int numLieu;
   private boolean status;
   private boolean solved;
 
-  public MyCellarError(ResourceErrorKey error, IMyCellarObject myCellarObject, String place, int numLieu) {
+  public MyCellarError(ResourceErrorKey error, Bouteille bottle, String place, int numLieu) {
     this.error = error;
-    this.myCellarObject = myCellarObject;
+    this.bottle = bottle;
     this.place = place;
     this.numLieu = numLieu;
     status = false;
     solved = false;
   }
 
-  public MyCellarError(ResourceErrorKey error, IMyCellarObject myCellarObject, String place) {
+  public MyCellarError(ResourceErrorKey error, Bouteille bottle, String place) {
     this.error = error;
-    this.myCellarObject = myCellarObject;
+    this.bottle = bottle;
     this.place = place;
     numLieu = -1;
     status = false;
@@ -60,8 +61,8 @@ public class MyCellarError {
     };
   }
 
-  public IMyCellarObject getMyCellarObject() {
-    return myCellarObject;
+  public Bouteille getBottle() {
+    return bottle;
   }
 
   public boolean isStatus() {
@@ -86,12 +87,12 @@ public class MyCellarError {
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof MyCellarError err && myCellarObject.equals(err.myCellarObject);
+    return obj instanceof MyCellarError err && bottle.equals(err.bottle);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(error, status, myCellarObject);
+    return Objects.hash(error, status, bottle);
   }
 
 }

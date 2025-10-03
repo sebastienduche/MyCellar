@@ -26,16 +26,11 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
@@ -63,7 +58,6 @@ import static mycellar.general.ResourceKey.MAIN_NV;
 import static mycellar.general.ResourceKey.MAIN_OTHER;
 import static mycellar.general.ResourceKey.MAIN_SETTINGSMENU;
 import static mycellar.general.ResourceKey.MAIN_SEVERALITEMS;
-import static mycellar.general.ResourceKey.PROGRAM_DISCS;
 import static mycellar.general.ResourceKey.PROGRAM_WINES;
 import static mycellar.general.ResourceKey.STATS_1SHELVE;
 import static mycellar.general.ResourceKey.STATS_ALLBRACKETS;
@@ -107,8 +101,8 @@ import static mycellar.general.ResourceKey.STATS_YEARS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.2
- * @since 21/03/25
+ * @version 11.3
+ * @since 03/10/25
  */
 public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpdatable {
 
@@ -299,7 +293,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       Map<Integer, Integer> mapPriceCount = new HashMap<>();
       int withoutPrice = 0;
 
-      for (IMyCellarObject b : Program.getStorage().getAllList()) {
+      for (var b : Program.getStorage().getAllList()) {
         if (!b.hasPrice()) {
           withoutPrice++;
           continue;
@@ -329,7 +323,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
       final int priceCount = price.getCount();
       if (all_bracket || priceCount > 0) {
         panel.add(new MyCellarSimpleLabel(price.getName()));
-        panel.add(new MyCellarSimpleLabel(getLabel(priceCount > 1 ? MAIN_SEVERALITEMS: MAIN_MAX1ITEM, priceCount)), "span 2, align right, wrap");
+        panel.add(new MyCellarSimpleLabel(getLabel(priceCount > 1 ? MAIN_SEVERALITEMS : MAIN_MAX1ITEM, priceCount)), "span 2, align right, wrap");
       }
     }
     panel.updateUI();
@@ -353,9 +347,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
           listYear.add(new StatData(value, Program.getTotalObjectForYear(year)));
         }
       }
-      if (Program.isWineType()) {
-        listYear.add(new StatData(getLabel(MAIN_NV), Program.getNbNonVintage()));
-      }
+      listYear.add(new StatData(getLabel(MAIN_NV), Program.getNbNonVintage()));
       listYear.add(new StatData(getLabel(MAIN_OTHER), Program.getTotalOtherYears()));
     }
     for (StatData data : listYear) {
@@ -402,25 +394,22 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     options.setEnabled(false);
     moy.setText("");
 
-    panel.add(new MyCellarSimpleLabel(getLabel(STATS_ITEMS,  "")));
+    panel.add(new MyCellarSimpleLabel(getLabel(STATS_ITEMS, "")));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getNbItems())), "span 2, align right, wrap");
     panel.add(new MyCellarSimpleLabel(getLabel(STATS_UNIQUEITEMS)));
     panel.add(new MyCellarSimpleLabel(Integer.toString(Program.getStorage().getDistinctNames().size())), "span 2, align right, gapbottom 10px, wrap");
-    if (Program.isWineType()) {
-      panel.add(new MyCellarSimpleLabel(getLabel(STATS_BYCOLOR)), "wrap");
-      final Map<String, Long> collect = Program.getStorage().getAllList()
-          .stream()
-          .map(o -> (Bouteille) o)
-          .collect(Collectors.groupingBy(Bouteille::getColor, Collectors.counting()));
-      collect.forEach((color, value) -> {
-        String label = BottleColor.getColor(color).toString();
-        if (MyCellarUtils.isNullOrEmpty(label)) {
-          label = getLabel(STATS_UNKNOWN);
-        }
-        panel.add(new MyCellarSimpleLabel(label));
-        panel.add(new MyCellarSimpleLabel(Long.toString(value)), "span 2, align right, wrap");
-      });
-    }
+    panel.add(new MyCellarSimpleLabel(getLabel(STATS_BYCOLOR)), "wrap");
+    final Map<String, Long> collect = Program.getStorage().getAllList()
+        .stream()
+        .collect(Collectors.groupingBy(Bouteille::getColor, Collectors.counting()));
+    collect.forEach((color, value) -> {
+      String label = BottleColor.getColor(color).toString();
+      if (MyCellarUtils.isNullOrEmpty(label)) {
+        label = getLabel(STATS_UNKNOWN);
+      }
+      panel.add(new MyCellarSimpleLabel(label));
+      panel.add(new MyCellarSimpleLabel(Long.toString(value)), "span 2, align right, wrap");
+    });
 
     // List of unique names and count
     final Map<String, Long> uniqueNamesCount = Program.getStorage().getAllList()
@@ -755,7 +744,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     YEAR(1, getLabel(STATS_YEARS)),
     PRICE(2, getLabel(STATS_PRICES)),
     HISTORY(3, getLabel(STATS_HISTORY)),
-    OBJECT(4, getLabel(Program.isWineType() ? PROGRAM_WINES : PROGRAM_DISCS));
+    OBJECT(4, getLabel(PROGRAM_WINES));
 
     private final int index;
     private final String label;

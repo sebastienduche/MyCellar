@@ -1,6 +1,5 @@
 package mycellar.general;
 
-import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
@@ -15,8 +14,8 @@ import mycellar.core.uicomponents.MyCellarSpinner;
 import mycellar.core.uicomponents.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JPanel;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.Serial;
@@ -45,8 +44,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 21/03/25
+ * @version 1.9
+ * @since 03/10/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -110,12 +109,6 @@ public final class PanelWineAttribute extends JPanel {
     nbItems.setEnabled(false);
 
     price.setText(convertStringFromHTMLString(myCellarObject.getPrix()));
-    if (Program.isWineType()) {
-      Bouteille bottle = (Bouteille) myCellarObject;
-      maturity.setText(bottle.getMaturity());
-      parker.setText(bottle.getParker());
-      colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
-    }
     setModificationDetectionActive(true);
   }
 

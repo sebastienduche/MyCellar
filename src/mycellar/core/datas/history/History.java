@@ -9,9 +9,6 @@
 package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
-import mycellar.Music;
-import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,8 +26,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 09/04/21
+ * @version 1.7
+ * @since 03/10/25
  */
 
 /**
@@ -59,7 +56,6 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
     "type",
     "bouteille",
     "totalBottle",
-    "music"
 })
 @XmlRootElement(name = "History")
 public class History {
@@ -71,8 +67,6 @@ public class History {
   private Bouteille bouteille;
   @XmlElement
   private int totalBottle;
-  @XmlElement
-  private Music music;
 
   /**
    * History: Contructeur avec un object et un type d'action
@@ -80,14 +74,8 @@ public class History {
    * @param myCellarObject IMyCellarObject
    * @param type           int
    */
-  public History(IMyCellarObject myCellarObject, int type, int totalBottle) {
-    if (myCellarObject instanceof Bouteille) {
-      bouteille = (Bouteille) myCellarObject;
-    } else if (myCellarObject instanceof Music) {
-      music = (Music) myCellarObject;
-    } else {
-      Program.throwNotImplementedForNewType();
-    }
+  public History(Bouteille myCellarObject, int type, int totalBottle) {
+    bouteille = myCellarObject;
     this.type = type;
     this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
@@ -138,14 +126,6 @@ public class History {
 
   public void setBouteille(Bouteille bouteille) {
     this.bouteille = bouteille;
-  }
-
-  public Music getMusic() {
-    return music;
-  }
-
-  public void setMusic(Music music) {
-    this.music = music;
   }
 
   public boolean hasTotalBottle() {

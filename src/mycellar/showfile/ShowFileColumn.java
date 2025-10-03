@@ -1,7 +1,7 @@
 package mycellar.showfile;
 
+import mycellar.Bouteille;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.HashMap;
@@ -15,8 +15,8 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 21/03/25
+ * @version 1.6
+ * @since 03/10/25
  */
 
 abstract class ShowFileColumn<T> {
@@ -91,17 +91,18 @@ abstract class ShowFileColumn<T> {
     return editable;
   }
 
-  abstract void setValue(IMyCellarObject b, T value);
-  abstract Object getDisplayValue(IMyCellarObject b);
+  abstract void setValue(Bouteille b, T value);
 
-  void setModelValue(IMyCellarObject myCellarObject, Object value) {
+  abstract Object getDisplayValue(Bouteille b);
+
+  void setModelValue(Bouteille myCellarObject, Object value) {
     setValue(myCellarObject, (T) value);
   }
 
-  void setStringValue(IMyCellarObject b, String value) {
-      b.setValue(field, value);
-      Program.setModified();
-      b.updateStatus();
+  void setStringValue(Bouteille b, String value) {
+    b.setValue(field, value);
+    Program.setModified();
+    b.updateStatus();
   }
 
   boolean isButton() {
@@ -124,11 +125,11 @@ abstract class ShowFileColumn<T> {
     return buttonLabel;
   }
 
-  public boolean execute(IMyCellarObject b, int row, int column) {
+  public boolean execute(Bouteille b, int row, int column) {
     return true;
   }
 
-  T getMapValue(IMyCellarObject b) {
+  T getMapValue(Bouteille b) {
     if (value.containsKey(b.getId())) {
       return value.get(b.getId());
     }
@@ -138,7 +139,7 @@ abstract class ShowFileColumn<T> {
     return null;
   }
 
-  void setMapValue(IMyCellarObject b, T value) {
+  void setMapValue(Bouteille b, T value) {
     this.value.put(b.getId(), value);
   }
 

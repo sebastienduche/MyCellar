@@ -27,8 +27,8 @@ import static mycellar.ProgramConstants.NORMAL;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 20/03/25
+ * @version 1.1
+ * @since 03/10/25
  */
 public final class MyCellarBottleContenance {
 
@@ -49,7 +49,6 @@ public final class MyCellarBottleContenance {
   public static boolean isContenanceUsed(String value) {
     return Program.getStorage().getAllList()
         .stream()
-        .map(Bouteille::cast)
         .map(Bouteille::getKind)
         .anyMatch(value::equals);
   }
@@ -58,7 +57,6 @@ public final class MyCellarBottleContenance {
     Program.getStorage().getAllList()
         .stream()
         .filter(b -> oldValue.equals(b.getKind()))
-        .map(Bouteille::cast)
         .forEach(bouteille -> bouteille.setKind(newValue));
     getInstance().list.remove(oldValue);
     getInstance().list.add(newValue);
@@ -89,7 +87,6 @@ public final class MyCellarBottleContenance {
     if (Program.getStorage().getAllList() != null) {
       Program.getStorage().getAllList()
           .stream()
-          .map(Bouteille::cast)
           .map(Bouteille::getKind)
           .distinct()
           .filter(Predicate.not(String::isBlank))

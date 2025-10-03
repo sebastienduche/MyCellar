@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
@@ -23,8 +22,8 @@ import java.util.ResourceBundle.Control;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 18/03/25
+ * @version 1.5
+ * @since 03/10/25
  */
 public final class LanguageFileLoader {
 
@@ -35,7 +34,6 @@ public final class LanguageFileLoader {
   private ResourceBundle bundleTitle;
   private ResourceBundle bundleWine;
   private ResourceBundle bundleWineError;
-  private ResourceBundle bundleMusicTitle;
   private ResourceBundle bundleError;
   private ResourceBundle bundleLanguage;
   private ResourceBundle bundleKeyboard;
@@ -73,26 +71,18 @@ public final class LanguageFileLoader {
       Debug("ERROR: 'Label' map not intialized!");
       return "";
     }
-    if (Program.isMusicType()) {
-      try {
-        return INSTANCE.bundleMusicTitle.getString(id);
-      } catch (MissingResourceException ignored) {
-      }
-    }
     if (INSTANCE.bundleTitle.containsKey(id)) {
       return INSTANCE.bundleTitle.getString(id);
     }
     if (INSTANCE.bundleKeyboard.containsKey(id)) {
       return INSTANCE.bundleKeyboard.getString(id);
     }
-    if (Program.isWineType()) {
-      if (INSTANCE.bundleWine == null) {
-        Debug("ERROR: 'Wine' map not intialized!");
-        return "";
-      }
-      if (INSTANCE.bundleWine.containsKey(id)) {
-        return INSTANCE.bundleWine.getString(id);
-      }
+    if (INSTANCE.bundleWine == null) {
+      Debug("ERROR: 'Wine' map not intialized!");
+      return "";
+    }
+    if (INSTANCE.bundleWine.containsKey(id)) {
+      return INSTANCE.bundleWine.getString(id);
     }
     return "";
   }
@@ -105,14 +95,12 @@ public final class LanguageFileLoader {
     if (INSTANCE.bundleError.containsKey(id)) {
       return INSTANCE.bundleError.getString(id);
     }
-    if (Program.isWineType()) {
-      if (INSTANCE.bundleWineError == null) {
-        Debug("ERROR: 'Wine Error' map not intialized!");
-        return "";
-      }
-      if (INSTANCE.bundleWineError.containsKey(id)) {
-        return INSTANCE.bundleWineError.getString(id);
-      }
+    if (INSTANCE.bundleWineError == null) {
+      Debug("ERROR: 'Wine Error' map not intialized!");
+      return "";
+    }
+    if (INSTANCE.bundleWineError.containsKey(id)) {
+      return INSTANCE.bundleWineError.getString(id);
     }
     return "";
   }
@@ -173,7 +161,6 @@ public final class LanguageFileLoader {
     bundleWine = ResourceBundle.getBundle("wine", locale, new UTF8Control());
     bundleError = ResourceBundle.getBundle("error", locale, new UTF8Control());
     bundleWineError = ResourceBundle.getBundle("wineError", locale, new UTF8Control());
-    bundleMusicTitle = ResourceBundle.getBundle("music", locale, new UTF8Control());
     bundleKeyboard = ResourceBundle.getBundle("keyboard", locale, new UTF8Control());
     bundleLanguage = ResourceBundle.getBundle("language", Locale.FRENCH, new UTF8Control());
   }

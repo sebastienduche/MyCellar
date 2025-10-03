@@ -13,7 +13,7 @@ import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +48,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 25/03/25
+ * @version 4.1
+ * @since 03/10/25
  */
 
 class ErrorShowValues extends TableShowValues {
@@ -115,7 +115,7 @@ class ErrorShowValues extends TableShowValues {
       return null;
     }
     MyCellarError error = errors.get(row);
-    IMyCellarObject b = error.getMyCellarObject();
+    Bouteille b = error.getBottle();
     final Column column1 = Column.fromIndex(column);
     if (column1 == null) {
       return "";
@@ -160,7 +160,7 @@ class ErrorShowValues extends TableShowValues {
   @Override
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
-    IMyCellarObject b = error.getMyCellarObject();
+    Bouteille b = error.getBottle();
     AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
@@ -328,8 +328,8 @@ class ErrorShowValues extends TableShowValues {
   }
 
   @Override
-  public IMyCellarObject getMyCellarObject(int i) {
-    return errors.get(i).getMyCellarObject();
+  public Bouteille getBottle(int i) {
+    return errors.get(i).getBottle();
   }
 
 }

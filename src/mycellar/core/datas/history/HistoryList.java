@@ -9,7 +9,6 @@
 package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
-import mycellar.Music;
 import mycellar.Program;
 import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
@@ -43,8 +42,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 16/04/21
+ * @version 1.5
+ * @since 03/10/25
  *
  * <p>Java class for anonymous complex type.
  *
@@ -128,12 +127,6 @@ public class HistoryList {
         if (bouteilleElem.getLength() == 1) {
           Bouteille bouteille = Bouteille.fromXml((Element) bouteilleElem.item(0));
           history.setBouteille(bouteille);
-        } else {
-          final NodeList musicElem = historyElem.getElementsByTagName("Music");
-          if (musicElem.getLength() == 1) {
-            final Music music = Music.fromXml((Element) musicElem.item(0));
-            history.setMusic(music);
-          }
         }
         listeHistory.getHistory().add(history);
       }
@@ -168,7 +161,7 @@ public class HistoryList {
    *
    * <p>
    * This accessor method returns a reference to the live list,
-   * not a snapshot. Therefore any modification you make to the
+   * not a snapshot. Therefore, any modification you make to the
    * returned list will be present inside the JAXB object.
    * This is why there is not a <CODE>set</CODE> method for the history property.
    *

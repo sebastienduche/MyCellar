@@ -1,10 +1,8 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.Music;
 import mycellar.core.BottlesStatus;
 import mycellar.core.common.MyCellarFields;
-import mycellar.core.common.music.MusicSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MyCellarFieldsTest {
 
   private Bouteille bouteille;
-  private Music music;
 
   @BeforeEach
   void setUp() {
@@ -35,29 +32,6 @@ class MyCellarFieldsTest {
         .price("123")
         .vignoble("fr", "vignoble", "aoc", "igp")
         .status("TOCHECK")
-        .build();
-
-    music = new Music.MusicBuilder("music")
-        .place("armoire1x3x3")
-        .numPlace(1)
-        .line(2)
-        .column(3)
-        .genre("genre")
-        .musicSupport(MusicSupport.CD)
-        .annee("2018")
-        .artist("artist")
-        .composer("composer")
-        .comment("comment")
-        .duration("duration")
-        .price("123")
-        .track(1, "label", "duration", "comment")
-        .status("TOCHECK")
-        .diskNumber(1)
-        .diskCount(2)
-        .rating(5)
-        .file("file")
-        .album("album")
-        .externalId(999)
         .build();
   }
 

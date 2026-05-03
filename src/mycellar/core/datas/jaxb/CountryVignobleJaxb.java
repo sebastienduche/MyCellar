@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,15 +24,23 @@ public class CountryVignobleJaxb implements Comparable<CountryVignobleJaxb> {
   @XmlAttribute
   private String name;
 
+  @Deprecated
   private long id;
+  private final UUID uuid;
 
   public CountryVignobleJaxb() {
     name = "";
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
   }
 
+  @Deprecated
   public long getId() {
     return id;
+  }
+
+  public UUID getUuid() {
+    return uuid;
   }
 
   public List<AppelationJaxb> getUnmodifiableAppelation() {

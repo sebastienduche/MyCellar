@@ -14,8 +14,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.DASH;
 
@@ -26,8 +26,8 @@ import static mycellar.ProgramConstants.DASH;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.7
- * @since 26/12/23
+ * @version 1.8
+ * @since 05/04/26
  */
 
 /**
@@ -49,15 +49,7 @@ import static mycellar.ProgramConstants.DASH;
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "country",
-    "name",
-    "aoc",
-    "igp",
-    "aop",
-    "id",
-})
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "vignoble")
 public class VignobleJaxb implements Serializable {
 
@@ -67,16 +59,20 @@ public class VignobleJaxb implements Serializable {
   public String aoc;
   @XmlElement(name = "IGP")
   public String igp;
-  @XmlElement()
+  @XmlElement
   private String name;
   @XmlElement(name = "AOP")
   private String aop;
 
-  @XmlElement()
+  @Deprecated
+  @XmlElement
   private final long id;
+  @XmlElement
+  private UUID uuid;
 
   public VignobleJaxb() {
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
   }
 
   public VignobleJaxb(String country, String name, String aoc, String igp) {
@@ -85,6 +81,7 @@ public class VignobleJaxb implements Serializable {
     this.aoc = aoc;
     this.igp = igp;
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
   }
 
   public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
@@ -94,6 +91,7 @@ public class VignobleJaxb implements Serializable {
         vignobleJaxb.isAppellationEmpty();
   }
 
+  @Deprecated
   public long getId() {
     return id;
   }
@@ -138,6 +136,14 @@ public class VignobleJaxb implements Serializable {
   @Deprecated
   public void setAOP(String aop) {
     this.aop = aop;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 
   public boolean isAppellationEmpty() {

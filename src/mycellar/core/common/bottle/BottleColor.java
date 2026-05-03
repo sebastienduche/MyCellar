@@ -26,6 +26,10 @@ public enum BottleColor {
       return NONE;
     }
     try {
+      return valueOf(value.toUpperCase());
+    } catch (IllegalArgumentException ignored) {
+    }
+    try {
       return valueOf(value);
     } catch (IllegalArgumentException e) {
       if (value.equals(RED.resourceKey.getKey())) {

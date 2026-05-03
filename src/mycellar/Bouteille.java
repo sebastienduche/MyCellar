@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -32,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
@@ -77,25 +77,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "id",
-    "nom",
-    "annee",
-    "type",
-    "emplacement",
-    "numLieu",
-    "ligne",
-    "colonne",
-    "prix",
-    "comment",
-    "maturity",
-    "parker",
-    "vignoble",
-    "color",
-    "status",
-    "lastModified"
-})
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "Bouteille")
 public class Bouteille implements IMyCellarObject, Serializable {
 
@@ -103,6 +85,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
   public static final int NON_VINTAGE_INT = 9999;
   @Serial
   private static final long serialVersionUID = 7443323147347096230L;
+  @XmlElement
   private int id;
   @XmlElement(required = true)
   private String nom;
@@ -114,7 +97,9 @@ public class Bouteille implements IMyCellarObject, Serializable {
   private String emplacement;
   @XmlElement(name = "num_lieu")
   private int numLieu;
+  @XmlElement
   private int ligne;
+  @XmlElement
   private int colonne;
   @XmlElement(required = true)
   private String prix;
@@ -124,20 +109,23 @@ public class Bouteille implements IMyCellarObject, Serializable {
   private String maturity;
   @XmlElement(required = true)
   private String parker;
-  @XmlElement()
+  @XmlElement
   private VignobleJaxb vignoble;
-  @XmlElement()
+  @XmlElement
   private String color;
-  @XmlElement()
+  @XmlElement
   private String status;
-  @XmlElement()
+  @XmlElement
   private String lastModified;
+  @XmlElement
+  private UUID uuid;
 
   public Bouteille() {
     nom = type = emplacement = prix = comment = annee = maturity = parker = color = "";
     vignoble = null;
     status = "";
     lastModified = null;
+    uuid = UUID.randomUUID();
   }
 
   public Bouteille(Bouteille b) {
@@ -158,6 +146,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
     vignoble = b.getVignoble();
     status = b.getStatus();
     lastModified = b.getLastModified();
+    uuid = UUID.randomUUID();
   }
 
   public Bouteille(BouteilleBuilder builder) {
@@ -166,6 +155,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
     } else {
       id = builder.id;
     }
+    uuid = builder.uuid;
     nom = builder.nom;
     annee = builder.annee;
     type = builder.type;
@@ -220,11 +210,13 @@ public class Bouteille implements IMyCellarObject, Serializable {
     Program.Debug("Bouteille: " + sText);
   }
 
+  @Deprecated
   @Override
   public int getId() {
     return id;
   }
 
+  @Deprecated
   @Override
   public void setId(int id) {
     this.id = id;
@@ -367,6 +359,14 @@ public class Bouteille implements IMyCellarObject, Serializable {
 
   private void setLastModified(LocalDateTime lastModified) {
     this.lastModified = DATE_FORMATER_DD_MM_YYYY_HH_MM.format(lastModified);
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 
   @Override
@@ -591,6 +591,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
     }
   }
 
+  @Deprecated
   @Override
   public boolean updateID() {
     if (id != -1) {
@@ -664,6 +665,12 @@ public class Bouteille implements IMyCellarObject, Serializable {
         IGP = nodeIGP.item(0).getTextContent();
       }
     }
+    NodeList nodeUuid = element.getElementsByTagName("uuid");
+    UUID newUUID = UUID.randomUUID();
+    if (nodeUuid.getLength() == 1) {
+      final String uuidValue = nodeUuid.item(0).getTextContent();
+      newUUID = UUID.fromString(uuidValue);
+    }
     return new BouteilleBuilder(name)
         .id(elemId)
         .annee(year)
@@ -680,6 +687,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
         .lastModified(lastModifed)
         .color(elemColor)
         .vignoble(country, vignobleName, AOC, IGP)
+        .uuid(newUUID)
         .build();
   }
 
@@ -722,6 +730,9 @@ public class Bouteille implements IMyCellarObject, Serializable {
     if (id != other.id) {
       return false;
     }
+    if (uuid != other.uuid) {
+      return false;
+    }
     if (equalsValue(annee, other.annee)) return false;
     if (equalsValue(color, other.color)) return false;
     if (equalsValue(comment, other.comment)) return false;
@@ -755,6 +766,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
 
   public static class BouteilleBuilder {
     private final String nom;
+    @Deprecated
     private int id;
     private String annee;
     private String type;
@@ -770,6 +782,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
     private VignobleJaxb vignoble;
     private String status;
     private String lastModified;
+    private UUID uuid;
 
     public BouteilleBuilder(String nom) {
       this.nom = nom;
@@ -778,10 +791,17 @@ public class Bouteille implements IMyCellarObject, Serializable {
       vignoble = null;
       status = "";
       lastModified = null;
+      uuid = UUID.randomUUID();
     }
 
-    private BouteilleBuilder id(int id) {
+    @Deprecated
+    public BouteilleBuilder id(int id) {
       this.id = id;
+      return this;
+    }
+
+    public BouteilleBuilder uuid(UUID uuid) {
+      this.uuid = uuid;
       return this;
     }
 

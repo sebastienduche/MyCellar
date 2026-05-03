@@ -12,7 +12,7 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 import java.util.LinkedList;
 import java.util.List;

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRegistry;
  * provided in this class.
  */
 @XmlRegistry
-class ObjectFactory {
+public class ObjectFactory {
 
 
   /**

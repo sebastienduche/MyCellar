@@ -2,7 +2,11 @@ package test;
 
 import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.datas.history.History;
+import mycellar.core.datas.history.HistoryFactory;
+import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.jaxb.VignobleJaxb;
+import mycellar.core.storage.ListeBouteille;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
 import mycellar.placesmanagement.places.PlacePosition;
@@ -15,14 +19,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.UUID;
 
+import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,6 +91,13 @@ class BouteilleTest {
   void setId() {
     bouteille.setId(123);
     assertEquals(123, bouteille.getId());
+  }
+
+  @Test
+  void getUuid() {
+    UUID uuid = UUID.randomUUID();
+    bouteille.setUuid(uuid);
+    assertEquals(uuid, bouteille.getUuid());
   }
 
   @Test
@@ -392,32 +411,36 @@ class BouteilleTest {
     final String color = "RED";
     final String status = "MODIFIED";
     final String lastModified = "17-11-2020 12:08";
-    String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-        "<ListeBouteille><Bouteille>\n" +
-        "        <id>" + id + "</id>\n" +
-        "        <nom>" + name + "</nom>\n" +
-        "        <annee>" + year + "</annee>\n" +
-        "        <type>" + type + "</type>\n" +
-        "        <emplacement>" + place + "</emplacement>\n" +
-        "        <num_lieu>" + numPlace + "</num_lieu>\n" +
-        "        <ligne>" + line + "</ligne>\n" +
-        "        <colonne>" + column + "</colonne>\n" +
-        "        <prix>" + price + "</prix>\n" +
-        "        <comment>" + comment + "</comment>\n" +
-        "        <maturity>" + maturity + "</maturity>\n" +
-        "        <parker>" + parker + "</parker>\n" +
-        "        <vignoble>\n" +
-        "            <country>" + country + "</country>\n" +
-        "            <name>" + vignoble + "</name>\n" +
-        "            <AOC>" + aoc + "</AOC>\n" +
-        "            <IGP>" + igp + "</IGP>\n" +
-        "            <AOP></AOP>\n" +
-        "            <id>27618</id>\n" +
-        "        </vignoble>\n" +
-        "        <color>" + color + "</color>\n" +
-        "        <status>" + status + "</status>\n" +
-        "        <lastModified>" + lastModified + "</lastModified>\n" +
-        "    </Bouteille></ListeBouteille>";
+    UUID uuid = UUID.randomUUID();
+    String xml = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <ListeBouteille><Bouteille>
+                <id>%d</id>
+                <nom>%s</nom>
+                <annee>%s</annee>
+                <type>%s</type>
+                <emplacement>%s</emplacement>
+                <num_lieu>%d</num_lieu>
+                <ligne>%d</ligne>
+                <colonne>%d</colonne>
+                <prix>%s</prix>
+                <comment>%s</comment>
+                <maturity>%s</maturity>
+                <parker>%s</parker>
+                <vignoble>
+                    <country>%s</country>
+                    <name>%s</name>
+                    <AOC>%s</AOC>
+                    <IGP>%s</IGP>
+                    <AOP></AOP>
+                    <id>27618</id>
+                </vignoble>
+                <color>%s</color>
+                <status>%s</status>
+                <lastModified>%s</lastModified>
+                <uuid>%s</uuid>
+            </Bouteille></ListeBouteille>""".formatted(id, name, year, type, place, numPlace, line, column, price,
+        comment, maturity, parker, country, vignoble, aoc, igp, color, status, lastModified, uuid);
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
@@ -439,9 +462,315 @@ class BouteilleTest {
     assertEquals(color, bouteilleFromXML.getColor());
     assertEquals(status, bouteilleFromXML.getStatus());
     assertEquals(lastModified, bouteilleFromXML.getLastModified());
+    assertEquals(uuid.toString(), bouteilleFromXML.getUuid().toString());
     assertEquals(country, bouteilleFromXML.getVignoble().getCountry());
     assertEquals(vignoble, bouteilleFromXML.getVignoble().getName());
     assertEquals(aoc, bouteilleFromXML.getVignoble().getAOC());
     assertEquals(igp, bouteilleFromXML.getVignoble().getIGP());
+  }
+
+  @Test
+  void shouldMarshalBottle() {
+    ListeBouteille listeBouteille = new ListeBouteille();
+    listeBouteille.getBouteille().add(new Bouteille.BouteilleBuilder("b")
+        .id(27618)
+        .uuid(UUID.fromString("a839b533-1a04-4a4b-94de-fa771bcbdeb7"))
+        .place("p")
+        .numPlace(9)
+        .line(99)
+        .column(999)
+        .type("t")
+        .annee("2")
+        .color("R")
+        .comment("c")
+        .maturity("m")
+        .parker("1")
+        .price("23")
+        .vignoble("fr", "b", "c", "d")
+        .lastModified("17-11-2020 12:08")
+        .build());
+    try {
+      JAXBContext jc = JAXBContext.newInstance(mycellar.core.storage.ObjectFactory.class);
+      Marshaller m = jc.createMarshaller();
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      StringWriter writer = new StringWriter();
+      m.marshal(listeBouteille, new StreamResult(writer));
+      writer.flush();
+      String result = writer.toString();
+      assertEquals("""
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <ListeBouteille>
+              <Bouteille>
+                  <id>27618</id>
+                  <nom>b</nom>
+                  <annee>2</annee>
+                  <type>t</type>
+                  <emplacement>p</emplacement>
+                  <num_lieu>9</num_lieu>
+                  <ligne>99</ligne>
+                  <colonne>999</colonne>
+                  <prix>23</prix>
+                  <comment>c</comment>
+                  <maturity>m</maturity>
+                  <parker>1</parker>
+                  <vignoble>
+                      <country>fr</country>
+                      <AOC>c</AOC>
+                      <IGP>d</IGP>
+                      <name>b</name>
+                      <id>3</id>
+                  </vignoble>
+                  <color>R</color>
+                  <status></status>
+                  <lastModified>17-11-2020 12:08</lastModified>
+                  <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+              </Bouteille>
+          </ListeBouteille>
+          """, result);
+    } catch (JAXBException ignored) {
+    }
+  }
+
+  @Test
+  void shouldUnmarshal() throws ParserConfigurationException, IOException, SAXException {
+    Bouteille bottle = new Bouteille.BouteilleBuilder("b")
+        .id(27618)
+        .uuid(UUID.fromString("a839b533-1a04-4a4b-94de-fa771bcbdeb7"))
+        .place("p")
+        .numPlace(9)
+        .line(99)
+        .column(999)
+        .type("t")
+        .annee("2")
+        .color("R")
+        .comment("c")
+        .maturity("m")
+        .parker("1")
+        .price("23")
+        .lastModified("")
+        .vignoble("fr", "b", "c", "d")
+        .lastModified("17-11-2020 12:08")
+        .build();
+    String xml = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <ListeBouteille>
+            <Bouteille>
+                <id>27618</id>
+                <nom>b</nom>
+                <annee>2</annee>
+                <type>t</type>
+                <emplacement>p</emplacement>
+                <num_lieu>9</num_lieu>
+                <ligne>99</ligne>
+                <colonne>999</colonne>
+                <prix>23</prix>
+                <comment>c</comment>
+                <maturity>m</maturity>
+                <parker>1</parker>
+                <vignoble>
+                    <country>fr</country>
+                    <AOC>c</AOC>
+                    <IGP>d</IGP>
+                    <name>b</name>
+                    <id>3</id>
+                </vignoble>
+                <color>R</color>
+                <status></status>
+                <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+                <lastModified>17-11-2020 12:08</lastModified>
+            </Bouteille>
+        </ListeBouteille>
+        """;
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    doc.getDocumentElement().normalize();
+    NodeList nodeList = doc.getElementsByTagName("Bouteille");
+    final Bouteille bouteilleFromXML = Bouteille.fromXml((Element) nodeList.item(0));
+    assertEquals(bottle.getId(), bouteilleFromXML.getId());
+    assertEquals(bottle.getNom(), bouteilleFromXML.getNom());
+    assertEquals(bottle.getAnnee(), bouteilleFromXML.getAnnee());
+    assertEquals(bottle.getKind(), bouteilleFromXML.getKind());
+    assertEquals(bottle.getEmplacement(), bouteilleFromXML.getEmplacement());
+    assertEquals(bottle.getNumLieu(), bouteilleFromXML.getNumLieu());
+    assertEquals(bottle.getLigne(), bouteilleFromXML.getLigne());
+    assertEquals(bottle.getColonne(), bouteilleFromXML.getColonne());
+    assertEquals(bottle.getPrix(), bouteilleFromXML.getPrix());
+    assertEquals(bottle.getComment(), bouteilleFromXML.getComment());
+    assertEquals(bottle.getMaturity(), bouteilleFromXML.getMaturity());
+    assertEquals(bottle.getParker(), bouteilleFromXML.getParker());
+    assertEquals(bottle.getColor(), bouteilleFromXML.getColor());
+    assertEquals(bottle.getStatus(), bouteilleFromXML.getStatus());
+    assertEquals(bottle.getLastModified(), bouteilleFromXML.getLastModified());
+    assertEquals(bottle.getUuid().toString(), bouteilleFromXML.getUuid().toString());
+    assertEquals(bottle.getVignoble().getCountry(), bouteilleFromXML.getVignoble().getCountry());
+    assertEquals(bottle.getVignoble().getName(), bouteilleFromXML.getVignoble().getName());
+    assertEquals(bottle.getVignoble().getAOC(), bouteilleFromXML.getVignoble().getAOC());
+    assertEquals(bottle.getVignoble().getIGP(), bouteilleFromXML.getVignoble().getIGP());
+  }
+
+  @Test
+  void shouldMarshalHistory() {
+    HistoryList list = new HistoryList();
+    History history = new History(new Bouteille.BouteilleBuilder("b")
+        .id(27618)
+        .uuid(UUID.fromString("a839b533-1a04-4a4b-94de-fa771bcbdeb7"))
+        .place("p")
+        .numPlace(9)
+        .line(99)
+        .column(999)
+        .type("t")
+        .annee("2")
+        .color("R")
+        .comment("c")
+        .maturity("m")
+        .parker("1")
+        .price("23")
+        .vignoble("fr", "b", "c", "d")
+        .lastModified("17-11-2020 12:08")
+        .build(),
+        1, 2);
+    history.setUuid(UUID.fromString("a839b533-1a04-4a4b-94de-fa771bcbdeb7"));
+    list.add(history);
+    try {
+      JAXBContext jc = JAXBContext.newInstance(HistoryFactory.class);
+      Marshaller m = jc.createMarshaller();
+      m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+      StringWriter writer = new StringWriter();
+      m.marshal(list, new StreamResult(writer));
+
+      writer.flush();
+      String result = writer.toString();
+      assertEquals("""
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <HistoryList>
+              <History>
+                  <date>%s</date>
+                  <type>1</type>
+                  <Bouteille>
+                      <id>27618</id>
+                      <nom>b</nom>
+                      <annee>2</annee>
+                      <type>t</type>
+                      <emplacement>p</emplacement>
+                      <num_lieu>9</num_lieu>
+                      <ligne>99</ligne>
+                      <colonne>999</colonne>
+                      <prix>23</prix>
+                      <comment>c</comment>
+                      <maturity>m</maturity>
+                      <parker>1</parker>
+                      <vignoble>
+                          <country>fr</country>
+                          <AOC>c</AOC>
+                          <IGP>d</IGP>
+                          <name>b</name>
+                          <id>3</id>
+                      </vignoble>
+                      <color>R</color>
+                      <status></status>
+                      <lastModified>17-11-2020 12:08</lastModified>
+                      <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+                  </Bouteille>
+                  <totalBottle>2</totalBottle>
+                  <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+              </History>
+          </HistoryList>
+          """.formatted(LocalDate.now().format(DATE_FORMATER_DDMMYYYY)), result);
+    } catch (JAXBException ignored) {
+    }
+  }
+
+  @Test
+  void shouldUnmarshalHistory() throws ParserConfigurationException, IOException, SAXException {
+    Bouteille bottle = new Bouteille.BouteilleBuilder("b")
+        .id(27618)
+        .uuid(UUID.fromString("a839b533-1a04-4a4b-94de-fa771bcbdeb7"))
+        .place("p")
+        .numPlace(9)
+        .line(99)
+        .column(999)
+        .type("t")
+        .annee("2")
+        .color("R")
+        .comment("c")
+        .maturity("m")
+        .parker("1")
+        .price("23")
+        .lastModified("")
+        .vignoble("fr", "b", "c", "d")
+        .lastModified("17-11-2020 12:08")
+        .build();
+    String xml = """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <HistoryList>
+              <History>
+                  <date>04/04/2026</date>
+                  <type>1</type>
+                  <Bouteille>
+                      <id>27618</id>
+                      <nom>b</nom>
+                      <annee>2</annee>
+                      <type>t</type>
+                      <emplacement>p</emplacement>
+                      <num_lieu>9</num_lieu>
+                      <ligne>99</ligne>
+                      <colonne>999</colonne>
+                      <prix>23</prix>
+                      <comment>c</comment>
+                      <maturity>m</maturity>
+                      <parker>1</parker>
+                      <vignoble>
+                          <country>fr</country>
+                          <AOC>c</AOC>
+                          <IGP>d</IGP>
+                          <name>b</name>
+                          <id>3</id>
+                      </vignoble>
+                      <color>R</color>
+                      <status></status>
+                      <lastModified>17-11-2020 12:08</lastModified>
+                      <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+                  </Bouteille>
+                  <totalBottle>2</totalBottle>
+                  <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+              </History>
+          </HistoryList>
+        """;
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+    doc.getDocumentElement().normalize();
+    NodeList nodeList = doc.getElementsByTagName("History");
+    Element historyElement = (Element) nodeList.item(0);
+    String date = historyElement.getElementsByTagName("date").item(0).getTextContent();
+    String type = historyElement.getElementsByTagName("type").item(0).getTextContent();
+    String totalBottle = historyElement.getElementsByTagName("totalBottle").item(0).getTextContent();
+    String uuid = historyElement.getElementsByTagName("uuid").item(0).getTextContent();
+    final Bouteille bouteilleFromXML = Bouteille.fromXml((Element) historyElement.getElementsByTagName("Bouteille").item(0));
+    assertEquals("04/04/2026", date);
+    assertEquals("1", type);
+    assertEquals("2", totalBottle);
+    assertEquals("a839b533-1a04-4a4b-94de-fa771bcbdeb7", uuid);
+    assertEquals(bottle.getId(), bouteilleFromXML.getId());
+    assertEquals(bottle.getNom(), bouteilleFromXML.getNom());
+    assertEquals(bottle.getAnnee(), bouteilleFromXML.getAnnee());
+    assertEquals(bottle.getKind(), bouteilleFromXML.getKind());
+    assertEquals(bottle.getEmplacement(), bouteilleFromXML.getEmplacement());
+    assertEquals(bottle.getNumLieu(), bouteilleFromXML.getNumLieu());
+    assertEquals(bottle.getLigne(), bouteilleFromXML.getLigne());
+    assertEquals(bottle.getColonne(), bouteilleFromXML.getColonne());
+    assertEquals(bottle.getPrix(), bouteilleFromXML.getPrix());
+    assertEquals(bottle.getComment(), bouteilleFromXML.getComment());
+    assertEquals(bottle.getMaturity(), bouteilleFromXML.getMaturity());
+    assertEquals(bottle.getParker(), bouteilleFromXML.getParker());
+    assertEquals(bottle.getColor(), bouteilleFromXML.getColor());
+    assertEquals(bottle.getStatus(), bouteilleFromXML.getStatus());
+    assertEquals(bottle.getLastModified(), bouteilleFromXML.getLastModified());
+    assertEquals(bottle.getUuid().toString(), bouteilleFromXML.getUuid().toString());
+    assertEquals(bottle.getVignoble().getCountry(), bouteilleFromXML.getVignoble().getCountry());
+    assertEquals(bottle.getVignoble().getName(), bouteilleFromXML.getVignoble().getName());
+    assertEquals(bottle.getVignoble().getAOC(), bouteilleFromXML.getVignoble().getAOC());
+    assertEquals(bottle.getVignoble().getIGP(), bouteilleFromXML.getVignoble().getIGP());
   }
 }

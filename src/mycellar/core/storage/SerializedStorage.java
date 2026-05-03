@@ -10,14 +10,17 @@ import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.vignobles.CountryVignobleController;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static mycellar.Program.hasSameHistoryId;
+import static mycellar.Program.hasSameId;
 import static mycellar.ProgramConstants.HISTORY_XML;
 import static mycellar.ProgramConstants.WORKSHEET_XML;
+import static mycellar.core.MyCellarSettings.CONVERTED_TO_UUID;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CONFIRMDELETIONALLHISTORY;
@@ -35,8 +38,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.5
- * @since 03/10/25
+ * @version 8.6
+ * @since 06/04/26
  */
 
 public class SerializedStorage implements Storage {
@@ -64,9 +67,14 @@ public class SerializedStorage implements Storage {
   public void addBouteilles(ListeBouteille listBouteille) {
     listMyCellarObject.getBouteille().addAll(listBouteille.getBouteille());
     for (var bottle : listMyCellarObject.bouteille) {
-      final List<History> theBottle = HISTORY_LIST.getHistory().stream().filter(history -> history.getBouteille().getId() == bottle.getId()).toList();
-      if (bottle.updateID() && !theBottle.isEmpty()) {
-        theBottle.getFirst().getBouteille().setId(bottle.getId());
+      final List<History> historyList = HISTORY_LIST.getHistory()
+          .stream()
+          .filter(hasSameHistoryId(bottle))
+          .toList();
+      if (!Program.getCaveConfigBool(CONVERTED_TO_UUID, false)) {
+        for (var history : historyList) {
+          history.getBouteille().setUuid(bottle.getUuid());
+        }
       }
       if (!distinctNames.contains(bottle.getNom())) {
         distinctNames.add(bottle.getNom());
@@ -133,7 +141,8 @@ public class SerializedStorage implements Storage {
     Program.setModified();
     final List<WorkSheetData> collect = WORKSHEET_LIST.getWorsheet()
         .stream()
-        .filter(workSheetData -> workSheetData.getBouteilleId() == bottle.getId())
+        .filter(workSheetData -> workSheetData.getBouteilleId() == bottle.getId() ||
+            workSheetData.getUuid() == bottle.getUuid())
         .toList();
     WORKSHEET_LIST.getWorsheet().removeAll(collect);
   }
@@ -194,7 +203,7 @@ public class SerializedStorage implements Storage {
     if (found) {
       Debug("DeleteWine: Deleted by equals. " + bottle);
     } else {
-      final List<Bouteille> foundList = getAllList().stream().filter(bouteille -> bouteille.getId() == bottle.getId()).toList();
+      final List<Bouteille> foundList = getAllList().stream().filter(hasSameId(bottle)).toList();
       if (foundList.isEmpty()) {
         return false;
       }

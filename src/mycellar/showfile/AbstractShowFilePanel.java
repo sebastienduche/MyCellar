@@ -36,19 +36,29 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
@@ -113,8 +123,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_VALID;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 03/10/25
+ * @version 1.3
+ * @since 06/04/26
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -132,7 +142,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   private UpdateViewType updateViewType;
   final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
   final List<ShowFileColumn<?>> columns = new ArrayList<>();
-  final LinkedList<Bouteille> workingBottles = new LinkedList<>();
+  final Set<Bouteille> workingBottles = new LinkedHashSet<>();
   TableShowValues model;
   JTable table;
   ShowFileColumn<Boolean> checkBoxStartColumn;
@@ -344,7 +354,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       @Override
       public boolean execute(Bouteille myCellarObject, int row, int column) {
         if (Program.isNotExistingMyCellarObject(myCellarObject)) {
-          Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getId() + "] doesn't exist");
+          Debug("Object " + myCellarObject.getNom() + " [" + myCellarObject.getUuid() + "] doesn't exist");
           Erreur.showSimpleErreur(getError(ERROR_INEXISTINGBOTTLE, myCellarObject.getNom()));
           return false;
         }
@@ -756,7 +766,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   List<ShowFileColumn<?>> filterColumns(boolean worksheet) {
     String savedColumns;
     if (worksheet) {
-      model.setBottles(workingBottles);
+      model.setBottles(workingBottles.stream().toList());
       savedColumns = Program.getShowColumnsWork();
     } else {
       model.setBottles(Program.getStorage().getAllList());
@@ -888,7 +898,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       LinkedList<Bouteille> existingObjects = new LinkedList<>();
       for (var bottle : selectedObjects) {
         if (Program.isNotExistingMyCellarObject(bottle)) {
-          Debug("Object " + bottle.getNom() + " [" + bottle.getId() + "] doesn't exist");
+          Debug("Object " + bottle.getNom() + " [" + bottle.getUuid() + "] doesn't exist");
           Erreur.showSimpleErreur(getError(ERROR_INEXISTINGBOTTLE, bottle.getNom()));
         } else {
           existingObjects.add(bottle);

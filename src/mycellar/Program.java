@@ -40,8 +40,9 @@ import org.apache.commons.net.util.Base64;
 import org.kohsuke.github.GHGistBuilder;
 import org.kohsuke.github.GitHub;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,6 +65,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -91,6 +93,7 @@ import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
+import static mycellar.core.MyCellarSettings.CONVERTED_TO_UUID;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
@@ -637,6 +640,7 @@ public final class Program {
     putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, list.pop());
 
     putCaveConfigString(MyCellarSettings.DIR, myCellarFile.getFile().getParent());
+    putCaveConfigString(CONVERTED_TO_UUID, "true");
 
     saveGlobalProperties();
     modified = false;
@@ -1172,6 +1176,7 @@ public final class Program {
     return Collections.unmodifiableList(getStorage().getHistoryList().getHistory());
   }
 
+  @Deprecated
   static int getNewID() {
     if (nextID == -1) {
       nextID = getStorage().getBottlesCount();
@@ -1182,12 +1187,27 @@ public final class Program {
     return nextID;
   }
 
-  public static List<Bouteille> getExistingMyCellarObjects(List<Integer> objectIds) {
+  @Deprecated
+  public static List<Bouteille> getExistingMyCellarObjectsWithID(List<Integer> objectIds) {
     return getStorage().getAllList().stream().filter(bottle -> objectIds.contains(bottle.getId())).collect(Collectors.toList());
   }
 
+  public static List<Bouteille> getExistingMyCellarObjects(List<UUID> objectIds) {
+    return getStorage().getAllList().stream().filter(bottle -> objectIds.contains(bottle.getUuid())).collect(Collectors.toList());
+  }
+
   public static boolean isNotExistingMyCellarObject(Bouteille bottle) {
-    return getStorage().getAllList().stream().noneMatch(obj -> obj.getId() == bottle.getId());
+    return getStorage().getAllList().stream().noneMatch(hasSameId(bottle));
+  }
+
+  public static Predicate<Bouteille> hasSameId(Bouteille bottle) {
+    return obj -> obj.getId() == bottle.getId() ||
+        obj.getUuid() == bottle.getUuid();
+  }
+
+  public static Predicate<History> hasSameHistoryId(Bouteille bottle) {
+    return history -> history.getBouteille().getId() == bottle.getId() ||
+        history.getBouteille().getUuid().equals(bottle.getUuid());
   }
 
   public static void exit() {

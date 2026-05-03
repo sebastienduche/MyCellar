@@ -15,12 +15,14 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 21/03/25
+ * @version 1.1
+ * @since 06/04/26
  */
 public interface IMyCellarObject {
+  @Deprecated
   int getId();
 
+  @Deprecated
   void setId(int id);
 
   void setModified();
@@ -29,6 +31,7 @@ public interface IMyCellarObject {
 
   void setEmplacement(String nom);
 
+  @Deprecated
   boolean updateID();
 
   String getNom();
@@ -103,7 +106,7 @@ public interface IMyCellarObject {
     }
   }
 
-   default boolean equalsValue(String value, String other) {
+  default boolean equalsValue(String value, String other) {
     if (value == null) {
       return other != null;
     } else {

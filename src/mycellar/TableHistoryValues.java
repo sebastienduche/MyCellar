@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.convertStringFromHTMLString;
+import static mycellar.Program.hasSameId;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.BOUTEILLE_TEMPORARYPLACE;
 import static mycellar.general.ResourceKey.HISTORY_ACTION;
@@ -33,8 +34,8 @@ import static mycellar.general.ResourceKey.HISTORY_VALIDATED;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 03/10/25
+ * @version 3.9
+ * @since 07/04/26
  */
 
 class TableHistoryValues extends AbstractTableModel {
@@ -174,8 +175,8 @@ class TableHistoryValues extends AbstractTableModel {
         if (h.isDeleted()) {
           ProgramPanels.showBottle(bottle, false);
         } else {
-          Program.Debug("Bottle Get ID = " + bottle.getId());
-          Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(b -> b.getId() == bottle.getId()).findFirst()
+          Program.Debug("Bottle Get UUID = " + bottle.getUuid());
+          Program.getStorage().getListMyCellarObject().getBouteille().stream().filter(hasSameId(bottle)).findFirst()
               .ifPresentOrElse(
                   bouteille -> ProgramPanels.showBottle(bouteille, true),
                   () -> ProgramPanels.showBottle(bottle, false));

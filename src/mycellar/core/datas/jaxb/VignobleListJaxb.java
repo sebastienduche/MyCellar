@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 14/03/25
+ * @version 2.8
+ * @since 07/04/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -143,16 +143,16 @@ public class VignobleListJaxb {
     return countryVignobleJaxbList.stream().filter(countryVignoble -> vignobleJaxb.getName().equals(countryVignoble.getName())).findFirst();
   }
 
-  public Optional<CountryVignobleJaxb> findVignobleWithAppelation(final VignobleJaxb vignobleJaxb) {
-    final Optional<CountryVignobleJaxb> vignobleToReturn = findVignoble(vignobleJaxb);
-    if (vignobleToReturn.isPresent()) {
+  public CountryVignobleJaxb findVignobleWithAppelation(final VignobleJaxb vignobleJaxb) {
+    final CountryVignobleJaxb vignobleToReturn = findVignoble(vignobleJaxb).orElse(null);
+    if (vignobleToReturn != null) {
       final AppelationJaxb appelationJaxb = new AppelationJaxb();
       appelationJaxb.setAOC(vignobleJaxb.getAOC());
       appelationJaxb.setIGP(vignobleJaxb.getIGP());
       if (appelationJaxb.isEmpty()) {
-        return Optional.empty();
+        return null;
       }
-      if (vignobleToReturn.get().getUnmodifiableAppelation().contains(appelationJaxb)) {
+      if (vignobleToReturn.getUnmodifiableAppelation().contains(appelationJaxb)) {
         return vignobleToReturn;
       }
     }
@@ -161,7 +161,7 @@ public class VignobleListJaxb {
     } else if (!vignobleJaxb.getAOC().isBlank() || !vignobleJaxb.getIGP().isBlank()) {
       Debug("WARNING findVignobleWithAppelation " + vignobleJaxb);
     }
-    return Optional.empty();
+    return null;
   }
 
   public Optional<AppelationJaxb> findAppelation(final VignobleJaxb vignobleJaxb) {

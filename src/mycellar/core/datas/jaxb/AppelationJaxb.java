@@ -5,6 +5,7 @@ import mycellar.core.IdGenerator;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
+import java.util.UUID;
 
 @XmlRootElement(name = "Appelation")
 public class AppelationJaxb implements Comparable<AppelationJaxb> {
@@ -16,11 +17,14 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
   @XmlElement(name = "IGP")
   private String igp;
 
+  @Deprecated
   private long id;
+  private final UUID uuid;
 
   public AppelationJaxb() {
     aoc = "";
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
   }
 
   public String getAOC() {
@@ -49,8 +53,13 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
     igp = iGP;
   }
 
+  @Deprecated
   public long getId() {
     return id;
+  }
+
+  public UUID getUuid() {
+    return uuid;
   }
 
   @Override

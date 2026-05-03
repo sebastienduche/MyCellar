@@ -7,6 +7,7 @@ import mycellar.core.common.MyCellarFields;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -15,13 +16,15 @@ import java.util.Objects;
  * <p>Societe : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 03/10/25
+ * @version 1.7
+ * @since 06/04/26
  */
 
 abstract class ShowFileColumn<T> {
 
+  @Deprecated
   private final Map<Integer, T> value = new HashMap<>();
+  private final Map<UUID, T> mapUuidToObj = new HashMap<>();
   private final int width;
   private final boolean editable;
   private T defaultValue = null;
@@ -130,6 +133,9 @@ abstract class ShowFileColumn<T> {
   }
 
   T getMapValue(Bouteille b) {
+    if (mapUuidToObj.containsKey(b.getUuid())) {
+      return mapUuidToObj.get(b.getUuid());
+    }
     if (value.containsKey(b.getId())) {
       return value.get(b.getId());
     }
@@ -140,6 +146,7 @@ abstract class ShowFileColumn<T> {
   }
 
   void setMapValue(Bouteille b, T value) {
+    this.mapUuidToObj.put(b.getUuid(), value);
     this.value.put(b.getId(), value);
   }
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,7 +31,7 @@ class MyCellarFieldsTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .status("TOCHECK")
         .build();
   }

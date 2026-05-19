@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <countries>
-    <country id="FRA" name="France"/>
-    <country id="ITA" name="Italie"/>
-    <country id="ESP" name="Espagne"/>
-    <country id="USA" name="Etats Unis"/>
-    <country id="ARG" name="Argentine"/>
-    <country id="AUS" name="Australie"/>
-    <country id="ZAF" name="Afrique du Sud"/>
-    <country id="CHL" name="Chili"/>
-    <country id="DEU" name="Allemagne"/>
-    <country id="PRT" name="Portugal"/>
-    <country id="CHE" name="Suisse"/>
+    <country id="ARG" name="Argentine" uuid="4325611d-6ce7-4043-8ec4-bc99819a4a84"/>
+    <country id="AUS" name="Australie" uuid="5d7fdd7c-dfac-41d1-98c2-882afb45078d"/>
+    <country id="CHL" name="Chili" uuid="01d0243c-08af-40d3-85b6-1eed4a64564f"/>
+    <country id="FRA" name="France" uuid="8eabdaec-45c0-41c9-aa62-eb8e873a6a35"/>
+    <country id="DEU" name="Allemagne" uuid="e316924b-35b7-43c7-a83b-5d358965ca11"/>
+    <country id="ITA" name="Italie" uuid="55f2de71-abef-4b57-83c6-c8cc28cb5a4a"/>
+    <country id="PRT" name="Portugal" uuid="10771648-76c2-4976-9a4d-f0e1c2935ea2"/>
+    <country id="ZAF" name="Afrique du Sud" uuid="9e0435ae-39d6-44a6-8ff6-36f2d3b488ee"/>
+    <country id="ESP" name="Espagne" uuid="9c247fc6-37a1-48f7-b793-920c1e662784"/>
+    <country id="CHE" name="Suisse" uuid="720d478c-ee52-4e24-a396-230091ff9aae"/>
+    <country id="USA" name="Etats Unis" uuid="ae968383-f480-40c5-80a2-ffa149e6d02c"/>
 </countries>

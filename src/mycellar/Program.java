@@ -80,7 +80,6 @@ import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY;
 import static mycellar.ProgramConstants.DATE_FORMATER_TIMESTAMP;
 import static mycellar.ProgramConstants.EURO;
-import static mycellar.ProgramConstants.FRA;
 import static mycellar.ProgramConstants.INTERNAL_VERSION;
 import static mycellar.ProgramConstants.MY_CELLAR_XML;
 import static mycellar.ProgramConstants.ON;
@@ -94,6 +93,7 @@ import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
 import static mycellar.core.MyCellarSettings.CONVERTED_TO_UUID;
+import static mycellar.core.datas.jaxb.CountryListJaxb.loadResourceFile;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_CHECKFILEPATH;
@@ -110,8 +110,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 29.9
- * @since 03/10/25
+ * @version 30.0
+ * @since 18/05/26
  */
 
 public final class Program {
@@ -119,11 +119,11 @@ public final class Program {
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
 
-  public static final CountryJaxb FRANCE = new CountryJaxb(FRA, ProgramConstants.FRANCE);
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
   public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
   public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
   public static final MyClipBoard CLIPBOARD = new MyClipBoard();
+  public static final CountryListJaxb COUNTRY_LIST = loadResourceFile();
 
   // Manage global config
   private static final MyLinkedHashMap CONFIG_GLOBAL = new MyLinkedHashMap();
@@ -615,6 +615,7 @@ public final class Program {
     checkFileVersion();
 
     CountryListJaxb.init();
+    CountryVignobleController.load();
 
     Debug("Program: Reading Places, Bottles & History");
     if (!loadData()) {
@@ -623,7 +624,7 @@ public final class Program {
     }
 
     MyCellarBottleContenance.load();
-    CountryVignobleController.load();
+    CountryVignobleController.rebuild();
 
     PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
@@ -1146,22 +1147,24 @@ public final class Program {
     return cols;
   }
 
-  public static String readFirstLineText(final File f) {
+  public static List<String> readTextFile(final File f) {
     if (f == null || !f.exists()) {
-      return "";
+      return Collections.emptyList();
     }
     if (!f.getName().toLowerCase().endsWith(FILTRE_TXT.toString())) {
-      return "";
+      return Collections.emptyList();
     }
-    Debug("Program: Reading first line of file " + f.getName());
+    Debug("Program: Reading lines of file " + f.getName());
+    List<String> lines = new ArrayList<>();
     try (var scanner = new Scanner(f)) {
-      if (scanner.hasNextLine()) {
-        return toCleanString(scanner.nextLine());
+      while (scanner.hasNextLine()) {
+        lines.add(toCleanString(scanner.nextLine()));
       }
+      return lines;
     } catch (FileNotFoundException e) {
       showException(e, true);
     }
-    return "";
+    return Collections.emptyList();
   }
 
   public static HistoryList getHistoryList() {

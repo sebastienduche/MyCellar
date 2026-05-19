@@ -3,6 +3,7 @@ package mycellar.vignobles;
 import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
+import mycellar.ProgramConstants;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
@@ -29,7 +30,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.FRA;
-import static mycellar.ProgramConstants.ITA;
+import static mycellar.ProgramConstants.FRA_ID;
+import static mycellar.ProgramConstants.ITA_ID;
 import static mycellar.ProgramConstants.TEXT;
 import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
 
@@ -40,8 +42,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 06/04/26
+ * @version 3.4
+ * @since 18/05/26
  */
 
 public final class CountryVignobleController {
@@ -58,20 +60,21 @@ public final class CountryVignobleController {
   @Deprecated
   private final List<Long> usedVignoblesIDList = new LinkedList<>();
   private final List<UUID> usedVignoblesUUIDList = new LinkedList<>();
+  private final Map<String, UUID> mapCountryIDToUUID = new HashMap<>();
   private boolean modified;
 
   private CountryVignobleController() {
     modified = false;
-    CountryListJaxb.findbyId(FRA).ifPresent(country -> countryToVignobles.put(country, loadFrance()));
-    CountryListJaxb.findbyId(ITA).ifPresent(country -> countryToVignobles.put(country, loadItaly()));
+    CountryListJaxb.findByUUID(FRA_ID).ifPresent(country -> countryToVignobles.put(country, loadFrance()));
+    CountryListJaxb.findByUUID(ITA_ID).ifPresent(country -> countryToVignobles.put(country, loadItaly()));
     setRebuildNeeded();
   }
 
   public static void init() {
     INSTANCE.modified = false;
     INSTANCE.countryToVignobles.clear();
-    CountryListJaxb.findbyId(FRA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadFrance()));
-    CountryListJaxb.findbyId(ITA).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItaly()));
+    CountryListJaxb.findByUUID(FRA_ID).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadFrance()));
+    CountryListJaxb.findByUUID(ITA_ID).ifPresent(country -> INSTANCE.countryToVignobles.put(country, loadItaly()));
     setRebuildNeeded();
   }
 
@@ -85,7 +88,6 @@ public final class CountryVignobleController {
     loadAllCountries(INSTANCE.countryToVignobles);
     INSTANCE.modified = false;
     setRebuildNeeded();
-    rebuild();
   }
 
   public static void setModified() {
@@ -107,9 +109,12 @@ public final class CountryVignobleController {
       return Optional.empty();
     }
     VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
-    vignobleListJaxb.init();
     INSTANCE.modified = true;
     INSTANCE.countryToVignobles.put(countryJaxb, vignobleListJaxb);
+    if (INSTANCE.mapCountryIDToUUID.containsKey(countryJaxb.getId())) {
+      Debug("ERROR: the country already exist: " + countryJaxb.getId());
+    }
+    INSTANCE.mapCountryIDToUUID.put(countryJaxb.getId(), countryJaxb.getUuid());
     Debug("Creating country Done");
     return Optional.of(vignobleListJaxb);
   }
@@ -118,6 +123,7 @@ public final class CountryVignobleController {
     Debug("Deleting country... " + countryJaxb.getName());
     INSTANCE.modified = true;
     INSTANCE.countryToVignobles.remove(countryJaxb);
+    INSTANCE.mapCountryIDToUUID.remove(countryJaxb.getId());
     boolean resul = VignobleListJaxb.delete(countryJaxb);
     Debug("Deleting country done with resul = " + resul);
   }
@@ -173,18 +179,18 @@ public final class CountryVignobleController {
   }
 
   private static void mapAppellation(VignobleJaxb vignobleJaxb) {
-    CountryListJaxb.findbyId(vignobleJaxb.getCountry())
+    CountryListJaxb.findByVignoble(vignobleJaxb)
         .flatMap(CountryVignobleController::getVignobles)
         .flatMap(vignobleListJaxb -> vignobleListJaxb.findAppelation(vignobleJaxb))
         .ifPresent(appelationJaxb -> INSTANCE.mapBottleAppellationIDToAppellationID.put(vignobleJaxb.getId(), appelationJaxb.getId()));
-    CountryListJaxb.findbyId(vignobleJaxb.getCountry())
+    CountryListJaxb.findByVignoble(vignobleJaxb)
         .flatMap(CountryVignobleController::getVignobles)
         .flatMap(vignobleListJaxb -> vignobleListJaxb.findAppelation(vignobleJaxb))
         .ifPresent(appelationJaxb -> INSTANCE.mapBottleAppellationUUIDToAppellationUUID.put(vignobleJaxb.getUuid(), appelationJaxb.getUuid()));
   }
 
   public static void createVignobleInMap(final VignobleJaxb vignobleJaxb) {
-    CountryListJaxb.findbyId(vignobleJaxb.getCountry()).ifPresent(country -> {
+    CountryListJaxb.findByVignoble(vignobleJaxb).ifPresent(country -> {
       VignobleListJaxb vignobleListJaxb = getVignobles(country)
           .orElseGet(() -> createCountry(country)
               .orElse(null));
@@ -198,7 +204,8 @@ public final class CountryVignobleController {
         countryVignoble = vignobleListJaxb.findVignoble(vignobleJaxb).orElse(null);
         found = false;
         if (countryVignoble == null) {
-          if (vignobleListJaxb.addVignoble(vignobleJaxb)) {
+          AppelationJaxb appelationJaxb = vignobleListJaxb.addVignoble(vignobleJaxb);
+          if (appelationJaxb != null) {
             INSTANCE.modified = true;
           }
         }
@@ -336,11 +343,15 @@ public final class CountryVignobleController {
     rebuild();
   }
 
-  private static void addVignoble(final VignobleJaxb bouteilleVignobleJaxb) {
-    if (VignobleJaxb.isEmpty(bouteilleVignobleJaxb)) {
-      return;
+  private static AppelationJaxb addVignoble(final VignobleJaxb bouteilleVignobleJaxb) {
+    if (VignobleJaxb.isEmpty(bouteilleVignobleJaxb) && bouteilleVignobleJaxb.getCountryUuid() == null) {
+      return null;
     }
-    CountryJaxb countryJaxb = CountryListJaxb.findByIdOrLabel(bouteilleVignobleJaxb.getCountry());
+    AppelationJaxb appelationJaxb = null;
+    CountryJaxb countryJaxb = CountryListJaxb.findByUUID(bouteilleVignobleJaxb.getCountryUuid()).orElse(null);
+    if (countryJaxb == null) {
+      countryJaxb = CountryListJaxb.findByIdOrLabel(bouteilleVignobleJaxb.getCountry());
+    }
     if (countryJaxb != null) {
       if (getVignobles(countryJaxb).isEmpty()) {
         createCountry(countryJaxb);
@@ -348,25 +359,28 @@ public final class CountryVignobleController {
       final VignobleListJaxb vignobleListJaxb = getVignobles(countryJaxb).orElse(null);
       if (vignobleListJaxb == null) {
         Debug("ERROR: addVignoble: Unable to find vignobles for country " + countryJaxb);
-        return;
+        return null;
       }
       CountryVignobleJaxb countryVignoble = vignobleListJaxb.findVignobleWithAppelation(bouteilleVignobleJaxb);
       if (countryVignoble == null) {
-        CountryVignobleJaxb vignoble = vignobleListJaxb.findVignoble(bouteilleVignobleJaxb).orElse(null);
-        if (vignoble != null && !bouteilleVignobleJaxb.isAppellationEmpty()) {
-          AppelationJaxb appelationJaxb = new AppelationJaxb();
+        countryVignoble = vignobleListJaxb.findVignoble(bouteilleVignobleJaxb).orElse(null);
+        if (countryVignoble != null && !bouteilleVignobleJaxb.isAppellationEmpty()) {
+          appelationJaxb = new AppelationJaxb();
           appelationJaxb.setAOC(bouteilleVignobleJaxb.getAOC());
           appelationJaxb.setIGP(bouteilleVignobleJaxb.getIGP());
-          vignoble.add(appelationJaxb);
+          countryVignoble.add(appelationJaxb);
           INSTANCE.modified = true;
-        } else if (vignoble == null) {
-          if (vignobleListJaxb.addVignoble(bouteilleVignobleJaxb)) {
+        } else if (countryVignoble == null) {
+          appelationJaxb = vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
+          if (appelationJaxb != null) {
             INSTANCE.modified = true;
           }
         }
       } else {
-        vignobleListJaxb.findAppelation(bouteilleVignobleJaxb)
-            .ifPresent(bouteilleVignobleJaxb::setValues);
+        appelationJaxb = vignobleListJaxb.findAppelation(bouteilleVignobleJaxb).orElse(null);
+        if (appelationJaxb != null) {
+          bouteilleVignobleJaxb.setValues(appelationJaxb, countryJaxb);
+        }
         INSTANCE.mapCountryVignobleIDToVignoble.put(countryVignoble.getId(), bouteilleVignobleJaxb);
         INSTANCE.mapCountryVignobleUUIDToVignoble.put(countryVignoble.getUuid(), bouteilleVignobleJaxb);
       }
@@ -375,8 +389,7 @@ public final class CountryVignobleController {
       countryJaxb = new CountryJaxb(bouteilleVignobleJaxb.getCountry());
       generateCountryId(countryJaxb);
       VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
-      vignobleListJaxb.init();
-      vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
+      appelationJaxb = vignobleListJaxb.addVignoble(bouteilleVignobleJaxb);
       CountryListJaxb.add(countryJaxb);
       INSTANCE.countryToVignobles.put(countryJaxb, vignobleListJaxb);
     }
@@ -384,13 +397,18 @@ public final class CountryVignobleController {
       INSTANCE.usedVignoblesIDList.add(bouteilleVignobleJaxb.getId());
       INSTANCE.usedVignoblesUUIDList.add(bouteilleVignobleJaxb.getUuid());
     }
+    return appelationJaxb;
   }
 
-  public static void addVignobleFromBottle(final Bouteille wine) {
-    Debug("addVignobleFromBottle...");
-    addVignoble(wine.getVignoble());
+  public static void findOrAddVignobleFromBottle(final Bouteille wine) {
+    Debug("findOrAddVignobleFromBottle...");
+    AppelationJaxb appelationJaxb = addVignoble(wine.getVignoble());
+    if (appelationJaxb != null && wine.getVignoble() != null) {
+      CountryJaxb countryJaxb = CountryListJaxb.findByVignoble(wine.getVignoble()).orElse(null);
+      wine.getVignoble().setValues(appelationJaxb, countryJaxb);
+    }
     setRebuildNeeded();
-    Debug("addVignobleFromBottle... Done");
+    Debug("findOrAddVignobleFromBottle... Done");
   }
 
   private static VignobleListJaxb load(File file) {
@@ -426,9 +444,10 @@ public final class CountryVignobleController {
   public static void loadAllCountries(Map<CountryJaxb, VignobleListJaxb> map) {
     Debug("Loading all countries");
     map.clear();
+    INSTANCE.mapCountryIDToUUID.clear();
     File dir = new File(Program.getWorkDir(true));
-    CountryListJaxb.findbyId(FRA).ifPresent(country -> map.put(country, loadFrance()));
-    CountryListJaxb.findbyId(ITA).ifPresent(country -> map.put(country, loadItaly()));
+    CountryListJaxb.findByUUID(FRA_ID).ifPresent(country -> map.put(country, loadFrance()));
+    CountryListJaxb.findByUUID(ITA_ID).ifPresent(country -> map.put(country, loadItaly()));
     File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
     if (fileVignobles != null) {
       for (File f : fileVignobles) {
@@ -441,7 +460,9 @@ public final class CountryVignobleController {
         }
         name = name.substring(0, name.indexOf(VIGNOBLE));
         File fText = new File(f.getParent(), name + TEXT);
-        String label = Program.readFirstLineText(fText);
+        List<String> lines = Program.readTextFile(fText);
+        String label = lines.isEmpty() ? "" : lines.getFirst();
+        UUID uuid = lines.size() < 2 ? null : UUID.fromString(lines.get(1));
 
         CountryJaxb countryJaxb = CountryListJaxb.findbyId(name)
             .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
@@ -449,24 +470,32 @@ public final class CountryVignobleController {
           countryJaxb = new CountryJaxb(id, label);
           CountryListJaxb.add(countryJaxb);
         }
-        if (!label.isEmpty()) {
+        if (!label.isEmpty() && !label.equals(countryJaxb.getName())) {
           countryJaxb.setName(label);
+        }
+        if (countryJaxb.getUuid() == null) {
+          countryJaxb.setUuid(UUID.randomUUID());
+        }
+        if (uuid != null && !countryJaxb.getUuid().equals(uuid)) {
+          countryJaxb.setUuid(uuid);
         }
         if (!map.containsKey(countryJaxb)) {
           map.put(countryJaxb, load(f));
         } else {
-          VignobleListJaxb loadedVignobleListJaxb = load(f);
-          if (loadedVignobleListJaxb != null) {
+          var loadedUserVignobleListJaxb = load(f);
+          if (loadedUserVignobleListJaxb != null) {
             VignobleListJaxb vignobleListJaxb = map.get(countryJaxb);
-            for (CountryVignobleJaxb vignoble : vignobleListJaxb.getCountryVignobleJaxbList()) {
-              if (!loadedVignobleListJaxb.getCountryVignobleJaxbList().contains(vignoble)) {
-                loadedVignobleListJaxb.getCountryVignobleJaxbList().add(vignoble);
+            for (var systemCountryVignobleJaxb : vignobleListJaxb.getCountryVignobleJaxbList()) {
+              if (!loadedUserVignobleListJaxb.getCountryVignobleJaxbList().contains(systemCountryVignobleJaxb)) {
+                // Can't we delete Systen Countries
+                loadedUserVignobleListJaxb.getCountryVignobleJaxbList().add(systemCountryVignobleJaxb);
               } else {
-                CountryVignobleJaxb countryVignobleJaxb = loadedVignobleListJaxb.getCountryVignobleJaxbList().get(loadedVignobleListJaxb.getCountryVignobleJaxbList().indexOf(vignoble));
-                if (vignoble.getUnmodifiableAppelation() != null) {
-                  vignoble.getUnmodifiableAppelation().forEach(countryVignobleJaxb::add);
+                var systemCountryVignobleJaxbFromUser = loadedUserVignobleListJaxb.getCountryVignobleJaxbList().get(loadedUserVignobleListJaxb.getCountryVignobleJaxbList().indexOf(systemCountryVignobleJaxb));
+                if (systemCountryVignobleJaxb.getUnmodifiableAppelation() != null) {
+                  // Add the new system appellation to user !!
+                  systemCountryVignobleJaxb.getUnmodifiableAppelation().forEach(systemCountryVignobleJaxbFromUser::add);
                 } else {
-                  vignoble.setAppelation(new LinkedList<>());
+                  systemCountryVignobleJaxb.setAppelation(new LinkedList<>());
                 }
               }
             }
@@ -474,13 +503,14 @@ public final class CountryVignobleController {
         }
       }
     }
+    CountryListJaxb.getInstance().getCountries().forEach(country -> INSTANCE.mapCountryIDToUUID.put(country.getId(), country.getUuid()));
     Debug("Loading all countries Done");
   }
 
   public static VignobleListJaxb loadFrance() {
     VignobleListJaxb vignobleListJaxb = null;
     if (Program.hasWorkDir()) {
-      vignobleListJaxb = loadById(FRA);
+      vignobleListJaxb = loadByUuid(FRA_ID);
     }
     return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/vignobles.xml");
   }
@@ -488,13 +518,13 @@ public final class CountryVignobleController {
   public static VignobleListJaxb loadItaly() {
     VignobleListJaxb vignobleListJaxb = null;
     if (Program.hasWorkDir()) {
-      vignobleListJaxb = loadById(ITA);
+      vignobleListJaxb = loadByUuid(ITA_ID);
     }
     return (vignobleListJaxb != null) ? vignobleListJaxb : VignobleListJaxb.load("resources/italie.xml");
   }
 
-  private static VignobleListJaxb loadById(String id) {
-    final CountryJaxb countryJaxb = CountryListJaxb.findbyId(id).orElse(null);
+  private static VignobleListJaxb loadByUuid(UUID uuid) {
+    final CountryJaxb countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
     if (countryJaxb != null) {
       File f = new File(Program.getWorkDir(true), countryJaxb.getId() + VIGNOBLE);
       if (f.exists()) {
@@ -530,6 +560,17 @@ public final class CountryVignobleController {
 
   public static boolean isRebuildNeeded() {
     return rebuildNeeded;
+  }
+
+  public static UUID getUUIDFromCountry(String country) {
+    if (ProgramConstants.FR.equals(country)) {
+      country = FRA;
+    }
+    UUID uuid = INSTANCE.mapCountryIDToUUID.getOrDefault(country, null);
+    if (uuid == null) {
+      throw new IllegalArgumentException("Country ID " + country + " not found");
+    }
+    return uuid;
   }
 
   private static void Debug(String text) {

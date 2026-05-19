@@ -60,7 +60,7 @@ class BouteilleTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
 
     // Caisse avec 2 emplacements commencant a 1 et limite a 6 bouteilles
@@ -341,7 +341,7 @@ class BouteilleTest {
         .maturity("m")
         .parker("1")
         .price("23")
-        .vignoble("fr", "b", "c", "d")
+        .vignoble("fr", "b", "c", "d", UUID.randomUUID(), UUID.randomUUID())
         .build();
     bouteille.update(test);
     assertEquals("b", bouteille.getNom());
@@ -486,7 +486,7 @@ class BouteilleTest {
         .maturity("m")
         .parker("1")
         .price("23")
-        .vignoble("fr", "b", "c", "d")
+        .vignoble("fr", "b", "c", "d", UUID.fromString("4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05"), UUID.fromString("d9c2f699-c23f-4225-a42b-a53f85ee82a4"))
         .lastModified("17-11-2020 12:08")
         .build());
     try {
@@ -519,6 +519,8 @@ class BouteilleTest {
                       <IGP>d</IGP>
                       <name>b</name>
                       <id>3</id>
+                      <uuid>4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05</uuid>
+                      <countryUuid>d9c2f699-c23f-4225-a42b-a53f85ee82a4</countryUuid>
                   </vignoble>
                   <color>R</color>
                   <status></status>
@@ -548,7 +550,7 @@ class BouteilleTest {
         .parker("1")
         .price("23")
         .lastModified("")
-        .vignoble("fr", "b", "c", "d")
+        .vignoble("fr", "b", "c", "d", UUID.randomUUID(), UUID.randomUUID())
         .lastModified("17-11-2020 12:08")
         .build();
     String xml = """
@@ -626,7 +628,7 @@ class BouteilleTest {
         .maturity("m")
         .parker("1")
         .price("23")
-        .vignoble("fr", "b", "c", "d")
+        .vignoble("fr", "b", "c", "d", UUID.fromString("4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05"), UUID.fromString("d9c2f699-c23f-4225-a42b-a53f85ee82a4"))
         .lastModified("17-11-2020 12:08")
         .build(),
         1, 2);
@@ -666,6 +668,8 @@ class BouteilleTest {
                           <IGP>d</IGP>
                           <name>b</name>
                           <id>3</id>
+                          <uuid>4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05</uuid>
+                          <countryUuid>d9c2f699-c23f-4225-a42b-a53f85ee82a4</countryUuid>
                       </vignoble>
                       <color>R</color>
                       <status></status>
@@ -698,7 +702,7 @@ class BouteilleTest {
         .parker("1")
         .price("23")
         .lastModified("")
-        .vignoble("fr", "b", "c", "d")
+        .vignoble("fr", "b", "c", "d", UUID.fromString("4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05"), UUID.fromString("d9c2f699-c23f-4225-a42b-a53f85ee82a4"))
         .lastModified("17-11-2020 12:08")
         .build();
     String xml = """
@@ -726,6 +730,8 @@ class BouteilleTest {
                           <IGP>d</IGP>
                           <name>b</name>
                           <id>3</id>
+                          <uuid>4baf6f7c-c9a4-40f4-a5bc-bc73fc43db05</uuid>
+                          <countryUuid>d9c2f699-c23f-4225-a42b-a53f85ee82a4</countryUuid>
                       </vignoble>
                       <color>R</color>
                       <status></status>
@@ -733,7 +739,7 @@ class BouteilleTest {
                       <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
                   </Bouteille>
                   <totalBottle>2</totalBottle>
-                  <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb7</uuid>
+                  <uuid>a839b533-1a04-4a4b-94de-fa771bcbdeb8</uuid>
               </History>
           </HistoryList>
         """;
@@ -746,12 +752,12 @@ class BouteilleTest {
     String date = historyElement.getElementsByTagName("date").item(0).getTextContent();
     String type = historyElement.getElementsByTagName("type").item(0).getTextContent();
     String totalBottle = historyElement.getElementsByTagName("totalBottle").item(0).getTextContent();
-    String uuid = historyElement.getElementsByTagName("uuid").item(0).getTextContent();
+    String uuid = historyElement.getElementsByTagName("uuid").item(2).getTextContent();
     final Bouteille bouteilleFromXML = Bouteille.fromXml((Element) historyElement.getElementsByTagName("Bouteille").item(0));
     assertEquals("04/04/2026", date);
     assertEquals("1", type);
     assertEquals("2", totalBottle);
-    assertEquals("a839b533-1a04-4a4b-94de-fa771bcbdeb7", uuid);
+    assertEquals("a839b533-1a04-4a4b-94de-fa771bcbdeb8", uuid);
     assertEquals(bottle.getId(), bouteilleFromXML.getId());
     assertEquals(bottle.getNom(), bouteilleFromXML.getNom());
     assertEquals(bottle.getAnnee(), bouteilleFromXML.getAnnee());
@@ -772,5 +778,7 @@ class BouteilleTest {
     assertEquals(bottle.getVignoble().getName(), bouteilleFromXML.getVignoble().getName());
     assertEquals(bottle.getVignoble().getAOC(), bouteilleFromXML.getVignoble().getAOC());
     assertEquals(bottle.getVignoble().getIGP(), bouteilleFromXML.getVignoble().getIGP());
+    assertEquals(bottle.getVignoble().getCountryUuid(), bouteilleFromXML.getVignoble().getCountryUuid());
+    assertEquals(bottle.getVignoble().getUuid(), bouteilleFromXML.getVignoble().getUuid());
   }
 }

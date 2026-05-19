@@ -41,8 +41,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 03/10/25
+ * @version 3.4
+ * @since 18/05/26
  */
 
 public enum MyCellarFields {
@@ -145,7 +145,7 @@ public enum MyCellarFields {
     if (field == COUNTRY) {
       if (myCellarObject instanceof Bouteille bouteille) {
         if (bouteille.getVignoble() != null) {
-          CountryJaxb c = CountryListJaxb.findbyId(bouteille.getVignoble().getCountry()).orElse(null);
+          CountryJaxb c = CountryListJaxb.findByVignoble(bouteille.getVignoble()).orElse(null);
           if (c != null) {
             return c.toString();
           }

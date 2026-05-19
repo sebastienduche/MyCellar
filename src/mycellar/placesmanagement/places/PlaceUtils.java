@@ -23,7 +23,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.w3c.dom.Element;
 
-import javax.swing.*;
+import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -68,8 +68,8 @@ import static mycellar.general.ResourceKey.MYCELLAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.4
- * @since 03/10/25
+ * @version 6.5
+ * @since 18/05/26
  */
 public final class PlaceUtils {
 
@@ -222,7 +222,7 @@ public final class PlaceUtils {
             td.appendChild(doc.createTextNode(BottleColor.getColor(bottle.getColor()).toString()));
           } else if (field == MyCellarFields.COUNTRY) {
             if (bottle.getVignoble() != null) {
-              CountryListJaxb.findbyId(bottle.getVignoble().getCountry()).ifPresent(countryJaxb -> td.appendChild(doc.createTextNode(countryJaxb.toString())));
+              CountryListJaxb.findByVignoble(bottle.getVignoble()).ifPresent(countryJaxb -> td.appendChild(doc.createTextNode(countryJaxb.toString())));
             } else {
               td.appendChild(doc.createTextNode(""));
             }

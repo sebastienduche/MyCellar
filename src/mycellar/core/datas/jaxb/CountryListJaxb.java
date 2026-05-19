@@ -1,6 +1,8 @@
 package mycellar.core.datas.jaxb;
 
+import mycellar.MyCellarUtils;
 import mycellar.Program;
+import mycellar.ProgramConstants;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -17,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static mycellar.Program.COUNTRY_LIST;
 import static mycellar.ProgramConstants.COUNTRIES_XML;
 import static mycellar.ProgramConstants.FR;
 
@@ -28,18 +32,21 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 08/07/22
+ * @version 1.3
+ * @since 18/05/26
  */
 
 @XmlRootElement(name = "countries")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CountryListJaxb {
-  private static CountryListJaxb instance = load();
+  private static CountryListJaxb instance;
   @XmlElement(name = "country")
   private List<CountryJaxb> countries = null;
 
   public static CountryListJaxb getInstance() {
+    if (instance == null) {
+      instance = load();
+    }
     return instance;
   }
 
@@ -68,22 +75,30 @@ public class CountryListJaxb {
       if (f != null && f.exists()) {
         Debug("Loading countries file: " + f.getAbsolutePath());
         countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(f);
+        // If the uuid are null, we fill it with existing ones
+        populateUUID(countryListJaxb);
       } else {
-        Debug("Loading countries resource file");
-        URL url = CountryListJaxb.class.getClassLoader().getResource("resources/" + COUNTRIES_XML);
-        if (url == null) {
-          Debug("ERROR: Countries: Missing resource " + COUNTRIES_XML);
-          countryListJaxb = new CountryListJaxb();
-          countryListJaxb.setCountries(new ArrayList<>());
-          return countryListJaxb;
-        }
-        countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(url);
-        Debug("Loading countries file Done");
+        return COUNTRY_LIST;
       }
     } catch (JAXBException | RuntimeException e) {
       Program.showException(e);
     }
     return countryListJaxb;
+  }
+
+  private static void populateUUID(CountryListJaxb countryListJaxb) {
+    Debug("Populating UUID for CountryListJaxb");
+    for (CountryJaxb country : countryListJaxb.getCountries()) {
+      if (country.getUuid() == null) {
+        Program.COUNTRY_LIST.getCountries()
+            .stream()
+            .filter(countryJaxb -> countryJaxb.getId().equals(country.getId())).findFirst()
+            .ifPresent(countryJaxb -> country.setUuid(countryJaxb.getUuid()));
+      }
+      if (country.getUuid() == null) {
+        country.setUuid(UUID.randomUUID());
+      }
+    }
   }
 
   public static boolean save() {
@@ -105,35 +120,86 @@ public class CountryListJaxb {
     return true;
   }
 
-  private static void Debug(String s) {
-    Program.Debug("CountryListJaxb: " + s);
+  public static CountryListJaxb loadResourceFile() {
+    CountryListJaxb countryListJaxb = null;
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(CountryListJaxb.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+      Debug("Loading countries resource file");
+      URL url = CountryListJaxb.class.getClassLoader().getResource("resources/" + COUNTRIES_XML);
+      if (url == null) {
+        Debug("ERROR: Countries: Missing resource " + COUNTRIES_XML);
+        countryListJaxb = new CountryListJaxb();
+        countryListJaxb.setCountries(new ArrayList<>());
+        return countryListJaxb;
+      }
+      countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(url);
+      Debug("Loading countries file Done");
+    } catch (JAXBException | RuntimeException e) {
+      Program.showException(e);
+    }
+    return countryListJaxb;
   }
 
+  public static Optional<CountryJaxb> findByVignoble(VignobleJaxb vignoble) {
+    if (vignoble.isAppellationEmpty() && MyCellarUtils.isNullOrEmpty(vignoble.getCountry())) {
+      return Optional.empty();
+    }
+    Debug("Finding Country By Vignoble [%s - %s]".formatted(vignoble.getCountry(), vignoble.getUuid()));
+    Optional<CountryJaxb> countryJaxb = findbyId(vignoble.getCountry());
+    CountryJaxb countryJaxb1 = countryJaxb.orElse(null);
+    Optional<CountryJaxb> byUUID;
+    CountryJaxb countryJaxb2 = null;
+    if (vignoble.getCountryUuid() != null) {
+      byUUID = findByUUID(vignoble.getCountryUuid());
+      countryJaxb2 = byUUID.orElse(null);
+    }
+    if (countryJaxb1 != null && countryJaxb2 != null) {
+      if (countryJaxb1.getUuid().equals(countryJaxb2.getUuid())) {
+        return Optional.of(countryJaxb2);
+      } else {
+        Debug("ERROR: findByVignoble: unexpected country - uuid: [%s - %s] vs [%s - %s]".formatted(countryJaxb1.getName(), countryJaxb1.getUuid(), countryJaxb2.getName(), countryJaxb2.getUuid()));
+      }
+    } else if (countryJaxb1 != null || countryJaxb2 != null) {
+      Debug("ERROR: findByVignoble: " + countryJaxb1 + " vs " + countryJaxb2);
+    }
+    return findbyId(vignoble.getCountry());
+  }
+
+  @Deprecated
   public static Optional<CountryJaxb> findbyId(String id) {
     if (FR.equals(id)) {
-      return Optional.of(Program.FRANCE);
+      id = ProgramConstants.FRA;
     }
+    String finalId = id;
     return getInstance().getCountries()
         .stream()
-        .filter(country -> country.getId().equals(id))
+        .filter(country -> country.getId().equals(finalId))
         .findFirst();
   }
 
-  private static Optional<CountryJaxb> findByLabel(String label) {
+  public static Optional<CountryJaxb> findByUUID(UUID uuid) {
+    return getInstance().getCountries()
+        .stream()
+        .filter(country -> country.getUuid().equals(uuid))
+        .findFirst();
+  }
+
+  @Deprecated
+  public static Optional<CountryJaxb> findByLabel(String label) {
     return getInstance().getCountries()
         .stream()
         .filter(country -> country.getLabel().equals(label))
         .findFirst();
   }
 
+  @Deprecated
   public static CountryJaxb findByIdOrLabel(String label) {
     return findbyId(label).orElseGet(() -> findByLabel(label).orElse(null));
   }
 
   public static void add(CountryJaxb countryJaxb) {
-    if (findbyId(countryJaxb.getId()).isPresent()) {
-      return;
-    }
     getInstance().getCountries().add(countryJaxb);
   }
 
@@ -143,6 +209,10 @@ public class CountryListJaxb {
 
   private void setCountries(List<CountryJaxb> countries) {
     this.countries = countries;
+  }
+
+  private static void Debug(String s) {
+    Program.Debug("CountryListJaxb: " + s);
   }
 
 }

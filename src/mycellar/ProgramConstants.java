@@ -3,6 +3,7 @@ package mycellar;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 /**
  * Titre : Cave &agrave; vin
@@ -16,7 +17,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "5.5.4.0";
+  public static final String INTERNAL_VERSION = "5.5.5.5";
   public static final int VERSION = 81;
   public static final String MAIN_VERSION = VERSION + " BI";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
@@ -34,8 +35,8 @@ public final class ProgramConstants {
   public static final String COUNTRIES_XML = "countries.xml";
   public static final String TEXT = ".txt";
   public static final String FRA = "FRA";
-  public static final String FRANCE = "France";
-  public static final String ITA = "ITA";
+  public static final UUID FRA_ID = UUID.fromString("8eabdaec-45c0-41c9-aa62-eb8e873a6a35");
+  public static final UUID ITA_ID = UUID.fromString("55f2de71-abef-4b57-83c6-c8cc28cb5a4a");
   public static final String FR = "fr";
   public static final String ONE = "1";
   public static final String ZERO = "0";

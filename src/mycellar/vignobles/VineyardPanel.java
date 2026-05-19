@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.MyCellarUtils.isDefined;
+import static mycellar.core.datas.jaxb.VignobleListJaxb.findCountyVignobleByName;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_COUNTRYEXIST;
@@ -68,8 +69,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEVIGNOBLE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.2
- * @since 25/03/25
+ * @version 4.3
+ * @since 18/05/26
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -212,8 +213,11 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
       if (isDefined(val)) {
         CountryVignobleJaxb countryVignobleJaxb = new CountryVignobleJaxb();
         countryVignobleJaxb.setName(val);
-        if (!vignobleListJaxb.getCountryVignobleJaxbList().contains(countryVignobleJaxb)) {
-          countryVignobleJaxb = vignobleListJaxb.addVignoble(val);
+        var countryVignobleFound = vignobleListJaxb.getCountryVignobleJaxbList().stream()
+            .filter(Objects::nonNull)
+            .anyMatch(findCountyVignobleByName(val));
+        if (!countryVignobleFound) {
+          countryVignobleJaxb = vignobleListJaxb.createCountryVignoble(val);
           comboVignoble.setEnabled(true);
           comboVignoble.addItem(countryVignobleJaxb);
           comboVignoble.setSelectedItem(countryVignobleJaxb);

@@ -10,6 +10,7 @@ import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.PopupListener;
@@ -22,8 +23,9 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.placesmanagement.places.SimplePlace;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,8 +65,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.5
- * @since 03/10/25
+ * @version 33.4
+ * @since 18/05/26
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -520,7 +522,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
     String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.MODIFIED.name());
-    String country = panelVignobles.getCountry();
+    CountryJaxb country = panelVignobles.getCountry();
     String vignoble = panelVignobles.getVignoble();
     String aoc = panelVignobles.getAOC();
     String igp = panelVignobles.getIGP();
@@ -540,7 +542,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     if (singleObject || !price.isEmpty()) {
       bouteille.setPrix(price);
     }
-    if (singleObject || !country.isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
+    if (singleObject || !country.getId().isEmpty() || !vignoble.isEmpty() || !aoc.isEmpty() || !igp.isEmpty()) {
       bouteille.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
     }
     if (singleObject || panelWineAttribute.getStatusList().isModified()) {

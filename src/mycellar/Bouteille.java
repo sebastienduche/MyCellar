@@ -12,12 +12,15 @@ import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.common.bottle.BottleColor;
+import mycellar.core.datas.jaxb.CountryJaxb;
+import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,8 +50,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.8
- * @since 03/10/25
+ * @version 8.9
+ * @since 18/05/26
  *
  * <p>Java class for anonymous complex type.
  *
@@ -667,9 +671,25 @@ public class Bouteille implements IMyCellarObject, Serializable {
     }
     NodeList nodeUuid = element.getElementsByTagName("uuid");
     UUID newUUID = UUID.randomUUID();
-    if (nodeUuid.getLength() == 1) {
-      final String uuidValue = nodeUuid.item(0).getTextContent();
-      newUUID = UUID.fromString(uuidValue);
+    UUID newVignobleUUID = UUID.randomUUID();
+    if (nodeUuid.getLength() > 0) {
+      for (int i = 0; i < nodeUuid.getLength(); i++) {
+        Node item = nodeUuid.item(i);
+        if (item.getParentNode().isEqualNode(elemVignoble)) {
+          newVignobleUUID = UUID.fromString(item.getTextContent());
+        } else {
+          newUUID = UUID.fromString(item.getTextContent());
+        }
+      }
+    }
+    NodeList nodeCountryUuid = element.getElementsByTagName("countryUuid");
+    UUID newCountryUUID;
+    if (nodeCountryUuid.getLength() == 1) {
+      final String uuidValue = nodeCountryUuid.item(0).getTextContent();
+      newCountryUUID = UUID.fromString(uuidValue);
+    } else {
+      Optional<CountryJaxb> newCountryUUID1 = CountryListJaxb.findbyId(country);
+      newCountryUUID = newCountryUUID1.map(CountryJaxb::getUuid).orElse(null);
     }
     return new BouteilleBuilder(name)
         .id(elemId)
@@ -686,7 +706,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
         .status(elemStatus)
         .lastModified(lastModifed)
         .color(elemColor)
-        .vignoble(country, vignobleName, AOC, IGP)
+        .vignoble(country, vignobleName, AOC, IGP, newVignobleUUID, newCountryUUID)
         .uuid(newUUID)
         .build();
   }
@@ -786,7 +806,8 @@ public class Bouteille implements IMyCellarObject, Serializable {
 
     public BouteilleBuilder(String nom) {
       this.nom = nom;
-      id = numLieu = ligne = colonne = 0;
+      id = 0;
+      numLieu = ligne = colonne = 0;
       type = emplacement = prix = comment = annee = maturity = parker = color = "";
       vignoble = null;
       status = "";
@@ -870,8 +891,15 @@ public class Bouteille implements IMyCellarObject, Serializable {
       return this;
     }
 
-    public BouteilleBuilder vignoble(String country, String name, String aoc, String igp) {
-      vignoble = new VignobleJaxb(country, name, aoc, igp);
+    // Used for manual deserialization and tests
+    public BouteilleBuilder vignoble(String country, String name, String aoc, String igp, UUID vignobleUuid, UUID countryUuid) {
+      vignoble = new VignobleJaxb(country, name, aoc, igp, countryUuid);
+      vignoble.setUuid(vignobleUuid);
+      return this;
+    }
+
+    public BouteilleBuilder vignoble(CountryJaxb country, String name, String aoc, String igp) {
+      vignoble = new VignobleJaxb(country.getId(), name, aoc, igp, country.getUuid());
       return this;
     }
 

@@ -1,7 +1,6 @@
 package mycellar.core.datas.jaxb;
 
 import mycellar.Program;
-import mycellar.core.IdGenerator;
 import mycellar.vignobles.CountryVignobleController;
 
 import javax.xml.bind.JAXBContext;
@@ -23,6 +22,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static mycellar.ProgramConstants.TEXT;
 
@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.8
- * @since 07/04/26
+ * @version 2.9
+ * @since 18/05/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -43,12 +43,11 @@ public class VignobleListJaxb {
   public static final String VIGNOBLE = ".vignoble";
 
   @XmlElement(name = "vignoble")
-  private List<CountryVignobleJaxb> countryVignobleJaxbList = null;
+  private List<CountryVignobleJaxb> countryVignobleJaxbList;
 
-  private long id;
 
   public VignobleListJaxb() {
-    id = IdGenerator.generateID();
+    countryVignobleJaxbList = new ArrayList<>();
   }
 
   public static VignobleListJaxb load(final String ressource) {
@@ -82,6 +81,10 @@ public class VignobleListJaxb {
     try (FileWriter writer = new FileWriter(fText);
          BufferedWriter buffer = new BufferedWriter(writer)) {
       buffer.write(countryJaxb.getName());
+      if (countryJaxb.getUuid() != null) {
+        buffer.newLine();
+        buffer.write(countryJaxb.getUuid().toString());
+      }
     } catch (IOException e) {
       Program.showException(e);
       return false;
@@ -128,10 +131,6 @@ public class VignobleListJaxb {
     countryVignobleJaxbList = list;
   }
 
-  public void init() {
-    countryVignobleJaxbList = new ArrayList<>();
-    id = IdGenerator.generateID();
-  }
 
   public void checkAvailability() {
     if (countryVignobleJaxbList == null) {
@@ -187,7 +186,7 @@ public class VignobleListJaxb {
     return Optional.empty();
   }
 
-  public boolean addVignoble(final VignobleJaxb vignobleJaxb) {
+  public AppelationJaxb addVignoble(final VignobleJaxb vignobleJaxb) {
     Debug("Add Vignoble " + vignobleJaxb);
     CountryVignobleJaxb vigne = new CountryVignobleJaxb();
     vigne.setName(vignobleJaxb.getName());
@@ -196,7 +195,7 @@ public class VignobleListJaxb {
     appelationJaxb.setIGP(vignobleJaxb.getIGP());
     if (vigne.getName().isBlank() && appelationJaxb.isEmpty()) {
       Debug("Add Vignoble cancelled");
-      return false;
+      return null;
     }
     LinkedList<AppelationJaxb> list = new LinkedList<>();
     list.add(appelationJaxb);
@@ -205,10 +204,10 @@ public class VignobleListJaxb {
     CountryVignobleController.createVignobleInMap(vignobleJaxb);
     Collections.sort(countryVignobleJaxbList);
     Debug("Add vignoble Done");
-    return true;
+    return appelationJaxb;
   }
 
-  public CountryVignobleJaxb addVignoble(final String name) {
+  public CountryVignobleJaxb createCountryVignoble(final String name) {
     Debug("Adding vignoble with name " + name);
     CountryVignobleJaxb vigne = new CountryVignobleJaxb();
     vigne.setName(name);
@@ -223,4 +222,7 @@ public class VignobleListJaxb {
     countryVignobleJaxbList.remove(vigne);
   }
 
+  public static Predicate<CountryVignobleJaxb> findCountyVignobleByName(String val) {
+    return countryJaxb -> countryJaxb.getName().equals(val);
+  }
 }

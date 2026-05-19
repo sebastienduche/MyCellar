@@ -7,6 +7,7 @@ import mycellar.core.MyCellarManageBottles;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.UpdateViewType;
 import mycellar.core.datas.history.HistoryState;
+import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.uicomponents.PopupListener;
@@ -18,8 +19,10 @@ import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.vignobles.CountryVignobleController;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import static mycellar.MyCellarUtils.nonNullValueOrDefault;
@@ -43,8 +46,8 @@ import static mycellar.general.ResourceKey.MANAGEBOTTLE_SAVEMODIFICATIONS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.3
- * @since 03/10/25
+ * @version 11.4
+ * @since 18/05/26
  */
 public final class ManageBottle extends MyCellarManageBottles implements Runnable, ITabListener, IUpdatable {
   private boolean saveAndExit;
@@ -153,7 +156,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     String parker = panelWineAttribute.getParker();
     String color = panelWineAttribute.getColor();
     String status = nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.MODIFIED.name());
-    String country = panelVignobles.getCountry();
+    CountryJaxb country = panelVignobles.getCountry();
     String vignoble = panelVignobles.getVignoble();
     String aoc = panelVignobles.getAOC();
     String igp = panelVignobles.getIGP();
@@ -220,7 +223,7 @@ public final class ManageBottle extends MyCellarManageBottles implements Runnabl
     bottle.setParker(parker);
     bottle.setPrix(prix);
     bottle.setVignoble(new VignobleJaxb(country, vignoble, aoc, igp));
-    CountryVignobleController.addVignobleFromBottle(bottle);
+    CountryVignobleController.findOrAddVignobleFromBottle(bottle);
     CountryVignobleController.setRebuildNeeded();
     bottle.setEmplacement(cave.getName());
     bottle.setNom(nom);

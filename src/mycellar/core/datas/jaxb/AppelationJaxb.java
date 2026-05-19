@@ -2,11 +2,14 @@ package mycellar.core.datas.jaxb;
 
 import mycellar.core.IdGenerator;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 import java.util.UUID;
 
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "Appelation")
 public class AppelationJaxb implements Comparable<AppelationJaxb> {
 
@@ -18,7 +21,9 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
   private String igp;
 
   @Deprecated
+  @XmlElement
   private long id;
+  @XmlElement
   private final UUID uuid;
 
   public AppelationJaxb() {
@@ -109,6 +114,7 @@ public class AppelationJaxb implements Comparable<AppelationJaxb> {
         && (igp == null || igp.isBlank());
   }
 
+  @Deprecated
   public void makeItClean() {
     id = IdGenerator.generateID();
     if (getAOC() == null) {

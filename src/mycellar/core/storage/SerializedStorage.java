@@ -1,6 +1,7 @@
 package mycellar.core.storage;
 
 import mycellar.Bouteille;
+import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.Program.hasSameHistoryId;
@@ -38,8 +40,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.6
- * @since 06/04/26
+ * @version 8.7
+ * @since 18/05/26
  */
 
 public class SerializedStorage implements Storage {
@@ -78,6 +80,21 @@ public class SerializedStorage implements Storage {
       }
       if (!distinctNames.contains(bottle.getNom())) {
         distinctNames.add(bottle.getNom());
+      }
+      updateBottleCountryUUID(bottle);
+    }
+  }
+
+  private static void updateBottleCountryUUID(Bouteille bottle) {
+    // TODO REMOVE WHEN COMPLETELY ASSIGNED
+    if (bottle.getVignoble() != null &&
+        bottle.getVignoble().getCountryUuid() == null &&
+        MyCellarUtils.isDefined(bottle.getVignoble().getCountry())) {
+      UUID uuid = CountryVignobleController.getUUIDFromCountry(bottle.getVignoble().getCountry());
+      if (uuid != null) {
+        bottle.getVignoble().setCountryUuid(uuid);
+      } else {
+        Debug("CountryVignobleController.getUUIDFromCountry: UUID is null for [%s]".formatted(bottle.getVignoble().getCountry()));
       }
     }
   }
@@ -246,7 +263,7 @@ public class SerializedStorage implements Storage {
     if (!distinctNames.contains(bottle.getNom())) {
       distinctNames.add(bottle.getNom());
     }
-    CountryVignobleController.addVignobleFromBottle(bottle);
+    CountryVignobleController.findOrAddVignobleFromBottle(bottle);
     return listMyCellarObject.add(bottle);
   }
 

@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
 
@@ -17,29 +18,35 @@ import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 14/03/25
+ * @version 0.7
+ * @since 18/05/26
  */
 
 @XmlRootElement(name = "country")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class CountryJaxb implements Comparable<CountryJaxb> {
+  @Deprecated
   @XmlAttribute
   private String id;
 
   @XmlAttribute
   private String name;
 
+  @XmlAttribute(required = true)
+  private UUID uuid;
+
   public CountryJaxb() {
   }
 
   public CountryJaxb(String name) {
     id = null;
+    uuid = UUID.randomUUID();
     this.name = name;
   }
 
   public CountryJaxb(String id, String name) {
     this.id = id;
+    uuid = UUID.randomUUID();
     this.name = name;
   }
 
@@ -57,6 +64,14 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 
   public String getLabel() {

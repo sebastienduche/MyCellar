@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.9
- * @since 18/05/26
+ * @version 3.0
+ * @since 23/05/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -198,7 +198,9 @@ public class VignobleListJaxb {
       return null;
     }
     LinkedList<AppelationJaxb> list = new LinkedList<>();
-    list.add(appelationJaxb);
+    if (!appelationJaxb.isEmpty()) {
+      list.add(appelationJaxb);
+    }
     vigne.setAppelation(list);
     countryVignobleJaxbList.add(vigne);
     CountryVignobleController.createVignobleInMap(vignobleJaxb);

@@ -42,8 +42,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 18/05/26
+ * @version 3.5
+ * @since 23/05/26
  */
 
 public final class CountryVignobleController {
@@ -60,6 +60,7 @@ public final class CountryVignobleController {
   @Deprecated
   private final List<Long> usedVignoblesIDList = new LinkedList<>();
   private final List<UUID> usedVignoblesUUIDList = new LinkedList<>();
+  @Deprecated
   private final Map<String, UUID> mapCountryIDToUUID = new HashMap<>();
   private boolean modified;
 
@@ -111,10 +112,14 @@ public final class CountryVignobleController {
     VignobleListJaxb vignobleListJaxb = new VignobleListJaxb();
     INSTANCE.modified = true;
     INSTANCE.countryToVignobles.put(countryJaxb, vignobleListJaxb);
-    if (INSTANCE.mapCountryIDToUUID.containsKey(countryJaxb.getId())) {
-      Debug("ERROR: the country already exist: " + countryJaxb.getId());
+    UUID uuid = INSTANCE.mapCountryIDToUUID.getOrDefault(countryJaxb.getId(), null);
+    if (uuid != null) {
+      if (!uuid.equals(countryJaxb.getUuid())) {
+        Debug("ERROR: the country already exist: [%s - %s] with a different UUID (expected: %s - found: %s)".formatted(countryJaxb.getId(), countryJaxb.getName(), uuid, countryJaxb.getUuid()));
+      }
+    } else {
+      INSTANCE.mapCountryIDToUUID.put(countryJaxb.getId(), countryJaxb.getUuid());
     }
-    INSTANCE.mapCountryIDToUUID.put(countryJaxb.getId(), countryJaxb.getUuid());
     Debug("Creating country Done");
     return Optional.of(vignobleListJaxb);
   }
@@ -128,6 +133,7 @@ public final class CountryVignobleController {
     Debug("Deleting country done with resul = " + resul);
   }
 
+  @Deprecated
   private static void generateCountryId(CountryJaxb countryJaxb) {
     String id = MyCellarUtils.removeAccents(countryJaxb.getName()).toUpperCase() + "000";
     id = id.substring(0, 3);
@@ -503,7 +509,10 @@ public final class CountryVignobleController {
         }
       }
     }
-    CountryListJaxb.getInstance().getCountries().forEach(country -> INSTANCE.mapCountryIDToUUID.put(country.getId(), country.getUuid()));
+    CountryListJaxb.getInstance().getCountries().forEach(country -> {
+      INSTANCE.mapCountryIDToUUID.put(country.getId(), country.getUuid());
+      INSTANCE.countryToVignobles.put(country, map.get(country));
+    });
     Debug("Loading all countries Done");
   }
 

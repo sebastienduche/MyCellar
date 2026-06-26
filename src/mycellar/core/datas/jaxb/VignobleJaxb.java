@@ -27,12 +27,12 @@ import static mycellar.ProgramConstants.DASH;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.9
- * @since 18/05/26
+ * @version 2.0
+ * @since 26/06/26
  */
 
 /**
- * <p>This class is linked to the Vignoble that contains the Bouteille object
+ * <p>This class is the Vignoble that contains the Bouteille object
  * It's a copy of AppelationJaxb
  *
  * <pre>
@@ -45,6 +45,8 @@ import static mycellar.ProgramConstants.DASH;
  *         &lt;element name="AOC" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="IGP" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="AOP" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}uuid"/>
+ *         &lt;element name="countryUuid" type="{http://www.w3.org/2001/XMLSchema}uuid"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -79,6 +81,7 @@ public class VignobleJaxb implements Serializable {
     uuid = UUID.randomUUID();
   }
 
+  @Deprecated
   public VignobleJaxb(String country, String name, String aoc, String igp, UUID countryUuid) {
     this.country = country;
     this.name = name;
@@ -111,10 +114,12 @@ public class VignobleJaxb implements Serializable {
     return id;
   }
 
+  @Deprecated
   public String getCountry() {
     return country;
   }
 
+  @Deprecated
   public void setCountry(String country) {
     this.country = country;
   }
@@ -246,12 +251,17 @@ public class VignobleJaxb implements Serializable {
         sb.append(country);
       }
     }
-    sb.append(" name=");
-    sb.append(name);
-    sb.append(" aoc=");
-    sb.append(aoc);
-    sb.append(" igp=");
-    sb.append(igp).append("]");
+    sb.append(" name=")
+        .append(name)
+        .append(" aoc=")
+        .append(aoc)
+        .append(" igp=")
+        .append(igp)
+        .append(" uuid=")
+        .append(uuid)
+        .append(" countryUuid=")
+        .append(countryUuid)
+        .append("]");
     return sb.toString();
   }
 

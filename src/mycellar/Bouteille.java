@@ -683,13 +683,12 @@ public class Bouteille implements IMyCellarObject, Serializable {
       }
     }
     NodeList nodeCountryUuid = element.getElementsByTagName("countryUuid");
-    UUID newCountryUUID;
+    Optional<CountryJaxb> countryJaxb;
     if (nodeCountryUuid.getLength() == 1) {
       final String uuidValue = nodeCountryUuid.item(0).getTextContent();
-      newCountryUUID = UUID.fromString(uuidValue);
+      countryJaxb = CountryListJaxb.findByUUID(UUID.fromString(uuidValue));
     } else {
-      Optional<CountryJaxb> newCountryUUID1 = CountryListJaxb.findbyId(country);
-      newCountryUUID = newCountryUUID1.map(CountryJaxb::getUuid).orElse(null);
+      countryJaxb = CountryListJaxb.findbyId(country);
     }
     return new BouteilleBuilder(name)
         .id(elemId)
@@ -706,7 +705,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
         .status(elemStatus)
         .lastModified(lastModifed)
         .color(elemColor)
-        .vignoble(country, vignobleName, AOC, IGP, newVignobleUUID, newCountryUUID)
+        .vignoble(countryJaxb.orElse(null), vignobleName, AOC, IGP, newVignobleUUID)
         .uuid(newUUID)
         .build();
   }
@@ -891,15 +890,20 @@ public class Bouteille implements IMyCellarObject, Serializable {
       return this;
     }
 
-    // Used for manual deserialization and tests
+    // Used for tests
+    @Deprecated
     public BouteilleBuilder vignoble(String country, String name, String aoc, String igp, UUID vignobleUuid, UUID countryUuid) {
       vignoble = new VignobleJaxb(country, name, aoc, igp, countryUuid);
       vignoble.setUuid(vignobleUuid);
       return this;
     }
 
-    public BouteilleBuilder vignoble(CountryJaxb country, String name, String aoc, String igp) {
-      vignoble = new VignobleJaxb(country.getId(), name, aoc, igp, country.getUuid());
+    public BouteilleBuilder vignoble(CountryJaxb country, String name, String aoc, String igp, UUID vignobleUuid) {
+      if (country == null) {
+        throw new IllegalArgumentException("country cannot be null");
+      }
+      vignoble = new VignobleJaxb(country, name, aoc, igp);
+      vignoble.setUuid(vignobleUuid);
       return this;
     }
 

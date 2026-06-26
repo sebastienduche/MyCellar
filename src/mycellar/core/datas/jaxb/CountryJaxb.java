@@ -18,8 +18,8 @@ import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 18/05/26
+ * @version 0.8
+ * @since 26/06/26
  */
 
 @XmlRootElement(name = "country")
@@ -44,16 +44,18 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     this.name = name;
   }
 
-  public CountryJaxb(String id, String name) {
+  public CountryJaxb(String id, String name, UUID uuid) {
     this.id = id;
-    uuid = UUID.randomUUID();
+    this.uuid = uuid;
     this.name = name;
   }
 
+  @Deprecated
   public String getId() {
     return id;
   }
 
+  @Deprecated
   public void setId(String id) {
     this.id = id;
   }

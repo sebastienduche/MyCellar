@@ -17,6 +17,7 @@ import mycellar.core.datas.jaxb.AppelationJaxb;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
 import mycellar.core.datas.jaxb.CountryVignobleJaxb;
+import mycellar.core.datas.jaxb.VignobleJaxb;
 import mycellar.core.datas.worksheet.WorkSheetList;
 import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
@@ -69,6 +70,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.util.function.Predicate.not;
 import static mycellar.Filtre.FILTRE_TXT;
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.MyCellarUtils.isNullOrEmpty;
@@ -110,8 +112,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.0
- * @since 18/05/26
+ * @version 30.1
+ * @since 26/06/26
  */
 
 public final class Program {
@@ -119,7 +121,7 @@ public final class Program {
   public static final SimplePlace DEFAULT_PLACE = new SimplePlaceBuilder("").setDefaultPlace(true).build();
   public static final SimplePlace EMPTY_PLACE = new SimplePlaceBuilder("").build();
 
-  public static final CountryJaxb NO_COUNTRY = new CountryJaxb("");
+  public static final CountryJaxb NO_COUNTRY = new CountryJaxb("no_country", "", UUID.fromString("d356ec3c-7059-4855-8efb-be92ce189042"));
   public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
   public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
   public static final MyClipBoard CLIPBOARD = new MyClipBoard();
@@ -549,7 +551,7 @@ public final class Program {
   }
 
   public static boolean hasComplexPlace() {
-    return PLACES.stream().anyMatch(Predicate.not(AbstractPlace::isSimplePlace));
+    return PLACES.stream().anyMatch(not(AbstractPlace::isSimplePlace));
   }
 
   public static void createNewFile() {
@@ -590,7 +592,7 @@ public final class Program {
     // Sauvegarde avant de charger le nouveau fichier
     closeFile();
 
-    CountryVignobleController.init();
+    CountryVignobleController.reset();
 
     if (myCellarFile.isNewFile()) {
       // Nouveau fichier de bouteilles
@@ -626,6 +628,8 @@ public final class Program {
     MyCellarBottleContenance.load();
     CountryVignobleController.rebuild();
 
+    boolean uuidOK = validate();
+
     PlaceUtils.putTabStock();
     if (!getErrors().isEmpty()) {
       OpenShowErrorsAction.open();
@@ -641,7 +645,9 @@ public final class Program {
     putGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4, list.pop());
 
     putCaveConfigString(MyCellarSettings.DIR, myCellarFile.getFile().getParent());
-    putCaveConfigString(CONVERTED_TO_UUID, "true");
+    if (uuidOK) {
+      putCaveConfigString(CONVERTED_TO_UUID, "true");
+    }
 
     saveGlobalProperties();
     modified = false;
@@ -739,6 +745,33 @@ public final class Program {
     MainFrame.updateManagePlaceButton();
     openedFile = null;
     Debug("Program: closeFile: Closing file Ended");
+  }
+
+  private static boolean validate() {
+    List<VignobleJaxb> vignobleJaxbList = Program.getStorage().getAllList()
+        .stream()
+        .map(Bouteille::getVignoble)
+        .filter(Objects::nonNull)
+        .toList();
+
+    boolean nonNullUuid = vignobleJaxbList.stream()
+        .map(VignobleJaxb::getCountryUuid)
+        .allMatch(Objects::nonNull);
+    if (!nonNullUuid) {
+      vignobleJaxbList.stream()
+          .filter(vignobleJaxb -> vignobleJaxb.getCountryUuid() == null)
+          .forEach(vignobleJaxb -> Debug("Program: ERROR: Vignoble jaxb with null Country UUID: " + vignobleJaxb));
+      throw new IllegalArgumentException("Vignoble jaxb contains null UUID !");
+    }
+
+    if (!vignobleJaxbList.stream()
+        .allMatch(CountryVignobleController::isVignobleUsed)) {
+      vignobleJaxbList.stream()
+          .filter(not(CountryVignobleController::isVignobleUsed))
+          .forEach(vignobleJaxb -> Debug("Program: ERROR: Vignoble jaxb with null UUID: " + vignobleJaxb));
+      throw new IllegalArgumentException("Vignoble jaxb contains not recognized UUID !");
+    }
+    return true;
   }
 
   private static void deleteTempFiles() {

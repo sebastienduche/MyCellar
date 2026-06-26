@@ -65,8 +65,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.4
- * @since 18/05/26
+ * @version 33.5
+ * @since 26/06/26
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -507,7 +507,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         .parker(panelWineAttribute.getParker())
         .color(panelWineAttribute.getColor())
         .status(nonNullValueOrDefault(panelWineAttribute.getStatusIfModified(), BottlesStatus.CREATED.name()))
-        .vignoble(panelVignobles.getCountry(), panelVignobles.getVignoble(), panelVignobles.getAOC(), panelVignobles.getIGP());
+        .vignoble(panelVignobles.getCountry(), panelVignobles.getVignoble(), panelVignobles.getAOC(), panelVignobles.getIGP(), panelVignobles.getVignobleUUID());
     if (!abstractPlace.isSimplePlace()) {
       bouteilleBuilder.line(place.getLine());
       bouteilleBuilder.column(place.getColumn());

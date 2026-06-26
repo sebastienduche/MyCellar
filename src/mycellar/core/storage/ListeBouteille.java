@@ -40,8 +40,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 03/10/25
+ * @version 1.9
+ * @since 26/06/26
  *
  * <p>Java class for anonymous complex type.
  *
@@ -96,6 +96,10 @@ public class ListeBouteille {
       Program.showException(e);
       return false;
     }
+    Program.getStorage().getAllList().forEach(bouteille -> {
+      if (bouteille.getUuid() == null)
+        throw new IllegalStateException("The bouteille UUID is null for " + bouteille.getNom());
+    });
     return true;
   }
 

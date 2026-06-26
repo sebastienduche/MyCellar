@@ -1,7 +1,6 @@
 package mycellar.core.storage;
 
 import mycellar.Bouteille;
-import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
@@ -15,9 +14,10 @@ import javax.swing.JOptionPane;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
+import static mycellar.MyCellarUtils.isDefined;
+import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.hasSameHistoryId;
 import static mycellar.Program.hasSameId;
 import static mycellar.ProgramConstants.HISTORY_XML;
@@ -32,6 +32,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEEXITEDHISTOR
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEMODIFIEDHISTORY;
 import static mycellar.general.ResourceErrorKey.ERROR_QUESTIONDELETEVALIDATEDHISTORY;
 import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
+import static mycellar.vignobles.CountryVignobleController.getUUIDFromCountry;
 
 /**
  * Titre : Cave &agrave; vin
@@ -40,8 +41,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.7
- * @since 18/05/26
+ * @version 8.8
+ * @since 26/06/26
  */
 
 public class SerializedStorage implements Storage {
@@ -68,7 +69,7 @@ public class SerializedStorage implements Storage {
   @Override
   public void addBouteilles(ListeBouteille listBouteille) {
     listMyCellarObject.getBouteille().addAll(listBouteille.getBouteille());
-    for (var bottle : listMyCellarObject.bouteille) {
+    for (var bottle : listMyCellarObject.getBouteille()) {
       final List<History> historyList = HISTORY_LIST.getHistory()
           .stream()
           .filter(hasSameHistoryId(bottle))
@@ -81,6 +82,7 @@ public class SerializedStorage implements Storage {
       if (!distinctNames.contains(bottle.getNom())) {
         distinctNames.add(bottle.getNom());
       }
+      // TODO REMOVE WHEN COMPLETELY ASSIGNED
       updateBottleCountryUUID(bottle);
     }
   }
@@ -88,13 +90,11 @@ public class SerializedStorage implements Storage {
   private static void updateBottleCountryUUID(Bouteille bottle) {
     // TODO REMOVE WHEN COMPLETELY ASSIGNED
     if (bottle.getVignoble() != null &&
-        bottle.getVignoble().getCountryUuid() == null &&
-        MyCellarUtils.isDefined(bottle.getVignoble().getCountry())) {
-      UUID uuid = CountryVignobleController.getUUIDFromCountry(bottle.getVignoble().getCountry());
-      if (uuid != null) {
-        bottle.getVignoble().setCountryUuid(uuid);
+        bottle.getVignoble().getCountryUuid() == null) {
+      if (isDefined(bottle.getVignoble().getCountry())) {
+        bottle.getVignoble().setCountryUuid(getUUIDFromCountry(bottle.getVignoble().getCountry()));
       } else {
-        Debug("CountryVignobleController.getUUIDFromCountry: UUID is null for [%s]".formatted(bottle.getVignoble().getCountry()));
+        bottle.getVignoble().setCountryUuid(NO_COUNTRY.getUuid());
       }
     }
   }

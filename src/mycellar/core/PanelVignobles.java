@@ -24,6 +24,7 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.NO_APPELATION;
@@ -47,8 +48,8 @@ import static mycellar.general.ResourceKey.PANELVIGNOBLES_KEEPVALUES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.2
- * @since 18/05/26
+ * @version 2.3
+ * @since 26/06/26
  */
 public final class PanelVignobles extends JPanel {
 
@@ -267,6 +268,14 @@ public final class PanelVignobles extends JPanel {
     return toCleanString(o);
   }
 
+  public UUID getVignobleUUID() {
+    Object o = comboVignoble.getEditor().getItem();
+    if (o instanceof CountryVignobleJaxb countryVignobleJaxb) {
+      return countryVignobleJaxb.getUuid();
+    }
+    return null;
+  }
+
   public String getAOC() {
     Object o = comboAppellationAOC.getEditor().getItem();
     if (o instanceof AppelationJaxb appelationJaxb) {
@@ -329,12 +338,6 @@ public final class PanelVignobles extends JPanel {
   }
 
   public VignobleJaxb getSelectedVignoble() {
-    VignobleJaxb vignobleJaxb = new VignobleJaxb();
-    vignobleJaxb.setCountry(getCountry().getId());
-    vignobleJaxb.setName(getVignoble());
-    vignobleJaxb.setAOC(getAOC());
-    vignobleJaxb.setIGP(getIGP());
-    vignobleJaxb.setCountryUuid(getCountry().getUuid());
-    return vignobleJaxb;
+    return new VignobleJaxb(getCountry(), getVignoble(), getAOC(), getIGP());
   }
 }

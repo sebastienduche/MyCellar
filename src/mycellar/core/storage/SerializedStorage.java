@@ -12,8 +12,10 @@ import mycellar.vignobles.CountryVignobleController;
 
 import javax.swing.JOptionPane;
 import java.io.File;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static mycellar.MyCellarUtils.isDefined;
@@ -50,7 +52,7 @@ public class SerializedStorage implements Storage {
   private static final HistoryList HISTORY_LIST = new HistoryList();
   private static final WorkSheetList WORKSHEET_LIST = new WorkSheetList();
   private static final int DISTINCT_NAME_LENGTH = 150;
-  private final List<String> distinctNames = new LinkedList<>(); // Liste des noms
+  private final Set<String> distinctNames = new HashSet<>(); // Liste des noms
   private ListeBouteille listMyCellarObject = new ListeBouteille();
   private boolean worksheetModified = false;
   private boolean historyModified = false;
@@ -74,14 +76,13 @@ public class SerializedStorage implements Storage {
           .stream()
           .filter(hasSameHistoryId(bottle))
           .toList();
+      // TODO REMOVE
       if (!Program.getCaveConfigBool(CONVERTED_TO_UUID, false)) {
         for (var history : historyList) {
           history.getBouteille().setUuid(bottle.getUuid());
         }
       }
-      if (!distinctNames.contains(bottle.getNom())) {
-        distinctNames.add(bottle.getNom());
-      }
+      distinctNames.add(bottle.getNom());
       // TODO REMOVE WHEN COMPLETELY ASSIGNED
       updateBottleCountryUUID(bottle);
     }
@@ -111,11 +112,7 @@ public class SerializedStorage implements Storage {
     if (this.listMyCellarObject.bouteille == null) {
       this.listMyCellarObject.bouteille = new LinkedList<>();
     }
-    for (var b : this.listMyCellarObject.bouteille) {
-      if (!distinctNames.contains(b.getNom())) {
-        distinctNames.add(b.getNom());
-      }
-    }
+    this.listMyCellarObject.bouteille.forEach(bouteille -> distinctNames.add(bouteille.getNom()));
   }
 
   @Override
@@ -129,13 +126,7 @@ public class SerializedStorage implements Storage {
   @Override
   public void updateDistinctNames() {
     distinctNames.clear();
-    getAllList().forEach(
-        myCellarObject -> {
-          if (!distinctNames.contains(myCellarObject.getNom())) {
-            distinctNames.add(myCellarObject.getNom());
-          }
-        }
-    );
+    getAllList().forEach(myCellarObject -> distinctNames.add(myCellarObject.getNom()));
   }
 
   @Override
@@ -260,9 +251,7 @@ public class SerializedStorage implements Storage {
     bottle.setModified();
     Program.setModified();
 
-    if (!distinctNames.contains(bottle.getNom())) {
-      distinctNames.add(bottle.getNom());
-    }
+    distinctNames.add(bottle.getNom());
     CountryVignobleController.findOrAddVignobleFromBottle(bottle);
     return listMyCellarObject.add(bottle);
   }

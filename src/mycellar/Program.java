@@ -695,9 +695,7 @@ public final class Program {
 
     //Tri du tableau et ecriture du fichier XML
     if (bSave) {
-      if (!ListeBouteille.writeXML()) {
-        return;
-      }
+      ListeBouteille.writeXML();
 
       if (isListCaveModified()) {
         XmlUtils.writeMyCellarXml(PLACES, "");

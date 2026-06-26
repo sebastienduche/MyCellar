@@ -50,8 +50,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 18/05/26
+ * @version 9.0
+ * @since 26/06/26
  *
  * <p>Java class for anonymous complex type.
  *
@@ -655,11 +655,11 @@ public class Bouteille implements IMyCellarObject, Serializable {
     final Element elemVignoble = (Element) nodeVignoble.item(0);
     NodeList nodeCountry = elemVignoble.getElementsByTagName("country");
     final String country = nodeCountry.item(0).getTextContent();
-    NodeList nodeVigobleName = elemVignoble.getElementsByTagName("name");
+    NodeList nodeVignobleName = elemVignoble.getElementsByTagName("name");
     String vignobleName, AOC, IGP;
     vignobleName = AOC = IGP = "";
     if (nodeVignoble.getLength() == 1) {
-      vignobleName = nodeVigobleName.item(0).getTextContent();
+      vignobleName = nodeVignobleName.item(0).getTextContent();
       NodeList nodeAOC = elemVignoble.getElementsByTagName("AOC");
       if (nodeAOC.getLength() == 1) {
         AOC = nodeAOC.item(0).getTextContent();

@@ -53,7 +53,6 @@ import java.util.LinkedList;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Bouteille" maxOccurs="unbounded"/>
- *         &lt;element ref="{}Music" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -67,8 +66,9 @@ import java.util.LinkedList;
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
 public class ListeBouteille {
+  private static final String TAG_BOUTEILLE = "Bouteille";
 
-  @XmlElement(name = "Bouteille")
+  @XmlElement(name = TAG_BOUTEILLE)
   LinkedList<Bouteille> bouteille;
 
   public static boolean loadXML() {
@@ -78,27 +78,28 @@ public class ListeBouteille {
   }
 
   public static boolean loadXML(File f) {
-    Debug("Loading XML File " + f.getAbsolutePath());
-    if (!f.exists())
+    Debug("Loading XML file " + f.getAbsolutePath());
+    if (!f.exists()) {
       return false;
+    }
     try {
       unMarshalXML(f);
       return true;
     } catch (FileNotFoundException | JAXBException e) {
-      Debug("ERROR: Unable to Unmarshall JAXB File");
+      Debug("ERROR: Unable to Unmarshall JAXB file");
       Program.showException(e, false);
     }
     Debug("Manual loading of the XML file");
     try {
       manualLoadXML(f);
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      Debug("ERROR: Unable to load manually File");
+      Debug("ERROR: Unable to manually load the file");
       Program.showException(e);
       return false;
     }
     Program.getStorage().getAllList().forEach(bouteille -> {
       if (bouteille.getUuid() == null)
-        throw new IllegalStateException("The bouteille UUID is null for " + bouteille.getNom());
+        throw new IllegalStateException("The bouteille UUID is null for '%s'".formatted(bouteille.getNom()));
     });
     return true;
   }
@@ -110,8 +111,7 @@ public class ListeBouteille {
     doc.getDocumentElement().normalize();
 
     ListeBouteille listeBouteille = new ListeBouteille();
-    NodeList bouteilles = doc.getElementsByTagName("Bouteille");
-
+    NodeList bouteilles = doc.getElementsByTagName(TAG_BOUTEILLE);
     for (int i = 0; i < bouteilles.getLength(); i++) {
       Node node = bouteilles.item(i);
 
@@ -133,12 +133,12 @@ public class ListeBouteille {
     Debug("Loading JAXB File Done");
   }
 
-  public static boolean writeXML() {
-    return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+  public static void writeXML() {
+    writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()));
   }
 
   public static void writeXML(File f) {
-    XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
+    writeXML(Program.getStorage().getListMyCellarObject(), f);
   }
 
   public static boolean writeXML(ListeBouteille liste, File f) {

@@ -16,6 +16,7 @@ import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.exceptions.MyCellarException;
+import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.LabelKey;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -38,8 +39,15 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
@@ -127,8 +135,8 @@ import static mycellar.general.ResourceKey.OUVRIR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 17.1
- * @since 03/10/25
+ * @version 17.2
+ * @since 26/06/26
  */
 public final class Importer extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -249,10 +257,10 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     resetLabelProgress();
     label2.setVisible(type_txt.isSelected());
     separatorCombo.setVisible(type_txt.isSelected());
-    boolean typeXml = type_xml.isSelected();
-    comboBoxList.forEach(c -> c.setVisible(!typeXml));
-    labelTitle.setVisible(!typeXml);
-    labelTitle2.setVisible(!typeXml);
+    var notSelectedXml = !type_xml.isSelected();
+    comboBoxList.forEach(c -> c.setVisible(notSelectedXml));
+    labelTitle.setVisible(notSelectedXml);
+    labelTitle2.setVisible(notSelectedXml);
   }
 
   private void resetLabelProgress() {
@@ -550,7 +558,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
           while (line != null) {
             String[] readValues = line.split(fieldSeparator);
             Bouteille bottle = new Bouteille();
-            bottle.updateID();
             for (int i = 0; i < readValues.length; i++) {
               String value = removeQuotes(readValues[i]);
               value = MyCellarUtils.convertToHTMLString(value);
@@ -579,8 +586,8 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         }
       }
       importe.setEnabled(true);
-    } catch (IOException exc) {
-      Program.showException(exc);
+    } catch (IOException | UnableToOpenFileException e) {
+      Program.showException(e);
     }
     if (PlaceUtils.putTabStock()) {
       MyCellarBottleContenance.load();
@@ -628,7 +635,6 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
         }
         if (count > 0) {
           Bouteille myCellarObject = new Bouteille();
-          myCellarObject.updateID();
 
           int i = 0;
           for (String value : valueList) {
@@ -670,9 +676,12 @@ public final class Importer extends JPanel implements ITabListener, Runnable, IC
     return true;
   }
 
-  private void importFromXML(File f) {
+  private void importFromXML(File f) throws UnableToOpenFileException {
     setLabelInProgress();
-    ListeBouteille.loadXML(f);
+    if (!ListeBouteille.loadXML(f)) {
+      Debug("Program: ERROR Reading Objects: " + f.getAbsolutePath());
+      throw new UnableToOpenFileException("Error while reading objects in file: " + f.getAbsolutePath());
+    }
     showImportDone();
   }
 

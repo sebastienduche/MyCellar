@@ -1,11 +1,9 @@
 package mycellar;
 
 import com.sebastienduche.pdf.PDFPageProperties;
-import com.sebastienduche.pdf.PDFProperties;
 import com.sebastienduche.pdf.PDFTools;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.storage.ListeBouteille;
@@ -28,10 +26,19 @@ import mycellar.xls.XLSOptions;
 import net.miginfocom.swing.MigLayout;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -92,8 +99,8 @@ import static mycellar.myoptions.MyOptionObjectType.MY_CELLAR_RADIO_BUTTON;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.6
- * @since 03/10/25
+ * @version 12.7
+ * @since 26/06/26
  */
 public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPastable, IMyCellar {
 
@@ -124,13 +131,13 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     initialize();
   }
 
-  public static boolean exportToPDF(final List<? extends IMyCellarObject> bottles, File nomFichier) {
+  public static boolean exportToPDF(final List<Bouteille> bottles, File nomFichier) {
     try {
-      final PDFProperties pdfProperties = Program.getPDFProperties();
-      PDFPageProperties pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getDefaultFontSize(), 50);
-      final PDFTools pdf = new PDFTools(pdfProperties, pageProperties, true);
-      pdf.writeData(Program.getPDFRows(bottles, pdfProperties));
-      pdf.save(nomFichier);
+      var pdfProperties = Program.getPDFProperties();
+      var pageProperties = new PDFPageProperties(30, 20, 20, 20, PDType1Font.HELVETICA, pdfProperties.getDefaultFontSize(), 50);
+      var pdfTools = new PDFTools(pdfProperties, pageProperties, true);
+      pdfTools.writeData(Program.getPDFRows(bottles, pdfProperties));
+      pdfTools.save(nomFichier);
       Erreur.showInformationMessage(getLabel(MAIN_SAVEDFILE, nomFichier.getAbsolutePath()));
     } catch (IOException | RuntimeException ex) {
       Erreur.showSimpleErreur(ERROR_UNABLETOCREATEFILE, ERROR_CHECKIFOPENED);
@@ -474,11 +481,11 @@ public class Export extends JPanel implements ITabListener, Runnable, ICutCopyPa
     public void actionPerformed(ActionEvent arg0) {
       String val = Program.getCaveConfigString(EXPORT_DEFAULT, "0");
       List<MyOptionKey> optionKeys = of(
-          new MyOptionKey(EXPORT_XML, "0".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
-          new MyOptionKey(EXPORT_HTML, "1".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
-          new MyOptionKey(EXPORT_CSV, "2".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
-          new MyOptionKey(EXPORT_XLS, "3".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
-          new MyOptionKey(EXPORT_PDF, "4".equals(val) ? "true" : "false", EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON)
+          new MyOptionKey(EXPORT_XML, Boolean.toString("0".equals(val)), EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_HTML, Boolean.toString("1".equals(val)), EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_CSV, Boolean.toString("2".equals(val)), EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_XLS, Boolean.toString("3".equals(val)), EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON),
+          new MyOptionKey(EXPORT_PDF, Boolean.toString("4".equals(val)), EXPORT_DEFAULT, MY_CELLAR_RADIO_BUTTON)
       );
       MyOptions myoptions = new MyOptions(getLabel(EXPORT_OPTIONS), getLabel(EXPORT_SELECTDEFAULTMODE), optionKeys);
       myoptions.setVisible(true);

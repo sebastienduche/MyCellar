@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static mycellar.Program.COUNTRY_LIST;
+import static mycellar.Program.NO_COUNTRY;
 import static mycellar.ProgramConstants.COUNTRIES_XML;
 import static mycellar.ProgramConstants.FR;
 
@@ -32,8 +33,8 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 18/05/26
+ * @version 1.4
+ * @since 26/06/26
  */
 
 @XmlRootElement(name = "countries")
@@ -146,7 +147,6 @@ public class CountryListJaxb {
     if (vignoble.isAppellationEmpty() && MyCellarUtils.isNullOrEmpty(vignoble.getCountry())) {
       return Optional.empty();
     }
-    Debug("Finding Country By Vignoble [%s - %s]".formatted(vignoble.getCountry(), vignoble.getUuid()));
     Optional<CountryJaxb> countryJaxb = findbyId(vignoble.getCountry());
     CountryJaxb countryJaxb1 = countryJaxb.orElse(null);
     Optional<CountryJaxb> byUUID;
@@ -180,6 +180,9 @@ public class CountryListJaxb {
   }
 
   public static Optional<CountryJaxb> findByUUID(UUID uuid) {
+    if (uuid == NO_COUNTRY.getUuid()) {
+      return Optional.of(NO_COUNTRY);
+    }
     return getInstance().getCountries()
         .stream()
         .filter(country -> country.getUuid().equals(uuid))

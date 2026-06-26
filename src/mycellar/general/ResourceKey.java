@@ -377,6 +377,7 @@ public enum ResourceKey implements IResource {
   VINEYARDPANEL_SELECTVINEYARD("VineyardPanel.SelectVineyard"),
   VINEYARDPANEL_UNABLEDELETEAPPELLATION("VineyardPanel.UnableDeleteAppellation"),
   VINEYARDPANEL_UNABLEDELETECOUNTRY("VineyardPanel.UnableDeleteCountry"),
+  VINEYARDPANEL_UNABLEDELETECOUNTRYSYSTEM("VineyardPanel.UnableDeleteCountrySystem"),
   VINEYARDPANEL_UNABLEDELETEVIGNOBLE("VineyardPanel.UnableDeleteVignoble"),
   WHATSNEW("WhatsNew"),
   WHATSNEW1("WhatsNew1"),

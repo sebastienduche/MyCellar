@@ -46,8 +46,8 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
 
   public CountryJaxb(String id, String name, UUID uuid) {
     this.id = id;
-    this.uuid = uuid;
     this.name = name;
+    this.uuid = uuid;
   }
 
   @Deprecated

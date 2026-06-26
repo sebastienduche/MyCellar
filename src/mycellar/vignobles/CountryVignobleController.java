@@ -111,8 +111,11 @@ public final class CountryVignobleController {
         String label = lines.isEmpty() ? "" : lines.getFirst();
         UUID uuid = lines.size() < 2 ? UUID.randomUUID() : UUID.fromString(lines.get(1));
 
-        CountryJaxb countryJaxb = CountryListJaxb.findbyId(name)
-            .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
+        CountryJaxb countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+        if (countryJaxb == null) {
+          countryJaxb = CountryListJaxb.findbyId(name)
+              .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
+        }
         if (countryJaxb == null) {
           countryJaxb = new CountryJaxb(id, label, uuid);
           CountryListJaxb.add(countryJaxb);

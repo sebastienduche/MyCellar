@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static mycellar.MyCellarUtils.isDefined;
+import static mycellar.Program.NO_COUNTRY;
 import static mycellar.core.datas.jaxb.VignobleListJaxb.findCountyVignobleByName;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -69,8 +70,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEVIGNOBLE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.3
- * @since 18/05/26
+ * @version 4.4
+ * @since 26/06/26
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -87,7 +88,9 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
 
   public VineyardPanel() {
     MyCellarLabel labelCountries = new MyCellarLabel(ResourceKey.VINEYARDPANEL_SELECTCOUNTRY);
-    comboCountry.addItem(emptyCountryJaxb);
+    if (Program.getCountries().stream().map(CountryJaxb::getUuid).noneMatch(NO_COUNTRY.getUuid()::equals)) {
+      comboCountry.addItem(emptyCountryJaxb);
+    }
     Collections.sort(Program.getCountries());
     Program.getCountries().forEach(comboCountry::addItem);
 
@@ -322,6 +325,10 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     public void actionPerformed(ActionEvent e) {
       CountryJaxb countryJaxb = (CountryJaxb) comboCountry.getSelectedItem();
       if (countryJaxb == null) {
+        return;
+      }
+      if (NO_COUNTRY.getUuid().equals(countryJaxb.getUuid())) {
+        JOptionPane.showMessageDialog(MainFrame.getInstance(), getLabel(VINEYARDPANEL_UNABLEDELETECOUNTRY), getError(ERROR_ERROR), JOptionPane.ERROR_MESSAGE);
         return;
       }
       CountryVignobleController.getVignobles(countryJaxb).ifPresent(vignoble -> {

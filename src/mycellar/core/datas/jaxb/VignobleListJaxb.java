@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.0
- * @since 23/05/26
+ * @version 3.1
+ * @since 26/06/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -74,8 +74,11 @@ public class VignobleListJaxb {
     return vignobleListJaxb;
   }
 
-  public static boolean save(final CountryJaxb countryJaxb, final VignobleListJaxb vignobleListJaxb) {
-    final String countryId = countryJaxb.getId();
+  public static void save(final CountryJaxb countryJaxb, final VignobleListJaxb vignobleListJaxb) {
+    if (vignobleListJaxb == null) {
+      return;
+    }
+    final String countryId = Integer.toString(countryJaxb.getUuid().hashCode());
     Debug("Writing Country File: " + countryId);
     File fText = new File(Program.getWorkDir(true), countryId + TEXT);
     try (FileWriter writer = new FileWriter(fText);
@@ -87,7 +90,7 @@ public class VignobleListJaxb {
       }
     } catch (IOException e) {
       Program.showException(e);
-      return false;
+      return;
     }
     File f = new File(Program.getWorkDir(true), countryId + VIGNOBLE);
     try {
@@ -97,10 +100,9 @@ public class VignobleListJaxb {
       m.marshal(vignobleListJaxb, new StreamResult(f));
     } catch (JAXBException e) {
       Program.showException(e);
-      return false;
+      return;
     }
     Debug("Writing Country File Done");
-    return true;
   }
 
   public static boolean delete(CountryJaxb countryJaxb) {

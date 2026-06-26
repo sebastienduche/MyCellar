@@ -17,9 +17,9 @@ import java.util.UUID;
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "5.5.6.7";
+  public static final String INTERNAL_VERSION = "5.5.7.0";
   public static final int VERSION = 81;
-  public static final String MAIN_VERSION = VERSION + " BI";
+  public static final String MAIN_VERSION = VERSION + " NO";
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
 

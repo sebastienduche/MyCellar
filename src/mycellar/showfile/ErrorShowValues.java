@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.PanelPlacePosition;
@@ -13,7 +12,7 @@ import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.PlacePosition;
 import mycellar.placesmanagement.places.SimplePlace;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -255,7 +254,7 @@ class ErrorShowValues extends TableShowValues {
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-            IMyCellarObject searchObject = null;
+            Bouteille searchObject = null;
             if (abstractPlace.isComplexPlace()) {
               searchObject = ((ComplexPlace) abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)

@@ -1,6 +1,5 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.exceptions.MyCellarException;
@@ -129,23 +128,23 @@ public final class MoveLine extends JDialog {
       Erreur.showSimpleErreur(this, getError(ERROR_STILLITEMSONLINE));
       return;
     }
-    List<IMyCellarObject> notMoved = new ArrayList<>();
+    List<Bouteille> notMoved = new ArrayList<>();
     for (int i = 0; i < nOldColumnCount; i++) {
       complexPlace.getObject(new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
           .withNumPlace(nNumLieu)
           .withLine(nOldSelected)
           .withColumn(i)
-          .build()).ifPresent(myCellarObject -> {
-        Program.getStorage().addHistory(HistoryState.MODIFY, myCellarObject);
+          .build()).ifPresent(bouteille -> {
+        Program.getStorage().addHistory(HistoryState.MODIFY, bouteille);
         try {
-          complexPlace.moveToLine(myCellarObject, new_line_cbx.getSelectedIndex());
+          complexPlace.moveToLine(bouteille, new_line_cbx.getSelectedIndex());
         } catch (MyCellarException myCellarException) {
-          notMoved.add(myCellarObject);
+          notMoved.add(bouteille);
         }
       });
     }
     if (!notMoved.isEmpty()) {
-      final String value = notMoved.stream().map(IMyCellarObject::getNom).collect(Collectors.joining(", "));
+      final String value = notMoved.stream().map(Bouteille::getNom).collect(Collectors.joining(", "));
       String message = String.format("%s\n%s", getError(ERROR_UNABLETOMOVE), value);
       Erreur.showSimpleErreur(this, message);
       Debug("ERROR: Unable to move objects: " + value);

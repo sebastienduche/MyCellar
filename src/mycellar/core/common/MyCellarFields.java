@@ -3,7 +3,6 @@ package mycellar.core.common;
 import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.core.BottlesStatus;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.datas.jaxb.CountryJaxb;
 import mycellar.core.datas.jaxb.CountryListJaxb;
@@ -89,88 +88,74 @@ public enum MyCellarFields {
     return index;
   }
 
-  public static String getValue(String field, IMyCellarObject myCellarObject) {
-    return getValue(valueOf(field), myCellarObject);
+  public static String getValue(String field, Bouteille bouteille) {
+    return getValue(valueOf(field), bouteille);
   }
 
-  public static String getValue(MyCellarFields field, IMyCellarObject myCellarObject) {
-    if (myCellarObject == null) {
+  public static String getValue(MyCellarFields field, Bouteille bouteille) {
+    if (bouteille == null) {
       return "";
     }
     if (field == NAME) {
-      return myCellarObject.getNom();
+      return bouteille.getNom();
     }
     if (field == YEAR) {
-      return myCellarObject.getAnnee();
+      return bouteille.getAnnee();
     }
     if (field == TYPE) {
-      return myCellarObject.getKind();
+      return bouteille.getKind();
     }
     if (field == PLACE) {
-      return myCellarObject.getEmplacement();
+      return bouteille.getEmplacement();
     }
     if (field == NUM_PLACE) {
-      return Integer.toString(myCellarObject.getNumLieu());
+      return Integer.toString(bouteille.getNumLieu());
     }
     if (field == LINE) {
-      return Integer.toString(myCellarObject.getLigne());
+      return Integer.toString(bouteille.getLigne());
     }
     if (field == COLUMN) {
-      return Integer.toString(myCellarObject.getColonne());
+      return Integer.toString(bouteille.getColonne());
     }
     if (field == PRICE) {
-      return myCellarObject.getPrix();
+      return bouteille.getPrix();
     }
     if (field == COMMENT) {
-      return myCellarObject.getComment();
+      return bouteille.getComment();
     }
     if (field == MATURITY) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        return bouteille.getMaturity();
-      }
+      return bouteille.getMaturity();
     }
     if (field == PARKER) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        return bouteille.getParker();
-      }
+      return bouteille.getParker();
     }
     if (field == COLOR) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        return BottleColor.getColor(bouteille.getColor()).toString();
-      }
+      return BottleColor.getColor(bouteille.getColor()).toString();
     }
     if (field == STATUS) {
-      return BottlesStatus.getStatus(myCellarObject.getStatus()).toString();
+      return BottlesStatus.getStatus(bouteille.getStatus()).toString();
     }
     if (field == COUNTRY) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        if (bouteille.getVignoble() != null) {
-          CountryJaxb c = CountryListJaxb.findByVignoble(bouteille.getVignoble()).orElse(null);
-          if (c != null) {
-            return c.toString();
-          }
+      if (bouteille.getVignoble() != null) {
+        CountryJaxb c = CountryListJaxb.findByVignoble(bouteille.getVignoble()).orElse(null);
+        if (c != null) {
+          return c.toString();
         }
       }
     }
     if (field == VINEYARD) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        if (bouteille.getVignoble() != null) {
-          return bouteille.getVignoble().getName();
-        }
+      if (bouteille.getVignoble() != null) {
+        return bouteille.getVignoble().getName();
       }
     }
     if (field == AOC) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        if (bouteille.getVignoble() != null && bouteille.getVignoble().getAOC() != null) {
-          return bouteille.getVignoble().getAOC();
-        }
+      if (bouteille.getVignoble() != null && bouteille.getVignoble().getAOC() != null) {
+        return bouteille.getVignoble().getAOC();
       }
     }
     if (field == IGP) {
-      if (myCellarObject instanceof Bouteille bouteille) {
-        if (bouteille.getVignoble() != null && bouteille.getVignoble().getIGP() != null) {
-          return bouteille.getVignoble().getIGP();
-        }
+      if (bouteille.getVignoble() != null && bouteille.getVignoble().getIGP() != null) {
+        return bouteille.getVignoble().getIGP();
       }
     }
     return "";

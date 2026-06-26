@@ -381,9 +381,9 @@ public final class CountryVignobleController {
     }
     if (INSTANCE.usedVignoblesIDList.contains(bouteilleVignobleJaxb.getId()) ||
         INSTANCE.usedVignoblesUUIDList.contains(bouteilleVignobleJaxb.getUuid())) {
-      List<? extends IMyCellarObject> list = Program.getStorage().getAllList();
-      for (IMyCellarObject b : list) {
-        VignobleJaxb v = ((Bouteille) b).getVignoble();
+      List<Bouteille> list = Program.getStorage().getAllList();
+      for (Bouteille b : list) {
+        VignobleJaxb v = b.getVignoble();
         if (v != null && v.getName().equals(bouteilleVignobleJaxb.getName())) {
           v.setName(name);
         }

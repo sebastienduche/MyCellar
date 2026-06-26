@@ -1,7 +1,6 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.SerializedStorage;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +116,7 @@ class SerializedStorageTest {
     assertEquals(7, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
     assertEquals(6, serializedStorage.getListMyCellarObject().getBouteille().size());
-    for (IMyCellarObject b : serializedStorage.getListMyCellarObject().getBouteille()) {
+    for (Bouteille b : serializedStorage.getListMyCellarObject().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
     final Bouteille bouteille6 = new Bouteille.BouteilleBuilder("bouteille6")

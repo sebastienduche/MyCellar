@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -98,13 +99,7 @@ public interface IMyCellarObject {
 
   IMyCellarObject fromXmlElement(Element element);
 
-  void update(IMyCellarObject object);
-
-  static void assertObjectType(IMyCellarObject myCellarObject, Class<?> aClass) {
-    if (!aClass.isInstance(myCellarObject)) {
-      throw new ClassCastException("Invalid class cast: " + aClass);
-    }
-  }
+  void update(Bouteille bouteille);
 
   default boolean equalsValue(String value, String other) {
     if (value == null) {

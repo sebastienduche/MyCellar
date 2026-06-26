@@ -7,7 +7,6 @@ import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.datas.MyCellarBottleContenance;
@@ -20,8 +19,9 @@ import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.PopupListener;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 
@@ -418,10 +418,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     type.setModified(b);
   }
 
-  public boolean isModified(IMyCellarObject iMyCellarbject) {
+  public boolean isModified(Bouteille bouteille) {
     boolean modified = name.isModified();
     modified |= year.isModified();
-    modified |= (noYear.isSelected() != iMyCellarbject.isNonVintage());
+    modified |= (noYear.isSelected() != bouteille.isNonVintage());
     modified |= type.isModified();
     return modified;
   }

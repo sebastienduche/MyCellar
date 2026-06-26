@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.actions.OpenAddVinAction;
-import mycellar.core.IMyCellarObject;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -212,7 +211,7 @@ class TableShowValues extends AbstractTableModel {
               .withColumn(column1).build())) {
             boolean isPresent = false;
             if (rangement.isComplexPlace()) {
-              final IMyCellarObject bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+              final Bouteille bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)

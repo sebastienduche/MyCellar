@@ -246,7 +246,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
     }
 
     Debug("Creating new bottle...");
-    Bouteille newMyCellarObject = createBouteille(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+    Bouteille bouteille = createBouteille(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
         .withNumPlace(part)
         .withLine(line)
         .withColumn(column)
@@ -255,8 +255,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       if (isModify) {
         Debug("Empty case: Modifying bottle");
         final PlacePosition oldPlace = bottle.getPlacePosition();
-        bottle.update(newMyCellarObject);
-        newMyCellarObject.getAbstractPlace().updateToStock(newMyCellarObject);
+        bottle.update(bouteille);
+        bouteille.getAbstractPlace().updateToStock(bouteille);
         Program.getStorage().addHistory(HistoryState.MODIFY, bottle);
         if (complexPlace.isComplexPlace()) {
           Debug("Deleting from previous complex place");
@@ -264,8 +264,8 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
         }
       } else {
         Debug("Empty case: Adding bottle");
-        Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-        complexPlace.addObject(newMyCellarObject);
+        Program.getStorage().addHistory(HistoryState.ADD, bouteille);
+        complexPlace.addObject(bouteille);
         if (countStillToAdd > 1 && nb_free_space > 1) { // Add bottles next to each others
           if (nb_free_space > countStillToAdd) {
             nb_free_space = countStillToAdd;
@@ -275,13 +275,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
             result.setNbItemsAdded(nb_free_space);
             countStillToAdd -= nb_free_space + 1;
             for (int i = 1; i < nb_free_space; i++) {
-              newMyCellarObject = createBouteille(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
+              bouteille = createBouteille(annee, new PlacePosition.PlacePositionBuilderZeroBased(complexPlace)
                   .withNumPlace(part)
                   .withLine(line)
                   .withColumn(column + i)
                   .build(), complexPlace);
-              Program.getStorage().addHistory(HistoryState.ADD, newMyCellarObject);
-              complexPlace.addObject(newMyCellarObject);
+              Program.getStorage().addHistory(HistoryState.ADD, bouteille);
+              complexPlace.addObject(bouteille);
             }
           }
         }
@@ -309,7 +309,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       Debug("WARNING: Not an empty place, Replace?");
       String message = getError(ERROR_ALREADYINSTORAGE, myCellarObjectFound.getNom(), myCellarObjectFound.getAnnee()) + "\n" + getError(ERROR_QUESTIONREPLACEIT);
       if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
-        replaceWine(newMyCellarObject, myCellarObjectFound);
+        replaceWine(bouteille, myCellarObjectFound);
         panelSave.setEndText(isModify ? getLabel(ADDVIN_1ITEMMODIFIED) : getLabel(ADDVIN_1ITEMADDED), true);
         result.setAdded(true);
         result.setRequireReset(true);

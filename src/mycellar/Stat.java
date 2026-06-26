@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.core.IMyCellar;
 import mycellar.core.IMyCellarEnum;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.UpdateViewType;
 import mycellar.core.common.bottle.BottleColor;
@@ -26,11 +25,16 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.Arrays;
@@ -414,7 +418,7 @@ public final class Stat extends JPanel implements ITabListener, IMyCellar, IUpda
     // List of unique names and count
     final Map<String, Long> uniqueNamesCount = Program.getStorage().getAllList()
         .stream()
-        .collect(Collectors.groupingBy(IMyCellarObject::getNom, Collectors.counting()));
+        .collect(Collectors.groupingBy(Bouteille::getNom, Collectors.counting()));
     final Object[] sortedKeys = uniqueNamesCount.entrySet().stream().sorted(Map.Entry.comparingByKey()).toArray();
     String[][] tableValues = new String[sortedKeys.length][2];
     for (int i = 0; i < sortedKeys.length; i++) {

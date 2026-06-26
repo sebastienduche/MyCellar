@@ -39,7 +39,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static mycellar.ProgramConstants.DATE_FORMATER_DD_MM_YYYY_HH_MM;
-import static mycellar.core.IMyCellarObject.assertObjectType;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.general.ResourceErrorKey.ERROR_ERRORVALUE;
 
@@ -454,9 +453,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
   }
 
   @Override
-  public void update(final IMyCellarObject myCellarObject) {
-    assertObjectType(myCellarObject, Bouteille.class);
-    Bouteille b = (Bouteille) myCellarObject;
+  public void update(final Bouteille b) {
     setNom(b.getNom());
     setAnnee(b.getAnnee());
     setColonne(b.getColonne());
@@ -599,7 +596,7 @@ public class Bouteille implements IMyCellarObject, Serializable {
   @Override
   public boolean updateID() {
     if (id != -1) {
-      final List<IMyCellarObject> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
+      final List<Bouteille> bouteilles = Program.getStorage().getAllList().stream().filter(bouteille -> bouteille.getId() == id).collect(Collectors.toList());
       if (bouteilles.size() == 1 && bouteilles.getFirst().equals(this)) {
         return false;
       }

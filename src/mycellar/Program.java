@@ -1071,13 +1071,13 @@ public final class Program {
     return properties;
   }
 
-  static List<PDFRow> getPDFRows(List<? extends IMyCellarObject> list, PDFProperties properties) {
+  static List<PDFRow> getPDFRows(List<Bouteille> list, PDFProperties properties) {
     LinkedList<PDFRow> rows = new LinkedList<>();
     LinkedList<PDFColumn> columns = properties.getColumns();
-    for (IMyCellarObject myCellarObject : list) {
+    for (Bouteille bouteille : list) {
       PDFRow row = new PDFRow();
       for (PDFColumn column : columns) {
-        row.addCell(MyCellarFields.getValue(column.getField(), myCellarObject));
+        row.addCell(MyCellarFields.getValue(column.getField(), bouteille));
       }
       rows.add(row);
     }

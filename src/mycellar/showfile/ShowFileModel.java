@@ -1,7 +1,6 @@
 package mycellar.showfile;
 
 import mycellar.Bouteille;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ class ShowFileModel extends TableShowValues {
     ShowFileColumn<?> col = columns.get(column);
     if (col.getField() == MyCellarFields.LINE
         || col.getField() == MyCellarFields.COLUMN) {
-      IMyCellarObject b = bottles.get(row);
+      Bouteille b = bottles.get(row);
       return !b.getAbstractPlace().isSimplePlace();
     }
     return col.isEditable();

@@ -13,13 +13,13 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 03/10/25
+ * @version 1.6
+ * @since 27/06/26
  */
 
 class ShowFileModel extends TableShowValues {
 
-  private List<ShowFileColumn<?>> columns = new ArrayList<>();
+  private final List<ShowFileColumn<?>> columns = new ArrayList<>();
 
   @Override
   public int getColumnCount() {
@@ -59,8 +59,7 @@ class ShowFileModel extends TableShowValues {
     ShowFileColumn<?> col = columns.get(column);
     if (col.getField() == MyCellarFields.LINE
         || col.getField() == MyCellarFields.COLUMN) {
-      Bouteille b = bottles.get(row);
-      return !b.getAbstractPlace().isSimplePlace();
+      return bottles.get(row).getAbstractPlace().isComplexPlace();
     }
     return col.isEditable();
   }
@@ -75,7 +74,8 @@ class ShowFileModel extends TableShowValues {
   }
 
   public void setColumns(List<ShowFileColumn<?>> showFileColumns) {
-    columns = showFileColumns;
+    columns.clear();
+    columns.addAll(showFileColumns);
     fireTableStructureChanged();
   }
 }

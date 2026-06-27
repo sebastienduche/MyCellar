@@ -33,8 +33,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_REMOVEFROMWORKSHEET;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.2
- * @since 06/04/26
+ * @version 13.3
+ * @since 27/06/26
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -133,8 +133,8 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     @Override
     public void actionPerformed(ActionEvent e) {
       SwingUtilities.invokeLater(() -> {
-        getSelectedMyCellarObjects().forEach(Program.getStorage()::removeFromWorksheet);
-        workingBottles.removeAll(getSelectedMyCellarObjects());
+        getSelectedBottles().forEach(Program.getStorage()::removeFromWorksheet);
+        getSelectedBottles().forEach(workingBottles::remove);
         Program.setModified();
         model.fireTableDataChanged();
         labelCount.setValue(Integer.toString(model.getRowCount()));

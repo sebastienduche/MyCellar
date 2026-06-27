@@ -55,6 +55,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,8 +124,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_VALID;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.3
- * @since 06/04/26
+ * @version 1.4
+ * @since 27/06/26
  */
 
 public abstract class AbstractShowFilePanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -141,7 +142,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
   private boolean updateView = false;
   private UpdateViewType updateViewType;
   final MyCellarComboBox<String> typeCbx = new MyCellarComboBox<>();
-  final List<ShowFileColumn<?>> columns = new ArrayList<>();
+  final List<ShowFileColumn<?>> availableColumns = new ArrayList<>();
   final Set<Bouteille> workingBottles = new LinkedHashSet<>();
   TableShowValues model;
   JTable table;
@@ -160,8 +161,8 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return getMapValue(b);
       }
     };
-    columns.add(checkBoxStartColumn);
-    columns.add(new ShowFileColumn<>(NAME) {
+    availableColumns.add(checkBoxStartColumn);
+    availableColumns.add(new ShowFileColumn<>(NAME) {
 
       @Override
       void setValue(Bouteille b, Object value) {
@@ -172,7 +173,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return convertStringFromHTMLString(b.getNom());
       }
     });
-    columns.add(new ShowFileColumn<String>(YEAR, 50) {
+    availableColumns.add(new ShowFileColumn<String>(YEAR, 50) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -188,7 +189,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return b.getAnnee();
       }
     });
-    columns.add(new ShowFileColumn<String>(TYPE) {
+    availableColumns.add(new ShowFileColumn<String>(TYPE) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -200,7 +201,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return b.getKind();
       }
     });
-    columns.add(new ShowFileColumn<AbstractPlace>(PLACE) {
+    availableColumns.add(new ShowFileColumn<AbstractPlace>(PLACE) {
 
       @Override
       void setValue(Bouteille b, AbstractPlace value) {
@@ -219,7 +220,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return convertStringFromHTMLString(b.getEmplacement());
       }
     });
-    columns.add(new ShowFileColumn<String>(NUM_PLACE, 50) {
+    availableColumns.add(new ShowFileColumn<String>(NUM_PLACE, 50) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -231,7 +232,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return Integer.toString(b.getNumLieu());
       }
     });
-    columns.add(new ShowFileColumn<String>(LINE, 50) {
+    availableColumns.add(new ShowFileColumn<String>(LINE, 50) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -246,7 +247,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return Integer.toString(b.getLigne());
       }
     });
-    columns.add(new ShowFileColumn<String>(COLUMN, 50) {
+    availableColumns.add(new ShowFileColumn<String>(COLUMN, 50) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -261,7 +262,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return Integer.toString(b.getColonne());
       }
     });
-    columns.add(new ShowFileColumn<String>(PRICE, 50) {
+    availableColumns.add(new ShowFileColumn<String>(PRICE, 50) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -273,7 +274,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return convertStringFromHTMLString(b.getPrix());
       }
     });
-    columns.add(new ShowFileColumn<String>(COMMENT) {
+    availableColumns.add(new ShowFileColumn<String>(COMMENT) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -285,7 +286,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return convertStringFromHTMLString(b.getComment());
       }
     });
-    columns.add(new ShowFileColumn<String>(MATURITY) {
+    availableColumns.add(new ShowFileColumn<String>(MATURITY) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -297,7 +298,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return convertStringFromHTMLString(b.getMaturity());
       }
     });
-    columns.add(new ShowFileColumn<String>(PARKER) {
+    availableColumns.add(new ShowFileColumn<String>(PARKER) {
 
       @Override
       void setValue(Bouteille b, String value) {
@@ -309,7 +310,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return b.getParker();
       }
     });
-    columns.add(new ShowFileColumn<BottleColor>(COLOR) {
+    availableColumns.add(new ShowFileColumn<BottleColor>(COLOR) {
 
       @Override
       void setValue(Bouteille b, BottleColor value) {
@@ -325,7 +326,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     });
 
     if (!worksheet) {
-      columns.add(new ShowFileColumn<BottlesStatus>(STATUS) {
+      availableColumns.add(new ShowFileColumn<BottlesStatus>(STATUS) {
 
         @Override
         void setValue(Bouteille b, BottlesStatus value) {
@@ -362,7 +363,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         return false;
       }
     };
-    columns.add(modifyButtonColumn);
+    availableColumns.add(modifyButtonColumn);
     checkedButtonColumn = new ShowFileColumn<>(100, true, false, getLabel(SHOWFILE_VALID), null) {
       @Override
       void setValue(Bouteille b, State value) {
@@ -391,7 +392,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       }
     };
     if (worksheet) {
-      columns.add(checkedButtonColumn);
+      availableColumns.add(checkedButtonColumn);
     }
   }
 
@@ -422,22 +423,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       throw new NullPointerException("table must be initialized first");
     }
     table.setAutoCreateRowSorter(true);
-    TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-    sorter.setComparator(TableShowValues.PRICE, (String o1, String o2) -> {
-      BigDecimal price1;
-      if (o1.isEmpty()) {
-        price1 = BigDecimal.ZERO;
-      } else {
-        price1 = safeStringToBigDecimal(o1, BigDecimal.ZERO);
-      }
-      BigDecimal price2;
-      if (o2.isEmpty()) {
-        price2 = BigDecimal.ZERO;
-      } else {
-        price2 = safeStringToBigDecimal(o2, BigDecimal.ZERO);
-      }
-      return price1.compareTo(price2);
-    });
+    TableRowSorter<TableModel> sorter = buildTableModelTableRowSorter();
     table.setRowSorter(sorter);
     List<RowSorter.SortKey> sortKeys = new ArrayList<>();
     sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
@@ -445,9 +431,25 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     sorter.sort();
   }
 
+  private TableRowSorter<TableModel> buildTableModelTableRowSorter() {
+    TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+    sorter.setComparator(TableShowValues.PRICE, Comparator.comparing(AbstractShowFilePanel::getPrice));
+    return sorter;
+  }
+
+  private static BigDecimal getPrice(String value) {
+    BigDecimal price;
+    if (value.isBlank()) {
+      price = BigDecimal.ZERO;
+    } else {
+      price = safeStringToBigDecimal(value, BigDecimal.ZERO);
+    }
+    return price;
+  }
+
   void delete() {
     try {
-      List<Bouteille> toDeleteList = getSelectedMyCellarObjects();
+      List<Bouteille> toDeleteList = getSelectedBottles();
 
       if (toDeleteList.isEmpty()) {
         Erreur.showInformationMessage(ERROR_NOITEMTODELETE, ERROR_PLEASESELECT);
@@ -477,9 +479,9 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     }
   }
 
-  List<Bouteille> getSelectedMyCellarObjects() {
-    int max_row = model.getRowCount();
-    if (max_row == 0) {
+  List<Bouteille> getSelectedBottles() {
+    int rowCount = model.getRowCount();
+    if (rowCount == 0) {
       return Collections.emptyList();
     }
     final LinkedList<Bouteille> list = new LinkedList<>();
@@ -490,59 +492,59 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
           list.add(showFileModel.getBottle(row));
         }
         row++;
-      } while (row < max_row);
+      } while (row < rowCount);
     } else {
       do {
         if (model.getValueAt(row, TableShowValues.ETAT).equals(Boolean.TRUE)) {
           list.add(model.getBottle(row));
         }
         row++;
-      } while (row < max_row);
+      } while (row < rowCount);
     }
 
     return list;
   }
 
   void restore() {
-    final List<Bouteille> toRestoreList = getSelectedMyCellarObjects();
-
+    final List<Bouteille> toRestoreList = getSelectedBottles();
     if (toRestoreList.isEmpty()) {
       Erreur.showInformationMessage(SHOWFILE_NOBOTTLETORESTORE, SHOWFILE_SELECTTORESTORE);
+      return;
+    }
+
+    String erreur_txt1, erreur_txt2;
+    if (toRestoreList.size() == 1) {
+      erreur_txt1 = getError(ERROR_1ITEMSELECTED);
+      erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
     } else {
-      String erreur_txt1, erreur_txt2;
-      if (toRestoreList.size() == 1) {
-        erreur_txt1 = getError(ERROR_1ITEMSELECTED);
-        erreur_txt2 = getLabel(SHOWFILE_RESTOREONE);
-      } else {
-        erreur_txt1 = getError(ERROR_NITEMSSELECTED, toRestoreList.size());
-        erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
-      }
-      String message = String.format("%s %s", erreur_txt1, erreur_txt2);
-      if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
-        LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
-        for (Bouteille b : toRestoreList) {
-          Program.getTrash().remove(b);
-          if (b.isInExistingPlace()) {
-            AbstractPlace r = b.getAbstractPlace();
-            if (r.isSimplePlace()) {
+      erreur_txt1 = getError(ERROR_NITEMSSELECTED, toRestoreList.size());
+      erreur_txt2 = getLabel(SHOWFILE_RESTORESEVERAL);
+    }
+    String message = String.format("%s %s", erreur_txt1, erreur_txt2);
+    if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
+      LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
+      for (Bouteille b : toRestoreList) {
+        Program.getTrash().remove(b);
+        if (b.isInExistingPlace()) {
+          AbstractPlace r = b.getAbstractPlace();
+          if (r.isSimplePlace()) {
+            Program.getStorage().addHistory(HistoryState.ADD, b);
+            Program.getStorage().addWine(b);
+          } else {
+            if (((ComplexPlace) r).getObject(b.getPlacePosition()).isEmpty()) {
               Program.getStorage().addHistory(HistoryState.ADD, b);
               Program.getStorage().addWine(b);
             } else {
-              if (((ComplexPlace) r).getObject(b.getPlacePosition()).isEmpty()) {
-                Program.getStorage().addHistory(HistoryState.ADD, b);
-                Program.getStorage().addWine(b);
-              } else {
-                cantRestoreList.add(b);
-              }
+              cantRestoreList.add(b);
             }
           }
         }
-        if (!cantRestoreList.isEmpty()) {
-          OpenAddVinAction.open(cantRestoreList);
-        }
       }
-      refresh();
+      if (!cantRestoreList.isEmpty()) {
+        OpenAddVinAction.open(cantRestoreList);
+      }
     }
+    refresh();
   }
 
   protected abstract void refresh();
@@ -776,7 +778,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
     List<ShowFileColumn<?>> cols = new ArrayList<>();
     if (!savedColumns.isEmpty()) {
       String[] values = savedColumns.split(COLUMNS_SEPARATOR);
-      for (ShowFileColumn<?> c : columns) {
+      for (ShowFileColumn<?> c : availableColumns) {
         for (String s : values) {
           if (s.equals(c.getField().name())) {
             cols.add(c);
@@ -785,11 +787,12 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
       }
     }
     if (cols.isEmpty()) {
-      cols = columns.stream().filter((field) ->
-          !field.getField().equals(VINEYARD)
-              && !field.getField().equals(AOC)
-              && !field.getField().equals(IGP)
-              && !field.getField().equals(COUNTRY)).collect(toList());
+      cols = availableColumns.stream().filter((field) ->
+              !field.getField().equals(VINEYARD)
+                  && !field.getField().equals(AOC)
+                  && !field.getField().equals(IGP)
+                  && !field.getField().equals(COUNTRY))
+          .collect(toList());
     } else {
       if (!cols.contains(checkBoxStartColumn)) {
         cols.addFirst(checkBoxStartColumn);
@@ -846,7 +849,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
         cols = new ArrayList<>();
         cols.add(checkBoxStartColumn);
         Program.setModified();
-        for (ShowFileColumn<?> c : columns) {
+        for (ShowFileColumn<?> c : availableColumns) {
           if (properties.contains(c.getField().getIndex())) {
             cols.add(c);
           }
@@ -888,7 +891,7 @@ public abstract class AbstractShowFilePanel extends JPanel implements ITabListen
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      List<Bouteille> selectedObjects = getSelectedMyCellarObjects();
+      List<Bouteille> selectedObjects = getSelectedBottles();
       if (selectedObjects.isEmpty()) {
         Erreur.showInformationMessage(ERROR_NOITEMTOMODIFY, ERROR_SELECTITEMTOMODIFY);
         return;

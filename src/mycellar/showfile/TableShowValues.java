@@ -67,7 +67,8 @@ class TableShowValues extends AbstractTableModel {
   private static final int PARKER = 11;
   private final String[] columnNames = {"",
       getLabel(MAIN_ITEM),
-      getLabel(MAIN_YEAR), getLabel(MAIN_CAPACITYORSUPPORT),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_CAPACITYORSUPPORT),
       getLabel(MAIN_STORAGE),
       getLabel(MYCELLARFIELDS_NUMPLACE),
       getLabel(MYCELLARFIELDS_LINE),

@@ -11,6 +11,7 @@ import mycellar.general.ResourceKey;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -40,8 +41,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.4
- * @since 18/05/26
+ * @version 3.5
+ * @since 27/06/26
  */
 
 public enum MyCellarFields {
@@ -171,6 +172,15 @@ public enum MyCellarFields {
 
   public static List<MyCellarFields> getFieldsList() {
     return FIELDS_WINE;
+  }
+
+  public static List<MyCellarFields> getFieldsListWithoutVineyard() {
+    return FIELDS_WINE
+        .stream()
+        .filter(Predicate.not(myCellarFields -> myCellarFields == COUNTRY ||
+            myCellarFields == VINEYARD ||
+            myCellarFields == AOC ||
+            myCellarFields == IGP)).toList();
   }
 
   public static List<MyCellarFields> getFieldsListForImportAndWorksheet() {

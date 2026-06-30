@@ -24,17 +24,16 @@ import static mycellar.general.ResourceKey.MAIN_COMMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.9
- * @since 03/10/25
+ * @version 6.0
+ * @since 30/06/26
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
+  private final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
+  protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
-  protected final JModifyTextArea commentTextArea = new JModifyTextArea();
-  protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected final char ajouterChar = getLabel(AJOUTER).charAt(0);
   protected final PanelSave panelSave = new PanelSave();
   protected int selectedPaneIndex;
@@ -137,7 +136,7 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       add(panelVignobles, "growx, wrap");
       panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
       add(labelComment, "growx, wrap");
-      add(scrollPaneComment, "grow, wrap");
+      add(new JScrollPane(commentTextArea), "grow, wrap");
       add(panelSave, "growx");
     }
   }

@@ -12,14 +12,16 @@ import java.util.UUID;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.2
- * @since 24/10/22
+ * @version 1.3
+ * @since 30/06/26
  */
 public final class ProgramConstants {
 
-  public static final String INTERNAL_VERSION = "5.5.7.8";
+  public static final String INFOS_VERSION = " 2026 v";
+  public static final String INTERNAL_VERSION = "5.5.8.3";
   public static final int VERSION = 81;
   public static final String MAIN_VERSION = VERSION + " NO";
+
   public static final String DEFAULT_STORAGE_EN = "Default storage";
   public static final String DEFAULT_STORAGE_FR = "Rangement par défaut";
 
@@ -32,7 +34,6 @@ public final class ProgramConstants {
   public static final String TEMP_PLACE = "$$$@@@Temp_--$$$$||||";
   public static final String UNTITLED1_SINFO = "Untitled1.sinfo";
   public static final String UNTITLED = "Untitled";
-  public static final String COUNTRIES_XML = "countries.xml";
   public static final String TEXT = ".txt";
   public static final String FRA = "FRA";
   public static final UUID FRA_ID = UUID.fromString("8eabdaec-45c0-41c9-aa62-eb8e873a6a35");
@@ -61,17 +62,18 @@ public final class ProgramConstants {
   public static final String NORMAL = "75cl";
   public static final String HALF = "37.5cl";
   public static final int IMPORT_COMBO_COUNT = 18;
+
   public static final String COUNTRY_LABEL_KEY = "Country.";
-  public static final String INFOS_VERSION = " 2026 v";
+  public static final String COUNTRIES_XML = "countries.xml";
   static final String PREVIEW_XML = "preview.xml";
   static final String PREVIEW_HTML = "preview.html";
   static final String MY_CELLAR_XML = "MyCellar.xml";
   static final String TYPES_XML = "Types.xml";
-  static final String TYPES_MUSIC_XML = "music_types.xml";
   static final String BOUTEILLES_XML = "Bouteilles.xml";
   public static final String HISTORY_XML = "history.xml";
   public static final String WORKSHEET_XML = "worksheet.xml";
   static final String CONFIG_INI = "config.ini";
+
   static final String RESTART_COMMAND = "restart";
   static final String DOWNLOAD_COMMAND = "download";
   static final String OPTIONS_PARAM = "-opts=";

@@ -90,7 +90,6 @@ import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.PREVIEW_HTML;
 import static mycellar.ProgramConstants.PREVIEW_XML;
 import static mycellar.ProgramConstants.SLASH;
-import static mycellar.ProgramConstants.TYPES_MUSIC_XML;
 import static mycellar.ProgramConstants.TYPES_XML;
 import static mycellar.ProgramConstants.VERSION;
 import static mycellar.ProgramConstants.ZERO;
@@ -112,8 +111,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.1
- * @since 26/06/26
+ * @version 30.2
+ * @since 30/06/26
  */
 
 public final class Program {
@@ -968,10 +967,6 @@ public final class Program {
 
   public static String getXMLTypesFileName() {
     return getWorkDir(true) + TYPES_XML;
-  }
-
-  public static String getXMLMusicTypesFileName() {
-    return getWorkDir(true) + TYPES_MUSIC_XML;
   }
 
   public static String getXMLBottlesFileName() {

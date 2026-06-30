@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,8 +34,8 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 26/06/26
+ * @version 1.5
+ * @since 30/06/26
  */
 
 @XmlRootElement(name = "countries")
@@ -147,13 +148,10 @@ public class CountryListJaxb {
     if (vignoble.isAppellationEmpty() && MyCellarUtils.isNullOrEmpty(vignoble.getCountry())) {
       return Optional.empty();
     }
-    Optional<CountryJaxb> countryJaxb = findbyId(vignoble.getCountry());
-    CountryJaxb countryJaxb1 = countryJaxb.orElse(null);
-    Optional<CountryJaxb> byUUID;
+    CountryJaxb countryJaxb1 = findbyId(vignoble.getCountry()).orElse(null);
     CountryJaxb countryJaxb2 = null;
     if (vignoble.getCountryUuid() != null) {
-      byUUID = findByUUID(vignoble.getCountryUuid());
-      countryJaxb2 = byUUID.orElse(null);
+      countryJaxb2 = findByUUID(vignoble.getCountryUuid()).orElse(null);
     }
     if (countryJaxb1 != null && countryJaxb2 != null) {
       if (countryJaxb1.getUuid().equals(countryJaxb2.getUuid())) {
@@ -164,6 +162,7 @@ public class CountryListJaxb {
     } else if (countryJaxb1 != null || countryJaxb2 != null) {
       Debug("ERROR: findByVignoble: " + countryJaxb1 + " vs " + countryJaxb2);
     }
+    // TODO this should be removed
     return findbyId(vignoble.getCountry());
   }
 
@@ -180,7 +179,7 @@ public class CountryListJaxb {
   }
 
   public static Optional<CountryJaxb> findByUUID(UUID uuid) {
-    if (uuid == NO_COUNTRY.getUuid()) {
+    if (Objects.equals(uuid, NO_COUNTRY.getUuid())) {
       return Optional.of(NO_COUNTRY);
     }
     return getInstance().getCountries()

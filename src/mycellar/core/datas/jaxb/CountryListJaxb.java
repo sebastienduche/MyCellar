@@ -34,8 +34,8 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 30/06/26
+ * @version 1.6
+ * @since 18/07/26
  */
 
 @XmlRootElement(name = "countries")
@@ -94,7 +94,7 @@ public class CountryListJaxb {
       if (country.getUuid() == null) {
         Program.COUNTRY_LIST.getCountries()
             .stream()
-            .filter(countryJaxb -> countryJaxb.getId().equals(country.getId())).findFirst()
+            .filter(countryJaxb -> countryJaxb.getId().equalsIgnoreCase(country.getId())).findFirst()
             .ifPresent(countryJaxb -> country.setUuid(countryJaxb.getUuid()));
       }
       if (country.getUuid() == null) {
@@ -170,6 +170,9 @@ public class CountryListJaxb {
   public static Optional<CountryJaxb> findbyId(String id) {
     if (FR.equals(id)) {
       id = ProgramConstants.FRA;
+    }
+    if (MyCellarUtils.isNullOrEmpty(id)) {
+      return Optional.of(NO_COUNTRY);
     }
     String finalId = id;
     return getInstance().getCountries()

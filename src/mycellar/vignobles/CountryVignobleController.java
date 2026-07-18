@@ -44,8 +44,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.7
- * @since 06/07/26
+ * @version 3.8
+ * @since 18/07/26
  */
 
 public final class CountryVignobleController {
@@ -110,14 +110,18 @@ public final class CountryVignobleController {
         File fText = new File(f.getParent(), name + TEXT);
         List<String> lines = Program.readTextFile(fText);
         String label = lines.isEmpty() ? "" : lines.getFirst();
-        UUID uuid = lines.size() < 2 ? UUID.randomUUID() : UUID.fromString(lines.get(1));
+        UUID uuid = lines.size() < 2 ? null : UUID.fromString(lines.get(1));
 
-        CountryJaxb countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+        CountryJaxb countryJaxb = null;
+        if (uuid != null) {
+          countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+        }
         if (countryJaxb == null) {
           countryJaxb = CountryListJaxb.findbyId(name)
               .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
         }
         if (countryJaxb == null) {
+          uuid = UUID.randomUUID();
           countryJaxb = new CountryJaxb(id, label, uuid);
           CountryListJaxb.add(countryJaxb);
         }
@@ -127,7 +131,7 @@ public final class CountryVignobleController {
         if (countryJaxb.getUuid() == null) {
           countryJaxb.setUuid(UUID.randomUUID());
         }
-        if (!countryJaxb.getUuid().equals(uuid)) {
+        if (uuid != null && !countryJaxb.getUuid().equals(uuid)) {
           countryJaxb.setUuid(uuid);
         }
         if (!INSTANCE.countryToVignobles.containsKey(countryJaxb)) {
@@ -227,6 +231,7 @@ public final class CountryVignobleController {
     } else {
       INSTANCE.mapCountryIDToUUID.put(countryJaxb.getId(), countryJaxb.getUuid());
     }
+    CountryListJaxb.add(countryJaxb);
     Debug("Creating country Done");
     return Optional.of(vignobleListJaxb);
   }
@@ -606,15 +611,25 @@ public final class CountryVignobleController {
     return rebuildNeeded;
   }
 
-  public static UUID getUUIDFromCountry(String country) {
+  public static TempCountry getUUIDFromCountry(String country) {
     if (ProgramConstants.FR.equals(country)) {
       country = FRA;
     }
     UUID uuid = INSTANCE.mapCountryIDToUUID.getOrDefault(country, null);
+    var tempCountry = new TempCountry(uuid, country);
     if (uuid == null) {
-      throw new IllegalArgumentException("Country ID " + country + " not found");
+      CountryJaxb countryJaxb = new CountryJaxb(country);
+      createCountry(countryJaxb);
+      tempCountry = new TempCountry(countryJaxb.getUuid(), countryJaxb.getId());
+      uuid = INSTANCE.mapCountryIDToUUID.getOrDefault(countryJaxb.getId(), null);
+      if (uuid == null) {
+        throw new IllegalArgumentException("Country ID " + country + " not found");
+      }
     }
-    return uuid;
+    return tempCountry;
+  }
+
+  public record TempCountry(UUID uuid, String countryId) {
   }
 
   private static void Debug(String text) {

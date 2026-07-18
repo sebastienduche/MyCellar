@@ -43,8 +43,8 @@ import static mycellar.vignobles.CountryVignobleController.getUUIDFromCountry;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.8
- * @since 26/06/26
+ * @version 8.9
+ * @since 18/07/26
  */
 
 public class SerializedStorage implements Storage {
@@ -93,7 +93,11 @@ public class SerializedStorage implements Storage {
     if (bottle.getVignoble() != null &&
         bottle.getVignoble().getCountryUuid() == null) {
       if (isDefined(bottle.getVignoble().getCountry())) {
-        bottle.getVignoble().setCountryUuid(getUUIDFromCountry(bottle.getVignoble().getCountry()));
+        CountryVignobleController.TempCountry tempCountry = getUUIDFromCountry(bottle.getVignoble().getCountry());
+        bottle.getVignoble().setCountryUuid(tempCountry.uuid());
+        if (!bottle.getVignoble().getCountry().equalsIgnoreCase(tempCountry.countryId())) {
+          bottle.getVignoble().setCountry(tempCountry.countryId());
+        }
       } else {
         bottle.getVignoble().setCountryUuid(NO_COUNTRY.getUuid());
       }

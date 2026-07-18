@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.1
- * @since 26/06/26
+ * @version 3.2
+ * @since 18/07/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -157,10 +157,9 @@ public class VignobleListJaxb {
         return vignobleToReturn;
       }
     }
-    if (!vignobleJaxb.getName().isBlank()) {
-      Debug("ERROR findVignobleWithAppelation " + vignobleJaxb);
-    } else if (!vignobleJaxb.getAOC().isBlank() || !vignobleJaxb.getIGP().isBlank()) {
-      Debug("WARNING findVignobleWithAppelation " + vignobleJaxb);
+    if (vignobleJaxb.getName().isBlank() &&
+        (!vignobleJaxb.getAOC().isBlank() || !vignobleJaxb.getIGP().isBlank())) {
+      Debug("WARNING findVignobleWithAppelation: no country for " + vignobleJaxb);
     }
     return null;
   }

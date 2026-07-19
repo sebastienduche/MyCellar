@@ -17,9 +17,11 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static mycellar.Program.COUNTRY_LIST;
@@ -34,8 +36,8 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 18/07/26
+ * @version 1.7
+ * @since 19/07/26
  */
 
 @XmlRootElement(name = "countries")
@@ -79,6 +81,7 @@ public class CountryListJaxb {
         countryListJaxb = (CountryListJaxb) jaxbUnmarshaller.unmarshal(f);
         // If the uuid are null, we fill it with existing ones
         populateUUID(countryListJaxb);
+        populateFilename(countryListJaxb);
       } else {
         return COUNTRY_LIST;
       }
@@ -86,6 +89,33 @@ public class CountryListJaxb {
       Program.showException(e);
     }
     return countryListJaxb;
+  }
+
+  private static void populateFilename(CountryListJaxb countryListJaxb) {
+    Debug("Populating filename for CountryListJaxb");
+    Set<String> uniqueFilenames = new HashSet<>();
+    for (CountryJaxb country : countryListJaxb.getCountries()) {
+      if (country.getFilename() != null) {
+        uniqueFilenames.add(country.getFilename());
+      } else {
+        var name = MyCellarUtils.removeSpaces(MyCellarUtils.removeAccents(country.getName())).toUpperCase();
+        if (name.isBlank()) {
+          name = "COUNTRY";
+        }
+        if (!uniqueFilenames.contains(name)) {
+          uniqueFilenames.add(name);
+          country.setFilename(name);
+        } else {
+          int i = 0;
+          while (uniqueFilenames.contains(name)) {
+            name += i;
+          }
+          uniqueFilenames.add(name);
+          country.setFilename(name);
+        }
+      }
+      uniqueFilenames.add(country.getName());
+    }
   }
 
   private static void populateUUID(CountryListJaxb countryListJaxb) {
@@ -206,6 +236,7 @@ public class CountryListJaxb {
 
   public static void add(CountryJaxb countryJaxb) {
     getInstance().getCountries().add(countryJaxb);
+    populateFilename(instance);
   }
 
   public List<CountryJaxb> getCountries() {

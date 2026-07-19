@@ -18,8 +18,8 @@ import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 26/06/26
+ * @version 0.9
+ * @since 19/0t/26
  */
 
 @XmlRootElement(name = "country")
@@ -35,11 +35,15 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
   @XmlAttribute(required = true)
   private UUID uuid;
 
+  @XmlAttribute
+  private String filename;
+
   public CountryJaxb() {
   }
 
   public CountryJaxb(String name) {
     id = null;
+    filename = null;
     uuid = UUID.randomUUID();
     this.name = name;
   }
@@ -48,6 +52,7 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     this.id = id;
     this.name = name;
     this.uuid = uuid;
+    filename = null;
   }
 
   @Deprecated
@@ -76,6 +81,14 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
     this.uuid = uuid;
   }
 
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
+
   public String getLabel() {
     if (id == null) {
       return "";
@@ -96,8 +109,7 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
     return result;
   }
 
@@ -113,22 +125,18 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
       return false;
     }
     CountryJaxb other = (CountryJaxb) obj;
-    if (id == null) {
-      if (other.id != null) {
+    if (uuid == null) {
+      if (other.uuid != null) {
         return false;
       }
-    } else if (!id.equals(other.id)) {
+    } else if (!uuid.equals(other.uuid)) {
       return false;
     }
-    if (name == null) {
-      return other.name == null;
-    } else {
-      return name.equals(other.name);
-    }
+    return true;
   }
 
   @Override
   public int compareTo(CountryJaxb o) {
-    return getLabel().compareTo(o.getLabel());
+    return getUuid().compareTo(o.getUuid());
   }
 }

@@ -18,6 +18,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,8 +45,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.8
- * @since 18/07/26
+ * @version 3.9
+ * @since 19/07/26
  */
 
 public final class CountryVignobleController {
@@ -89,6 +90,9 @@ public final class CountryVignobleController {
     setRebuildNeeded();
   }
 
+  record CountryToUuid(String filename, UUID uuid) {
+  }
+
   public static void load() {
     Debug("Loading all countries");
     INSTANCE.countryToVignobles.clear();
@@ -97,8 +101,14 @@ public final class CountryVignobleController {
     CountryListJaxb.findByUUID(ITA_ID).ifPresent(country -> INSTANCE.countryToVignobles.put(country, vignobleListItaly));
     File dir = new File(Program.getWorkDir(true));
     File[] fileVignobles = dir.listFiles((pathname) -> pathname.getName().endsWith(VIGNOBLE));
+    List<CountryToUuid> countriesToUuid = Program.getCountries().stream().map(countryJaxb -> new CountryToUuid(countryJaxb.getFilename(), countryJaxb.getUuid())).toList();
+    List<String> countryFilenames = countriesToUuid.stream().map(CountryToUuid::filename).toList();
     if (fileVignobles != null) {
+      boolean allGood = Arrays.stream(fileVignobles).anyMatch(country -> countryFilenames.contains(country.getName().substring(0, country.getName().indexOf(VIGNOBLE))));
       for (File f : fileVignobles) {
+        if (allGood && !countryFilenames.contains(f.getName().substring(0, f.getName().indexOf(VIGNOBLE)))) {
+          continue;
+        }
         String name = f.getName();
         String id = name.substring(0, name.indexOf(VIGNOBLE));
         if (!id.equals(id.toUpperCase())) {
@@ -115,6 +125,11 @@ public final class CountryVignobleController {
         CountryJaxb countryJaxb = null;
         if (uuid != null) {
           countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+          final String countryName = name;
+          CountryToUuid found = countriesToUuid.stream().filter(countryToUuid -> countryToUuid.filename().equals(countryName)).findFirst().orElse(null);
+          if (found == null || !found.uuid().equals(uuid)) {
+            Debug("ERRO: Not the same UUID for the country " + name);
+          }
         }
         if (countryJaxb == null) {
           countryJaxb = CountryListJaxb.findbyId(name)

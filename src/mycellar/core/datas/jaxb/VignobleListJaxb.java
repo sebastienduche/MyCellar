@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.2
- * @since 18/07/26
+ * @version 3.3
+ * @since 19/07/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -78,7 +78,7 @@ public class VignobleListJaxb {
     if (vignobleListJaxb == null) {
       return;
     }
-    final String countryId = Integer.toString(countryJaxb.getUuid().hashCode());
+    final String countryId = countryJaxb.getFilename();
     Debug("Writing Country File: " + countryId);
     File fText = new File(Program.getWorkDir(true), countryId + TEXT);
     try (FileWriter writer = new FileWriter(fText);
@@ -114,7 +114,13 @@ public class VignobleListJaxb {
       fText.delete();
       File f = new File(Program.getWorkDir(true), id + VIGNOBLE);
       Debug("Deleting " + f.getAbsolutePath());
-      return f.delete();
+      f.delete();
+      File filename = new File(Program.getWorkDir(true), countryJaxb.getFilename() + VIGNOBLE);
+      Debug("Deleting " + filename.getAbsolutePath());
+      filename.delete();
+      File filenameTxt = new File(Program.getWorkDir(true), countryJaxb.getFilename() + TEXT);
+      Debug("Deleting " + filenameTxt.getAbsolutePath());
+      return filenameTxt.delete();
     } catch (RuntimeException e) {
       Program.showException(e);
       return false;

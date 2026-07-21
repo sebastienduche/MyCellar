@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -36,8 +36,8 @@ import static mycellar.ProgramConstants.FR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 19/07/26
+ * @version 1.8
+ * @since 21/07/26
  */
 
 @XmlRootElement(name = "countries")
@@ -57,7 +57,7 @@ public class CountryListJaxb {
   public static void init() {
     instance = load();
     if (instance != null) {
-      Collections.sort(instance.getCountries());
+      instance.getCountries().sort(Comparator.comparing(CountryJaxb::getName));
     }
   }
 

@@ -35,7 +35,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,8 +70,8 @@ import static mycellar.general.ResourceKey.VINEYARDPANEL_UNABLEDELETEVIGNOBLE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.4
- * @since 26/06/26
+ * @version 4.5
+ * @since 21/07/26
  */
 
 public final class VineyardPanel extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -91,7 +91,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
     if (Program.getCountries().stream().map(CountryJaxb::getUuid).noneMatch(NO_COUNTRY.getUuid()::equals)) {
       comboCountry.addItem(emptyCountryJaxb);
     }
-    Collections.sort(Program.getCountries());
+    Program.getCountries().sort(Comparator.comparing(CountryJaxb::getName));
     Program.getCountries().forEach(comboCountry::addItem);
 
     comboCountry.addActionListener((e) -> comboCountrySelected());

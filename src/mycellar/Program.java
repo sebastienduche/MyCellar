@@ -111,8 +111,8 @@ import static mycellar.general.ResourceKey.MAIN_ASKCONFIRMATION;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 30.2
- * @since 30/06/26
+ * @version 30.3
+ * @since 21/07/26
  */
 
 public final class Program {
@@ -744,6 +744,7 @@ public final class Program {
     Debug("Program: closeFile: Closing file Ended");
   }
 
+  @Deprecated(since = "82")
   private static boolean validate() {
     List<VignobleJaxb> vignobleJaxbList = Program.getStorage().getAllList()
         .stream()

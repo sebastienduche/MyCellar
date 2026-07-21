@@ -45,8 +45,8 @@ import static mycellar.core.datas.jaxb.VignobleListJaxb.VIGNOBLE;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.9
- * @since 19/07/26
+ * @version 4.0
+ * @since 21/07/26
  */
 
 public final class CountryVignobleController {
@@ -106,70 +106,22 @@ public final class CountryVignobleController {
     if (fileVignobles != null) {
       boolean allGood = Arrays.stream(fileVignobles).anyMatch(country -> countryFilenames.contains(country.getName().substring(0, country.getName().indexOf(VIGNOBLE))));
       for (File f : fileVignobles) {
-        if (allGood && !countryFilenames.contains(f.getName().substring(0, f.getName().indexOf(VIGNOBLE)))) {
-          continue;
-        }
-        String name = f.getName();
-        String id = name.substring(0, name.indexOf(VIGNOBLE));
-        if (!id.equals(id.toUpperCase())) {
-          Debug("Deleting vignoble file with wrong name " + name);
-          f.delete();
-          continue;
-        }
-        name = name.substring(0, name.indexOf(VIGNOBLE));
-        File fText = new File(f.getParent(), name + TEXT);
-        List<String> lines = Program.readTextFile(fText);
-        String label = lines.isEmpty() ? "" : lines.getFirst();
-        UUID uuid = lines.size() < 2 ? null : UUID.fromString(lines.get(1));
-
-        CountryJaxb countryJaxb = null;
-        if (uuid != null) {
-          countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
-          final String countryName = name;
-          CountryToUuid found = countriesToUuid.stream().filter(countryToUuid -> countryToUuid.filename().equals(countryName)).findFirst().orElse(null);
-          if (found == null || !found.uuid().equals(uuid)) {
-            Debug("ERRO: Not the same UUID for the country " + name);
+        if (allGood) {
+          if (!countryFilenames.contains(f.getName().substring(0, f.getName().indexOf(VIGNOBLE)))) {
+            continue;
           }
-        }
-        if (countryJaxb == null) {
-          countryJaxb = CountryListJaxb.findbyId(name)
-              .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
-        }
-        if (countryJaxb == null) {
-          uuid = UUID.randomUUID();
-          countryJaxb = new CountryJaxb(id, label, uuid);
-          CountryListJaxb.add(countryJaxb);
-        }
-        if (!label.isEmpty() && !label.equals(countryJaxb.getName())) {
-          countryJaxb.setName(label);
-        }
-        if (countryJaxb.getUuid() == null) {
-          countryJaxb.setUuid(UUID.randomUUID());
-        }
-        if (uuid != null && !countryJaxb.getUuid().equals(uuid)) {
-          countryJaxb.setUuid(uuid);
-        }
-        if (!INSTANCE.countryToVignobles.containsKey(countryJaxb)) {
-          INSTANCE.countryToVignobles.put(countryJaxb, load(f));
+          loadFileWithUUID(f, countriesToUuid);
         } else {
-          var loadedUserVignobleListJaxb = load(f);
-          if (loadedUserVignobleListJaxb != null) {
-            VignobleListJaxb vignobleListJaxb = INSTANCE.countryToVignobles.get(countryJaxb);
-            for (var systemCountryVignobleJaxb : vignobleListJaxb.getCountryVignobleJaxbList()) {
-              if (!loadedUserVignobleListJaxb.getCountryVignobleJaxbList().contains(systemCountryVignobleJaxb)) {
-                // Can't we delete Systen Countries
-                loadedUserVignobleListJaxb.getCountryVignobleJaxbList().add(systemCountryVignobleJaxb);
-              } else {
-                var systemCountryVignobleJaxbFromUser = loadedUserVignobleListJaxb.getCountryVignobleJaxbList().get(loadedUserVignobleListJaxb.getCountryVignobleJaxbList().indexOf(systemCountryVignobleJaxb));
-                if (systemCountryVignobleJaxb.getUnmodifiableAppelation() != null) {
-                  // Add the new system appellation to user !!
-                  systemCountryVignobleJaxb.getUnmodifiableAppelation().forEach(systemCountryVignobleJaxbFromUser::add);
-                } else {
-                  systemCountryVignobleJaxb.setAppelation(new LinkedList<>());
-                }
-              }
-            }
+          loadFileOldFormat(f, countriesToUuid);
+        }
+      }
+      if (allGood) {
+        // 2nd attempt for empty country
+        for (File f : fileVignobles) {
+          if (countryFilenames.contains(f.getName().substring(0, f.getName().indexOf(VIGNOBLE)))) {
+            continue;
           }
+          loadFileOldFormat(f, countriesToUuid);
         }
       }
     }
@@ -181,6 +133,149 @@ public final class CountryVignobleController {
     INSTANCE.modified = false;
     setRebuildNeeded();
     validate();
+  }
+
+  private static void loadFileWithUUID(File f, List<CountryToUuid> countriesToUuid) {
+    String name = f.getName();
+    String id = name.substring(0, name.indexOf(VIGNOBLE));
+    if (!id.equals(id.toUpperCase())) {
+      Debug("Deleting vignoble file with wrong name " + name);
+      f.delete();
+      return;
+    }
+    File fText = new File(f.getParent(), id + TEXT);
+    List<String> lines = Program.readTextFile(fText);
+    String label = lines.isEmpty() ? "" : lines.getFirst();
+    UUID uuid = lines.size() < 2 ? null : UUID.fromString(lines.get(1));
+    if (uuid == null) {
+      Debug("ERROR: No uuid found in " + fText.getAbsolutePath());
+    }
+
+    CountryJaxb countryJaxb = null;
+    if (uuid != null) {
+      countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+      if (countryJaxb == null) {
+        Debug("ERROR: Country Jaxb not found for UUID: " + uuid);
+      }
+      final String countryName = id;
+      CountryToUuid found = countriesToUuid.stream().filter(countryToUuid -> countryToUuid.filename().equals(countryName)).findFirst().orElse(null);
+      if (found == null || !found.uuid().equals(uuid)) {
+        Debug("ERROR: Not the same UUID for the country: " + name);
+      }
+    }
+    // It shouldn't be needed
+    if (countryJaxb == null) {
+      Debug("ERROR: Searching country by name: " + name);
+      countryJaxb = CountryListJaxb.findbyId(name)
+          .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
+    }
+    if (countryJaxb == null) {
+      uuid = UUID.randomUUID();
+      countryJaxb = new CountryJaxb(id, label, uuid);
+      CountryListJaxb.add(countryJaxb);
+    }
+    if (!label.isEmpty() && !label.equals(countryJaxb.getName())) {
+      countryJaxb.setName(label);
+    }
+    if (countryJaxb.getUuid() == null) {
+      Debug("ERROR: No uuid in " + countryJaxb);
+      countryJaxb.setUuid(UUID.randomUUID());
+    }
+    if (uuid != null && !countryJaxb.getUuid().equals(uuid)) {
+      countryJaxb.setUuid(uuid);
+    }
+    if (!INSTANCE.countryToVignobles.containsKey(countryJaxb)) {
+      INSTANCE.countryToVignobles.put(countryJaxb, load(f));
+    } else {
+      var loadedUserVignobleListJaxb = load(f);
+      if (loadedUserVignobleListJaxb != null) {
+        VignobleListJaxb vignobleListJaxb = INSTANCE.countryToVignobles.get(countryJaxb);
+        for (var systemCountryVignobleJaxb : vignobleListJaxb.getCountryVignobleJaxbList()) {
+          if (!loadedUserVignobleListJaxb.getCountryVignobleJaxbList().contains(systemCountryVignobleJaxb)) {
+            // Can't we delete Systen Countries
+            loadedUserVignobleListJaxb.getCountryVignobleJaxbList().add(systemCountryVignobleJaxb);
+          } else {
+            var systemCountryVignobleJaxbFromUser = loadedUserVignobleListJaxb.getCountryVignobleJaxbList().get(loadedUserVignobleListJaxb.getCountryVignobleJaxbList().indexOf(systemCountryVignobleJaxb));
+            if (systemCountryVignobleJaxb.getUnmodifiableAppelation() != null) {
+              // Add the new system appellation to user !!
+              systemCountryVignobleJaxb.getUnmodifiableAppelation().forEach(systemCountryVignobleJaxbFromUser::add);
+            } else {
+              systemCountryVignobleJaxb.setAppelation(new LinkedList<>());
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private static void loadFileOldFormat(File f, List<CountryToUuid> countriesToUuid) {
+    String name = f.getName();
+    String id = name.substring(0, name.indexOf(VIGNOBLE));
+    if (!id.equals(id.toUpperCase())) {
+      Debug("Deleting vignoble file with wrong name " + name);
+      f.delete();
+      return;
+    }
+    name = name.substring(0, name.indexOf(VIGNOBLE));
+    File fText = new File(f.getParent(), name + TEXT);
+    List<String> lines = Program.readTextFile(fText);
+    String label = lines.isEmpty() ? "" : lines.getFirst();
+    UUID uuid = lines.size() < 2 ? null : UUID.fromString(lines.get(1));
+
+    CountryJaxb countryJaxb = null;
+    if (uuid != null) {
+      Debug("WARNING: UUID shouldn't be present for " + name);
+      countryJaxb = CountryListJaxb.findByUUID(uuid).orElse(null);
+      if (countryJaxb == null) {
+        Debug("ERROR: Country Jaxb not found for UUID " + uuid);
+      }
+      final String countryName = name;
+      CountryToUuid found = countriesToUuid.stream().filter(countryToUuid -> countryToUuid.filename().equals(countryName)).findFirst().orElse(null);
+      if (found == null || !found.uuid().equals(uuid)) {
+        Debug("ERROR: Not the same UUID for the country " + name);
+      }
+    }
+    if (countryJaxb == null) {
+      countryJaxb = CountryListJaxb.findbyId(name)
+          .orElseGet(() -> CountryListJaxb.findByIdOrLabel(label));
+    }
+    if (countryJaxb == null) {
+      uuid = UUID.randomUUID();
+      countryJaxb = new CountryJaxb(id, label, uuid);
+      CountryListJaxb.add(countryJaxb);
+    }
+    if (!label.isEmpty() && !label.equals(countryJaxb.getName())) {
+      countryJaxb.setName(label);
+    }
+    if (countryJaxb.getUuid() == null) {
+      countryJaxb.setUuid(UUID.randomUUID());
+    }
+    if (uuid != null && !countryJaxb.getUuid().equals(uuid)) {
+      countryJaxb.setUuid(uuid);
+    }
+    if (!INSTANCE.countryToVignobles.containsKey(countryJaxb)) {
+      Debug("WARNING: Old file loaded for for the country " + name + " file " + f.getName());
+      INSTANCE.countryToVignobles.put(countryJaxb, load(f));
+    } else {
+//      var loadedUserVignobleListJaxb = load(f);
+//      if (loadedUserVignobleListJaxb != null) {
+//        VignobleListJaxb vignobleListJaxb = INSTANCE.countryToVignobles.get(countryJaxb);
+//        for (var systemCountryVignobleJaxb : vignobleListJaxb.getCountryVignobleJaxbList()) {
+//          if (!loadedUserVignobleListJaxb.getCountryVignobleJaxbList().contains(systemCountryVignobleJaxb)) {
+//            // Can't we delete Systen Countries
+//            loadedUserVignobleListJaxb.getCountryVignobleJaxbList().add(systemCountryVignobleJaxb);
+//          } else {
+//            var systemCountryVignobleJaxbFromUser = loadedUserVignobleListJaxb.getCountryVignobleJaxbList().get(loadedUserVignobleListJaxb.getCountryVignobleJaxbList().indexOf(systemCountryVignobleJaxb));
+//            if (systemCountryVignobleJaxb.getUnmodifiableAppelation() != null) {
+//              // Add the new system appellation to user !!
+//              systemCountryVignobleJaxb.getUnmodifiableAppelation().forEach(systemCountryVignobleJaxbFromUser::add);
+//            } else {
+//              systemCountryVignobleJaxb.setAppelation(new LinkedList<>());
+//            }
+//          }
+//        }
+//      }
+    }
   }
 
   private static void validate() {

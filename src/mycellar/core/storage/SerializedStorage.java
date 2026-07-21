@@ -43,8 +43,8 @@ import static mycellar.vignobles.CountryVignobleController.getUUIDFromCountry;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 8.9
- * @since 18/07/26
+ * @version 9.0
+ * @since 21/07/26
  */
 
 public class SerializedStorage implements Storage {
@@ -83,11 +83,11 @@ public class SerializedStorage implements Storage {
         }
       }
       distinctNames.add(bottle.getNom());
-      // TODO REMOVE WHEN COMPLETELY ASSIGNED
       updateBottleCountryUUID(bottle);
     }
   }
 
+  @Deprecated(since = "82")
   private static void updateBottleCountryUUID(Bouteille bottle) {
     // TODO REMOVE WHEN COMPLETELY ASSIGNED
     if (bottle.getVignoble() != null &&

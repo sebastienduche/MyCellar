@@ -2,16 +2,13 @@ package mycellar.general;
 
 import mycellar.Bouteille;
 import mycellar.Erreur;
-import mycellar.Music;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ManageCapacityAction;
 import mycellar.core.ICutCopyPastable;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.MyCellarSettings;
-import mycellar.core.common.music.MyCellarMusicSupport;
 import mycellar.core.datas.MyCellarBottleContenance;
 import mycellar.core.uicomponents.JCompletionComboBox;
 import mycellar.core.uicomponents.JModifyComboBox;
@@ -26,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.io.Serial;
 import java.util.LinkedList;
 
 import static mycellar.core.text.MyCellarLabelManagement.getError;
@@ -41,9 +37,7 @@ import static mycellar.general.ResourceErrorKey.ERROR_UNCHECKTRANSFORMTO4DIGITSY
 import static mycellar.general.ResourceKey.ADDVIN_ITEMMODIFIED;
 import static mycellar.general.ResourceKey.ADDVIN_NBITEMSSELECTED;
 import static mycellar.general.ResourceKey.ADDWINE_NOYEAR;
-import static mycellar.general.ResourceKey.MAIN_ARTIST;
 import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
-import static mycellar.general.ResourceKey.MAIN_COMPOSER;
 import static mycellar.general.ResourceKey.MAIN_NAME;
 import static mycellar.general.ResourceKey.MAIN_YEAR;
 import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
@@ -55,8 +49,8 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 19/03/25
+ * @version 2.5
+ * @since 03/10/25
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -69,9 +63,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   private final int siecle = Program.getCaveConfigInt(MyCellarSettings.SIECLE, 20) - 1;
   private final JCompletionComboBox<String> name;
   private int selectedPaneIndex;
-  private JCompletionComboBox<String> artist;
-  private JCompletionComboBox<String> composer;
-  private IMyCellarObject myCellarObject;
+  private Bouteille bottle;
   private boolean severalItems;
   private boolean modificationFlagActive;
 
@@ -86,33 +78,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         }
       }
     };
-    if (Program.isMusicType()) {
-      artist = new JCompletionComboBox<>() {
-        @Serial
-        private static final long serialVersionUID = 8137073557763181546L;
-
-        @Override
-        protected void doAfterModify() {
-          super.doAfterModify();
-          if (modificationFlagActive) {
-            ProgramPanels.setSelectedPaneModified(true);
-          }
-        }
-      };
-
-      composer = new JCompletionComboBox<>() {
-        @Serial
-        private static final long serialVersionUID = 8137073557763181546L;
-
-        @Override
-        protected void doAfterModify() {
-          super.doAfterModify();
-          if (modificationFlagActive) {
-            ProgramPanels.setSelectedPaneModified(true);
-          }
-        }
-      };
-    }
     labelModified.setVisible(false);
     labelModified.setForeground(Color.red);
     setLayout(new MigLayout("", "[grow]30px[]10px[]10px[]30px[]10px[]", ""));
@@ -125,18 +90,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     add(year, "width min(100,10%)");
     add(noYear);
     add(type, "push");
-    if (Program.isWineType()) {
-      add(manageContenance);
-    } else if (Program.isMusicType()) {
-      JPanel panelArtistComposer = new JPanel();
-      panelArtistComposer.setBounds(0, 0, 0, 0);
-      panelArtistComposer.setLayout(new MigLayout("", "0px[]10px[]0px"));
-      panelArtistComposer.add(new MyCellarLabel(MAIN_ARTIST), "grow");
-      panelArtistComposer.add(new MyCellarLabel(MAIN_COMPOSER), "grow, wrap");
-      panelArtistComposer.add(artist, "width min(100,10%)");
-      panelArtistComposer.add(composer, "width min(100,10%)");
-      add(panelArtistComposer, "span 5, newline");
-    }
+    add(manageContenance);
     setModificationDetectionActive(true);
   }
 
@@ -156,40 +110,30 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
 
   public void initializeExtraProperties() {
     setModificationDetectionActive(false);
-    name.setSelectedItem(myCellarObject.getNom());
-    year.setText(myCellarObject.getAnnee());
-    final boolean nonVintage = myCellarObject.isNonVintage();
+    name.setSelectedItem(bottle.getNom());
+    year.setText(bottle.getAnnee());
+    final boolean nonVintage = bottle.isNonVintage();
     noYear.setSelected(nonVintage);
     year.setEditable(!nonVintage);
     type.removeAllItems();
     type.addItem("");
-    if (Program.isMusicType()) {
-      MyCellarMusicSupport.getList().forEach(type::addItem);
-      composer.setSelectedItem(((Music) myCellarObject).getComposer());
-      artist.setSelectedItem(((Music) myCellarObject).getArtist());
-    } else {
-      MyCellarBottleContenance.getList().forEach(type::addItem);
-    }
-    type.setSelectedItem(myCellarObject.getKind());
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(bottle.getKind());
 
     String half_tmp = "";
     if (type.getSelectedItem() != null) {
       half_tmp = type.getSelectedItem().toString();
     }
-    if (!half_tmp.equals(myCellarObject.getKind()) && !myCellarObject.getKind().isEmpty()) {
+    if (!half_tmp.equals(bottle.getKind()) && !bottle.getKind().isEmpty()) {
       addItemToTheList();
-      type.addItem(myCellarObject.getKind());
-      type.setSelectedItem(myCellarObject.getKind());
+      type.addItem(bottle.getKind());
+      type.setSelectedItem(bottle.getKind());
     }
     setModificationDetectionActive(true);
   }
 
   private void addItemToTheList() {
-    if (Program.isMusicType()) {
-      MyCellarMusicSupport.getList().add(myCellarObject.getKind());
-    } else {
-      MyCellarBottleContenance.getList().add(myCellarObject.getKind());
-    }
+    MyCellarBottleContenance.getList().add(bottle.getKind());
   }
 
   private void annee_auto_actionPerformed(ActionEvent e) {
@@ -215,10 +159,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public void enableAll(boolean enable) {
     type.setEnabled(enable && !severalItems);
     name.setEnabled(enable && !severalItems);
-    if (Program.isMusicType()) {
-      composer.setEnabled(enable && !severalItems);
-      artist.setEnabled(enable && !severalItems);
-    }
     year.setEditable(enable && !noYear.isSelected());
     noYear.setEnabled(enable);
     yearAuto.setEnabled(enable);
@@ -229,20 +169,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     type.setEnabled(editable);
     name.setEditable(editable);
     year.setEditable(editable);
-    if (Program.isMusicType()) {
-      composer.setEditable(editable);
-      artist.setEditable(editable);
-    }
   }
 
   public void setViewToSeveralItemsMode(int itemCount) {
     if (itemCount > 1) {
       name.setSelectedItem(getLabel(ADDVIN_NBITEMSSELECTED, itemCount));
       name.setEnabled(false);
-      if (Program.isMusicType()) {
-        composer.setEnabled(false);
-        artist.setEnabled(false);
-      }
       yearAuto.setEnabled(false);
       noYear.setEnabled(false);
       year.setEditable(false);
@@ -283,17 +215,12 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   private void loadTypeComboBox() {
     type.removeAllItems();
     type.addItem("");
-    if (Program.isMusicType()) {
-      MyCellarMusicSupport.getList().forEach(type::addItem);
-      type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
-    } else {
-      MyCellarBottleContenance.getList().forEach(type::addItem);
-      type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-    }
+    MyCellarBottleContenance.getList().forEach(type::addItem);
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
   }
 
-  public void setMyCellarObject(IMyCellarObject myCellarObject) {
-    this.myCellarObject = myCellarObject;
+  public void setBottle(Bouteille bottle) {
+    this.bottle = bottle;
   }
 
   public void setSeveralItems(boolean severalItems) {
@@ -303,20 +230,13 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public void clearValues() {
     setModificationDetectionActive(false);
     name.setSelectedIndex(0);
-    if (Program.isMusicType()) {
-      composer.setSelectedIndex(0);
-      artist.setSelectedIndex(0);
-    }
     year.setText("");
     setModificationDetectionActive(true);
   }
 
   public void initValues() {
     initNameCombo();
-    initComposerArtistCombo();
-
     loadTypeComboBox();
-
     setYearAuto();
     initYearAndContenance();
   }
@@ -339,10 +259,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public void setMouseListener(PopupListener popupListener) {
     name.addMouseListener(popupListener);
     year.addMouseListener(popupListener);
-    if (Program.isMusicType()) {
-      composer.addMouseListener(popupListener);
-      artist.addMouseListener(popupListener);
-    }
   }
 
   public void resetValues() {
@@ -351,20 +267,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     Program.getStorage().getDistinctNames().forEach(name::addItem);
     name.setEnabled(true);
     name.setEditable(true);
-
-    if (Program.isMusicType()) {
-      composer.removeAllItems();
-      composer.addItem("");
-      Program.getStorage().getDistinctComposers().forEach(composer::addItem);
-      composer.setEnabled(true);
-      composer.setEditable(true);
-
-      artist.removeAllItems();
-      artist.addItem("");
-      Program.getStorage().getDistinctArtists().forEach(artist::addItem);
-      artist.setEnabled(true);
-      artist.setEditable(true);
-    }
 
     if (noYear.isSelected()) {
       year.setText(Bouteille.NON_VINTAGE);
@@ -428,11 +330,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   }
 
   public void setTypeDefault() {
-    if (Program.isMusicType()) {
-      type.setSelectedItem(MyCellarMusicSupport.getDefaultValue());
-    } else {
-      type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
-    }
+    type.setSelectedItem(MyCellarBottleContenance.getDefaultValue());
   }
 
   public boolean askForQuit(boolean modify) {
@@ -496,7 +394,6 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   public void initializeForEdition() {
     setModificationDetectionActive(false);
     initNameCombo();
-    initComposerArtistCombo();
     loadTypeComboBox();
 
     setYearAuto();
@@ -515,44 +412,17 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
     name.setEditable(true);
   }
 
-  private void initComposerArtistCombo() {
-    if (!Program.isMusicType()) {
-      return;
-    }
-    LinkedList<String> list = new LinkedList<>();
-    list.add("");
-    list.addAll(Program.getStorage().getDistinctComposers());
-    list.forEach(composer::addItem);
-    composer.setCaseSensitive(false);
-    composer.setEditable(true);
-
-    list.clear();
-    list.add("");
-    list.addAll(Program.getStorage().getDistinctArtists());
-    list.forEach(artist::addItem);
-    artist.setCaseSensitive(false);
-    artist.setEditable(true);
-  }
-
   public void resetModified(boolean b) {
     name.setModified(b);
     year.setModified(b);
     type.setModified(b);
-    if (Program.isMusicType()) {
-      composer.setModified(b);
-      artist.setModified(b);
-    }
   }
 
-  public boolean isModified(IMyCellarObject iMyCellarbject) {
+  public boolean isModified(Bouteille bouteille) {
     boolean modified = name.isModified();
     modified |= year.isModified();
-    modified |= (noYear.isSelected() != iMyCellarbject.isNonVintage());
+    modified |= (noYear.isSelected() != bouteille.isNonVintage());
     modified |= type.isModified();
-    if (Program.isMusicType()) {
-      modified |= composer.isModified();
-      modified |= artist.isModified();
-    }
     return modified;
   }
 

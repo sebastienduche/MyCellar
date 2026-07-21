@@ -7,9 +7,7 @@
 package mycellar.core.storage;
 
 import mycellar.Bouteille;
-import mycellar.Music;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.general.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,8 +40,8 @@ import java.util.LinkedList;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.7
- * @since 21/03/25
+ * @version 1.9
+ * @since 26/06/26
  *
  * <p>Java class for anonymous complex type.
  *
@@ -55,7 +53,6 @@ import java.util.LinkedList;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Bouteille" maxOccurs="unbounded"/>
- *         &lt;element ref="{}Music" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -65,17 +62,14 @@ import java.util.LinkedList;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "bouteille",
-    "music"
 })
 @XmlRootElement(name = "ListeBouteille")
 @XmlSeeAlso(Bouteille.class)
 public class ListeBouteille {
+  private static final String TAG_BOUTEILLE = "Bouteille";
 
-  @XmlElement(name = "Bouteille")
+  @XmlElement(name = TAG_BOUTEILLE)
   LinkedList<Bouteille> bouteille;
-
-  @XmlElement
-  LinkedList<Music> music;
 
   public static boolean loadXML() {
     Debug("Loading JAXB File");
@@ -84,24 +78,29 @@ public class ListeBouteille {
   }
 
   public static boolean loadXML(File f) {
-    Debug("Loading XML File " + f.getAbsolutePath());
-    if (!f.exists())
+    Debug("Loading XML file " + f.getAbsolutePath());
+    if (!f.exists()) {
       return false;
+    }
     try {
       unMarshalXML(f);
       return true;
     } catch (FileNotFoundException | JAXBException e) {
-      Debug("ERROR: Unable to Unmarshall JAXB File");
+      Debug("ERROR: Unable to Unmarshall JAXB file");
       Program.showException(e, false);
     }
     Debug("Manual loading of the XML file");
     try {
       manualLoadXML(f);
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      Debug("ERROR: Unable to load manually File");
+      Debug("ERROR: Unable to manually load the file");
       Program.showException(e);
       return false;
     }
+    Program.getStorage().getAllList().forEach(bouteille -> {
+      if (bouteille.getUuid() == null)
+        throw new IllegalStateException("The bouteille UUID is null for '%s'".formatted(bouteille.getNom()));
+    });
     return true;
   }
 
@@ -112,25 +111,13 @@ public class ListeBouteille {
     doc.getDocumentElement().normalize();
 
     ListeBouteille listeBouteille = new ListeBouteille();
-    NodeList bouteilles = doc.getElementsByTagName("Bouteille");
-
+    NodeList bouteilles = doc.getElementsByTagName(TAG_BOUTEILLE);
     for (int i = 0; i < bouteilles.getLength(); i++) {
       Node node = bouteilles.item(i);
 
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         Element bouteilleElem = (Element) node;
         listeBouteille.getBouteille().add(Bouteille.fromXml(bouteilleElem));
-      }
-    }
-
-    NodeList musics = doc.getElementsByTagName("Music");
-
-    for (int i = 0; i < musics.getLength(); i++) {
-      Node node = musics.item(i);
-
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        Element musicElem = (Element) node;
-        listeBouteille.getMusic().add(Music.fromXml(musicElem));
       }
     }
     Program.getStorage().setListMyCellarObject(listeBouteille);
@@ -146,12 +133,12 @@ public class ListeBouteille {
     Debug("Loading JAXB File Done");
   }
 
-  public static boolean writeXML() {
-    return XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()), ObjectFactory.class);
+  public static void writeXML() {
+    writeXML(Program.getStorage().getListMyCellarObject(), new File(Program.getXMLBottlesFileName()));
   }
 
   public static void writeXML(File f) {
-    XmlUtils.writeXML(Program.getStorage().getListMyCellarObject(), f, ObjectFactory.class);
+    writeXML(Program.getStorage().getListMyCellarObject(), f);
   }
 
   public static boolean writeXML(ListeBouteille liste, File f) {
@@ -167,7 +154,7 @@ public class ListeBouteille {
    *
    * <p>
    * This accessor method returns a reference to the live list,
-   * not a snapshot. Therefore any modification you make to the
+   * not a snapshot. Therefore, any modification you make to the
    * returned list will be present inside the JAXB object.
    * This is why there is not a <CODE>set</CODE> method for the bouteille property.
    *
@@ -189,49 +176,19 @@ public class ListeBouteille {
     return bouteille;
   }
 
-  public LinkedList<Music> getMusic() {
-    if (music == null) {
-      music = new LinkedList<>();
-    }
-    return music;
-  }
-
   void resetBouteille() {
     bouteille = null;
   }
 
-  void resetMusic() {
-    music = null;
-  }
-
   public int getItemsCount() {
-    if (Program.isWineType()) {
-      return bouteille.size();
-    }
-    if (Program.isMusicType()) {
-      return music.size();
-    }
-    Program.throwNotImplementedForNewType();
-    return -1;
+    return bouteille.size();
   }
 
-  public boolean add(IMyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille b) {
-      return getBouteille().add(b);
-    } else if (myCellarObject instanceof Music m) {
-      return getMusic().add(m);
-    }
-    Program.throwNotImplementedForNewType();
-    return false;
+  public boolean add(Bouteille bottle) {
+    return getBouteille().add(bottle);
   }
 
-  public boolean remove(IMyCellarObject myCellarObject) {
-    if (myCellarObject instanceof Bouteille b) {
-      return getBouteille().remove(b);
-    } else if (myCellarObject instanceof Music m) {
-      return getMusic().remove(m);
-    }
-    Program.throwNotImplementedForNewType();
-    return false;
+  public boolean remove(Bouteille bottle) {
+    return getBouteille().remove(bottle);
   }
 }

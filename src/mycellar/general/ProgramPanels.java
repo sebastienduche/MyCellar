@@ -1,6 +1,7 @@
 package mycellar.general;
 
 import mycellar.AddVin;
+import mycellar.Bouteille;
 import mycellar.CreateTablePanel;
 import mycellar.Export;
 import mycellar.ITabListener;
@@ -14,7 +15,6 @@ import mycellar.Stat;
 import mycellar.capacity.CapacityPanel;
 import mycellar.core.ICutCopyPastable;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPanelModifyable;
 import mycellar.core.IPlacePosition;
 import mycellar.core.IUpdatable;
@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.STAR;
 import static mycellar.ProgramConstants.THREE_DOTS;
@@ -76,6 +77,7 @@ import static mycellar.ScreenType.SHOW_WORKSHEET;
 import static mycellar.ScreenType.STATS;
 import static mycellar.ScreenType.SUPPRIMER_RANGEMENT;
 import static mycellar.ScreenType.VIGNOBLES;
+import static mycellar.core.MyCellarSettings.CONVERTED_TO_UUID;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 
 /**
@@ -85,8 +87,8 @@ import static mycellar.core.text.MyCellarLabelManagement.getLabel;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.4
- * @since 21/03/25
+ * @version 2.6
+ * @since 06/04/26
  */
 public class ProgramPanels {
 
@@ -96,7 +98,9 @@ public class ProgramPanels {
 
   private static final Map<ScreenType, IMyCellar> OPENED_PANELS = new EnumMap<>(ScreenType.class);
   private static final Map<ScreenType, IUpdatable> UPDATABLE_PANELS = new EnumMap<>(ScreenType.class);
+  @Deprecated
   private static final Map<Integer, IUpdatable> UPDATABLE_MYCELLAROBJECTS = new HashMap<>();
+  private static final Map<UUID, IUpdatable> UPDATABLE_MYCELLAR_OBJECTS = new HashMap<>();
 
   public static int findTab(ImageIcon image, Component component) {
     for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
@@ -126,11 +130,19 @@ public class ProgramPanels {
             iUpdatable.updateView();
           }
         });
-        UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> {
-          if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
-            iUpdatable.updateView();
-          }
-        });
+        if (!Program.getCaveConfigBool(CONVERTED_TO_UUID, false)) {
+          UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> {
+            if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+              iUpdatable.updateView();
+            }
+          });
+        } else {
+          UPDATABLE_MYCELLAR_OBJECTS.forEach((u, iUpdatable) -> {
+            if (iUpdatable.equals(TABBED_PANE.getSelectedComponent())) {
+              iUpdatable.updateView();
+            }
+          });
+        }
         updateVisibility();
       }
     }.execute();
@@ -151,6 +163,7 @@ public class ProgramPanels {
         Program.Debug("ProgramPanels: updateAllPanels");
         UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
         UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
+        UPDATABLE_MYCELLAR_OBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.ALL));
       }
     }.execute();
   }
@@ -162,6 +175,7 @@ public class ProgramPanels {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingPlaces");
         UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.PLACE));
         UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.PLACE));
+        UPDATABLE_MYCELLAR_OBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.PLACE));
       }
     }.execute();
   }
@@ -173,6 +187,7 @@ public class ProgramPanels {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingCapacity");
         UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.CAPACITY));
         UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.CAPACITY));
+        UPDATABLE_MYCELLAR_OBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.CAPACITY));
       }
     }.execute();
   }
@@ -184,6 +199,7 @@ public class ProgramPanels {
         Program.Debug("ProgramPanels: updateAllPanelsForUpdatingVineyard");
         UPDATABLE_PANELS.forEach((screenType, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.VINEYARD));
         UPDATABLE_MYCELLAROBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.VINEYARD));
+        UPDATABLE_MYCELLAR_OBJECTS.forEach((s, iUpdatable) -> iUpdatable.setUpdateViewType(UpdateViewType.VINEYARD));
       }
     }.execute();
   }
@@ -410,36 +426,37 @@ public class ProgramPanels {
     return object;
   }
 
-  public static void showBottle(IMyCellarObject myCellarObject, boolean edit) {
+  public static void showBottle(Bouteille bottle, boolean edit) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getBottle().equals(bottle)) {
             TABBED_PANE.setSelectedIndex(i);
             return;
           }
         }
-        ManageBottle manage = new ManageBottle(myCellarObject);
+        ManageBottle manage = new ManageBottle(bottle);
         manage.enableAll(edit);
-        UPDATABLE_MYCELLAROBJECTS.put(myCellarObject.getId(), manage);
-        String bottleName = myCellarObject.getNom();
+        UPDATABLE_MYCELLAROBJECTS.put(bottle.getId(), manage);
+        UPDATABLE_MYCELLAR_OBJECTS.put(bottle.getUuid(), manage);
+        String bottleName = bottle.getNom();
         if (bottleName.length() > 30) {
-          bottleName = String.format("%s%s",bottleName.substring(0, 30),THREE_DOTS);
+          bottleName = String.format("%s%s", bottleName.substring(0, 30), THREE_DOTS);
         }
         addTab(bottleName, MyCellarImage.WINE, manage);
       }
     }.execute();
   }
 
-  public static void removeObjectTab(IMyCellarObject myCellarObject) {
+  public static void removeObjectTab(Bouteille bottle) {
     new MyCellarSwingWorker() {
       @Override
       protected void done() {
         for (int i = 0; i < TABBED_PANE.getTabCount(); i++) {
           Component tab = TABBED_PANE.getComponentAt(i);
-          if (tab instanceof ManageBottle manageBottle && manageBottle.getMyCellarObject().equals(myCellarObject)) {
+          if (tab instanceof ManageBottle manageBottle && manageBottle.getBottle().equals(bottle)) {
             removeTabAt(i);
             return;
           }
@@ -611,6 +628,7 @@ public class ProgramPanels {
     TAB_LABELS.clear();
     UPDATABLE_PANELS.clear();
     UPDATABLE_MYCELLAROBJECTS.clear();
+    UPDATABLE_MYCELLAR_OBJECTS.clear();
     OPENED_PANELS.clear();
   }
 

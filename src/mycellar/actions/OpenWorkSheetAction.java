@@ -1,12 +1,12 @@
 package mycellar.actions;
 
+import mycellar.Bouteille;
 import mycellar.MyCellarImage;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.uicomponents.MyCellarAction;
 import mycellar.general.ProgramPanels;
 import mycellar.showfile.WorksheetPanel;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
     open(Collections.emptyList());
   }
 
-  public static void open(List<IMyCellarObject> myCellarObjects) {
+  public static void open(List<Bouteille> bottles) {
     SwingUtilities.invokeLater(() -> {
       final WorksheetPanel showWorksheet = ProgramPanels.createWorksheetPanel();
       showWorksheet.updateView();
@@ -38,7 +38,7 @@ public final class OpenWorkSheetAction extends MyCellarAction {
         ProgramPanels.addTab(label, MyCellarImage.WORK, showWorksheet);
       }
 
-      showWorksheet.addToWorksheet(myCellarObjects);
+      showWorksheet.addToWorksheet(bottles);
     });
   }
 }

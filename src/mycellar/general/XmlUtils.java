@@ -1,8 +1,8 @@
 package mycellar.general;
 
+import mycellar.Bouteille;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.ComplexPlaceBuilder;
@@ -282,7 +282,7 @@ public class XmlUtils {
               if (preview) {
                 cellText.setTextContent(getLabel(MYXMLDOM_ITEMHERE));
               } else {
-                IMyCellarObject b = simplePlace.getObjectAt(i, j);
+                Bouteille b = simplePlace.getObjectAt(i, j);
                 cellText.setTextContent(b != null ? b.getNom() : DASH);
               }
             }

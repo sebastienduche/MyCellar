@@ -8,9 +8,7 @@ import mycellar.core.IMyCellar;
 import mycellar.core.IUpdatable;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.SHOWFILE_RESTORE;
@@ -22,8 +20,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_RESTORE;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.2
- * @since 14/03/25
+ * @version 0.3
+ * @since 03/10/25
  */
 
 public class TrashPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -53,9 +51,10 @@ public class TrashPanel extends AbstractShowFilePanel implements ITabListener, I
     updateModel(false, false);
   }
 
+  @Override
   protected void refresh() {
     SwingUtilities.invokeLater(() -> {
-      model.setMyCellarObjects(Program.getTrash());
+      model.setBottles(Program.getTrash());
       labelCount.setValue(Integer.toString(model.getRowCount()));
     });
   }

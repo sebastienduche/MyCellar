@@ -1,16 +1,12 @@
 package mycellar.requester.ui;
 
-import mycellar.Program;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.requester.CollectionFilter;
 import mycellar.requester.Predicates;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,7 +16,6 @@ import static mycellar.general.ResourceKey.PANELREQUEST_OPERATORS;
 import static mycellar.general.ResourceKey.PANELREQUEST_PARAMETERS;
 import static mycellar.general.ResourceKey.PANELREQUEST_REQUEST;
 
-
 /**
  * <p>Titre : Cave &agrave; vin
  * <p>Description : Votre description
@@ -28,8 +23,8 @@ import static mycellar.general.ResourceKey.PANELREQUEST_REQUEST;
  * <p>Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.5
- * @since 14/03/25
+ * @version 1.6
+ * @since 03/10/25
  */
 public final class PanelRequest extends JPanel {
 
@@ -62,13 +57,9 @@ public final class PanelRequest extends JPanel {
     panelKeyword.add(new LabelSearch(Predicates.NAME, panelKeyword, true));
     panelKeyword.add(new LabelSearch(Predicates.YEAR, panelKeyword, true));
     panelKeyword.add(new LabelSearch(Predicates.RANGEMENT, panelKeyword, true));
-    if (Program.isWineType()) {
-      panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
-      panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
-      panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
-    } else if (Program.isMusicType()) {
-      panelKeyword.add(new LabelSearch(Predicates.ARTIST, panelKeyword, true));
-    }
+    panelKeyword.add(new LabelSearch(Predicates.COLOR, panelKeyword, true));
+    panelKeyword.add(new LabelSearch(Predicates.CAPACITY, panelKeyword, true));
+    panelKeyword.add(new LabelSearch(Predicates.COUNTRY, panelKeyword, true));
     panelKeyword.add(new LabelSearch(Predicates.PRICE, panelKeyword, true));
     panelKeyword.add(new LabelSearch(Predicates.STATUS, panelKeyword, true));
     panelKeyword.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getLabel(PANELREQUEST_PARAMETERS)));

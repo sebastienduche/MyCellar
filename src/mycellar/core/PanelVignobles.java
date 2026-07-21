@@ -24,12 +24,15 @@ import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.NO_APPELATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.ProgramConstants.FR;
+import static mycellar.ProgramConstants.FRA;
+import static mycellar.ProgramConstants.FRA_ID;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONAOC;
 import static mycellar.general.ResourceKey.MAIN_APPELLATIONIGP;
@@ -45,8 +48,8 @@ import static mycellar.general.ResourceKey.PANELVIGNOBLES_KEEPVALUES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.1
- * @since 13/03/25
+ * @version 2.3
+ * @since 26/06/26
  */
 public final class PanelVignobles extends JPanel {
 
@@ -224,12 +227,18 @@ public final class PanelVignobles extends JPanel {
     Program.Debug("PanelVignoble: " + text);
   }
 
-  public String getCountry() {
+  public CountryJaxb getCountry() {
     Object o = comboCountry.getEditor().getItem();
     if (o instanceof CountryJaxb countryJaxb) {
-      return toCleanString(countryJaxb.getId());
+      return countryJaxb;
     }
-    return toCleanString(o);
+    String name = toCleanString(o);
+    CountryJaxb countryJaxb = CountryListJaxb.findByLabel(name).orElse(null);
+    if (countryJaxb == null) {
+      countryJaxb = new CountryJaxb(name);
+      CountryListJaxb.add(countryJaxb);
+    }
+    return countryJaxb;
   }
 
   public boolean isModified() {
@@ -259,6 +268,14 @@ public final class PanelVignobles extends JPanel {
     return toCleanString(o);
   }
 
+  public UUID getVignobleUUID() {
+    Object o = comboVignoble.getEditor().getItem();
+    if (o instanceof CountryVignobleJaxb countryVignobleJaxb) {
+      return countryVignobleJaxb.getUuid();
+    }
+    return null;
+  }
+
   public String getAOC() {
     Object o = comboAppellationAOC.getEditor().getItem();
     if (o instanceof AppelationJaxb appelationJaxb) {
@@ -285,10 +302,15 @@ public final class PanelVignobles extends JPanel {
     }
 
     CountryJaxb countryJaxb = null;
-    if (Program.FRANCE.getId().equals(vignobleJaxb.country) || FR.equals(vignobleJaxb.country)) {
-      countryJaxb = Program.FRANCE;
-    } else if (vignobleJaxb.country != null) {
-      countryJaxb = CountryListJaxb.findByIdOrLabel(vignobleJaxb.country);
+    if (vignobleJaxb.getCountryUuid() != null) {
+      countryJaxb = CountryListJaxb.findByUUID(vignobleJaxb.getCountryUuid()).orElse(null);
+    }
+    if (countryJaxb == null) {
+      if (FRA.equals(vignobleJaxb.country) || FR.equals(vignobleJaxb.country)) {
+        countryJaxb = CountryListJaxb.findByUUID(FRA_ID).orElse(null);
+      } else if (vignobleJaxb.country != null) {
+        countryJaxb = CountryListJaxb.findByIdOrLabel(vignobleJaxb.country);
+      }
     }
 
     VignobleListJaxb vignobleListJaxb = null;
@@ -316,11 +338,6 @@ public final class PanelVignobles extends JPanel {
   }
 
   public VignobleJaxb getSelectedVignoble() {
-    VignobleJaxb vignobleJaxb = new VignobleJaxb();
-    vignobleJaxb.setCountry(getCountry());
-    vignobleJaxb.setName(getVignoble());
-    vignobleJaxb.setAOC(getAOC());
-    vignobleJaxb.setIGP(getIGP());
-    return vignobleJaxb;
+    return new VignobleJaxb(getCountry(), getVignoble(), getAOC(), getIGP());
   }
 }

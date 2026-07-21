@@ -1,11 +1,11 @@
 package mycellar.placesmanagement;
 
+import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.ITabListener;
 import mycellar.MyCellarImage;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.UpdateViewType;
@@ -23,13 +23,9 @@ import mycellar.placesmanagement.places.ComplexPlace;
 import mycellar.placesmanagement.places.SimplePlace;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
@@ -38,7 +34,6 @@ import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static mycellar.Program.EMPTY_PLACE;
 import static mycellar.Program.getAbstractPlaces;
@@ -82,8 +77,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 11.4
- * @since 25/03/25
+ * @version 11.5
+ * @since 03/10/25
  */
 
 public final class Supprimer_Rangement extends JPanel implements ITabListener, IMyCellar, IUpdatable {
@@ -232,8 +227,8 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
             @Override
             protected void done() {
               //Suppression des bouteilles presentes dans le rangement
-              List<IMyCellarObject> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).collect(Collectors.toList());
-              for (IMyCellarObject b : myCellarObjectList) {
+              List<Bouteille> myCellarObjectList = getStorage().getAllList().stream().filter(bottle -> bottle.getEmplacement().equals(abstractPlace.getName())).toList();
+              for (Bouteille b : myCellarObjectList) {
                 getStorage().addHistory(HistoryState.DEL, b);
                 try {
                   abstractPlace.removeObject(b);
@@ -309,7 +304,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     }
   }
 
-  static class SupprimerModel extends DefaultTableModel {
+  private static class SupprimerModel extends DefaultTableModel {
 
     @Serial
     private static final long serialVersionUID = -3295046126691124148L;
@@ -345,7 +340,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
 
     @Override
     public String getColumnName(int column) {
-      return columns.get(column).getLabel();
+      return columns.get(column).label();
     }
 
     @Override
@@ -360,7 +355,7 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
     public Object getValueAt(int row, int column) {
       SupprimerLine line = list.get(row);
       Column col = columns.get(column);
-      return switch (col.getCol()) {
+      return switch (col.col()) {
         case 0 -> line.getNumPartLabel();
         case 1 -> line.getNbLineLabel();
         case 2 -> line.getNbWineLabel();
@@ -373,39 +368,14 @@ public final class Supprimer_Rangement extends JPanel implements ITabListener, I
       return false;
     }
 
-    static class Column {
+    private record Column(int col, String label) {
       private static final int PART = 0;
       private static final int LINE = 1;
       private static final int WINE = 2;
-
-      private final int col;
-      private final String label;
-
-      private Column(int col, String label) {
-        this.col = col;
-        this.label = label;
-      }
-
-      private int getCol() {
-        return col;
-      }
-
-      public String getLabel() {
-        return label;
-      }
     }
   }
 
-  static class SupprimerLine {
-    private final int numPart;
-    private final int nbLine;
-    private final int nbWine;
-
-    private SupprimerLine(int numPart, int nbLine, int nbWine) {
-      this.numPart = numPart;
-      this.nbLine = nbLine;
-      this.nbWine = nbWine;
-    }
+  record SupprimerLine(int numPart, int nbLine, int nbWine) {
 
     String getNumPartLabel() {
       return getLabel(STORAGE_SHELVENUMBER, numPart);

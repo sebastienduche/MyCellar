@@ -20,12 +20,7 @@ import mycellar.general.ResourceKey;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.ActionEvent;
@@ -44,41 +39,41 @@ import static mycellar.general.ResourceKey.SHOWFILE_RELOADERRORS;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 19/03/25
+ * @version 0.7
+ * @since 03/10/25
  */
 
-public class ErrorShowPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
+public final class ErrorShowPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
 
   public ErrorShowPanel() {
     super(false);
-    MyCellarSimpleLabel titleLabel = new MyCellarSimpleLabel();
-    titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    MyCellarSimpleLabel title = new MyCellarSimpleLabel();
+    title.setHorizontalAlignment(SwingConstants.CENTER);
     setLayout(new MigLayout("", "[][grow]", "[]10px[grow][]"));
-    MyCellarButton deleteButton = new MyCellarButton(MyCellarImage.DELETE);
-    deleteButton.setText(getLabel(MAIN_DELETE));
-    deleteButton.addActionListener((e) -> delete());
+    MyCellarButton delete = new MyCellarButton(MyCellarImage.DELETE);
+    delete.setText(getLabel(MAIN_DELETE));
+    delete.addActionListener((e) -> delete());
 
-    add(titleLabel, "align left");
+    add(title, "align left");
     MyCellarButton createPlacesButton = new MyCellarButton(MAIN_STORAGETOCREATE, new CreatePlacesAction());
     add(createPlacesButton, "align right, split 3");
     MyCellarButton reloadButton = new MyCellarButton(SHOWFILE_RELOADERRORS, new ReloadErrorsAction());
     add(reloadButton, "align right");
-    add(deleteButton, "align right, wrap");
+    add(delete, "align right, wrap");
 
 
     model = new ErrorShowValues();
     ((ErrorShowValues) model).setErrors(Program.getErrors());
     table = new JTable(model);
-    titleLabel.setText(getLabel(ResourceKey.SHOWFILE_MANAGEERROR));
+    title.setText(getLabel(ResourceKey.SHOWFILE_MANAGEERROR));
 
     postInit();
     refresh();
     addTableSorter();
-
     updateModel();
   }
 
+  @Override
   protected void refresh() {
     SwingUtilities.invokeLater(() -> {
       ((ErrorShowValues) model).setErrors(Program.getErrors());

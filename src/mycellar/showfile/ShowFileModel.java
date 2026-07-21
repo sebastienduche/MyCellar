@@ -1,6 +1,6 @@
 package mycellar.showfile;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.Bouteille;
 import mycellar.core.common.MyCellarFields;
 
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import java.util.List;
  * <p>Society : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.4
- * @since 21/03/25
+ * @version 1.6
+ * @since 27/06/26
  */
 
 class ShowFileModel extends TableShowValues {
 
-  private List<ShowFileColumn<?>> columns = new ArrayList<>();
+  private final List<ShowFileColumn<?>> columns = new ArrayList<>();
 
   @Override
   public int getColumnCount() {
@@ -28,12 +28,12 @@ class ShowFileModel extends TableShowValues {
 
   @Override
   public Object getValueAt(int row, int column) {
-    if (row < myCellarObjects.size()) {
+    if (row < bottles.size()) {
       final ShowFileColumn<?> showFileColumn = columns.get(column);
       if (showFileColumn.isButton()) {
         return Boolean.TRUE;
       }
-      IMyCellarObject b = myCellarObjects.get(row);
+      Bouteille b = bottles.get(row);
       return showFileColumn.getDisplayValue(b);
     }
     return null;
@@ -41,7 +41,7 @@ class ShowFileModel extends TableShowValues {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    IMyCellarObject b = myCellarObjects.get(row);
+    Bouteille b = bottles.get(row);
     if (!columns.get(column).execute(b, row, column)) {
       fireTableRowsUpdated(row, row);
       return;
@@ -59,8 +59,7 @@ class ShowFileModel extends TableShowValues {
     ShowFileColumn<?> col = columns.get(column);
     if (col.getField() == MyCellarFields.LINE
         || col.getField() == MyCellarFields.COLUMN) {
-      IMyCellarObject b = myCellarObjects.get(row);
-      return !b.getAbstractPlace().isSimplePlace();
+      return bottles.get(row).getAbstractPlace().isComplexPlace();
     }
     return col.isEditable();
   }
@@ -75,7 +74,8 @@ class ShowFileModel extends TableShowValues {
   }
 
   public void setColumns(List<ShowFileColumn<?>> showFileColumns) {
-    columns = showFileColumns;
+    columns.clear();
+    columns.addAll(showFileColumns);
     fireTableStructureChanged();
   }
 }

@@ -1,10 +1,10 @@
 package mycellar.placesmanagement;
 
+import mycellar.Bouteille;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.actions.ChooseCellAction;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IPlacePosition;
 import mycellar.core.MyCellarSwingWorker;
 import mycellar.core.uicomponents.JModifyComboBox;
@@ -227,12 +227,12 @@ public class PanelPlacePosition extends JPanel implements IPlacePosition {
     }
   }
 
-  public void setBeforeObjectLabels(IMyCellarObject myCellarObject) {
-    setLineColumnVisible(myCellarObject.getAbstractPlace());
-    previousPlaceLabel.setText(myCellarObject.getEmplacement());
-    previousNumPlaceLabel.setText(Integer.toString(myCellarObject.getNumLieu()));
-    previousLineLabel.setText(Integer.toString(myCellarObject.getLigne()));
-    previousColumnLabel.setText(Integer.toString(myCellarObject.getColonne()));
+  public void setBeforeObjectLabels(Bouteille bouteille) {
+    setLineColumnVisible(bouteille.getAbstractPlace());
+    previousPlaceLabel.setText(bouteille.getEmplacement());
+    previousNumPlaceLabel.setText(Integer.toString(bouteille.getNumLieu()));
+    previousLineLabel.setText(Integer.toString(bouteille.getLigne()));
+    previousColumnLabel.setText(Integer.toString(bouteille.getColonne()));
     setBeforeLabelsVisible(true);
   }
 

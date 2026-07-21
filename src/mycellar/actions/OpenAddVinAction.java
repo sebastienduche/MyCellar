@@ -1,11 +1,11 @@
 package mycellar.actions;
 
 import mycellar.AddVin;
+import mycellar.Bouteille;
 import mycellar.MyCellarImage;
-import mycellar.core.IMyCellarObject;
 import mycellar.general.ProgramPanels;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import java.util.List;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
@@ -14,7 +14,7 @@ import static mycellar.general.ResourceKey.OPENVIN_MODIFYNITEM;
 
 public class OpenAddVinAction {
 
-  public static void open(List<IMyCellarObject> listToModify) {
+  public static void open(List<Bouteille> listToModify) {
     if (listToModify == null || listToModify.isEmpty()) {
       return;
     }

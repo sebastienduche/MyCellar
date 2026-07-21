@@ -7,8 +7,8 @@ package mycellar.core;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 18/02/22
+ * @version 0.8
+ * @since 03/10/25
  */
 
 public final class MyCellarSettings {
@@ -65,10 +65,10 @@ public final class MyCellarSettings {
   public static final String CREATE_TAB_DEFAULT = "CREATE_TAB_DEFAULT";
   public static final String EXPORT_CSV = "EXPORT_CSV";
   public static final String SHOWFILE_COLUMN_WORK = "SHOWFILE_COLUMN_WORK";
-  public static final String PROGRAM_TYPE = "PROGRAM_TYPE";
   public static final String ANNEE_AUTO_FALSE = "ANNEE_AUTO_FALSE";
   public static final String ANNEE_AUTO_TRUE = "ANNEE_AUTO_TRUE";
   public static final String KEEP_VINEYARD = "KEEP_VINEYARD";
+  public static final String CONVERTED_TO_UUID = "CONVERTED_TO_UUID";
 
   private MyCellarSettings() {
   }

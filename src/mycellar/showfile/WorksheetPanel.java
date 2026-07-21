@@ -1,10 +1,9 @@
 package mycellar.showfile;
 
-
+import mycellar.Bouteille;
 import mycellar.ITabListener;
 import mycellar.Program;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.IUpdatable;
 import mycellar.core.datas.worksheet.WorkSheetData;
 import mycellar.core.uicomponents.MyCellarButton;
@@ -16,8 +15,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
+import static mycellar.core.MyCellarSettings.CONVERTED_TO_UUID;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.MAIN_COLUMNS;
 import static mycellar.general.ResourceKey.MAIN_DELETE;
@@ -31,8 +33,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_REMOVEFROMWORKSHEET;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 13.0
- * @since 21/03/25
+ * @version 13.3
+ * @since 27/06/26
  */
 
 public class WorksheetPanel extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -43,24 +45,34 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
 
   public WorksheetPanel() {
     super(true);
-    final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet()
-        .stream()
-        .map(WorkSheetData::getBouteilleId)
-        .collect(toList());
-    workingBottles.addAll(Program.getExistingMyCellarObjects(bouteilles));
+    if (!Program.getCaveConfigBool(CONVERTED_TO_UUID, false)) {
+      final List<Integer> bouteilles = Program.getWorksheetList().getWorsheet()
+          .stream()
+          .filter(workSheetData -> workSheetData.getUuid() == null)
+          .map(WorkSheetData::getBouteilleId)
+          .collect(toList());
+      workingBottles.addAll(Program.getExistingMyCellarObjectsWithID(bouteilles));
+    } else {
+      final List<UUID> bottles = Program.getWorksheetList().getWorsheet()
+          .stream()
+          .map(WorkSheetData::getUuid)
+          .filter(Objects::nonNull)
+          .collect(toList());
+      workingBottles.addAll(Program.getExistingMyCellarObjects(bottles));
+    }
     init();
   }
 
-  public void addToWorksheet(List<IMyCellarObject> list) {
-    final List<IMyCellarObject> myCellarObjects = list
+  public void addToWorksheet(List<Bouteille> list) {
+    final List<Bouteille> bottles = list
         .stream()
         .filter(bouteille -> !workingBottles.contains(bouteille))
         .toList();
-    for (IMyCellarObject myCellarObject : myCellarObjects) {
-      Program.getStorage().addToWorksheet(myCellarObject);
+    for (Bouteille bottle : bottles) {
+      Program.getStorage().addToWorksheet(bottle);
     }
-    workingBottles.addAll(myCellarObjects);
-    model.setMyCellarObjects(workingBottles);
+    workingBottles.addAll(bottles);
+    model.setBottles(workingBottles.stream().toList());
     labelCount.setValue(Integer.toString(model.getRowCount()));
   }
 
@@ -92,9 +104,10 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     updateModel(true, true);
   }
 
+  @Override
   protected void refresh() {
     SwingUtilities.invokeLater(() -> {
-      model.setMyCellarObjects(workingBottles);
+      model.setBottles(workingBottles.stream().toList());
       labelCount.setValue(Integer.toString(model.getRowCount()));
     });
   }
@@ -111,7 +124,7 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
       labelCount.setValue("0");
       SwingUtilities.invokeLater(() -> {
         Program.getStorage().clearWorksheet();
-        model.setMyCellarObjects(workingBottles);
+        model.setBottles(workingBottles.stream().toList());
       });
     }
   }
@@ -120,8 +133,8 @@ public class WorksheetPanel extends AbstractShowFilePanel implements ITabListene
     @Override
     public void actionPerformed(ActionEvent e) {
       SwingUtilities.invokeLater(() -> {
-        getSelectedMyCellarObjects().forEach(Program.getStorage()::removeFromWorksheet);
-        workingBottles.removeAll(getSelectedMyCellarObjects());
+        getSelectedBottles().forEach(Program.getStorage()::removeFromWorksheet);
+        getSelectedBottles().forEach(workingBottles::remove);
         Program.setModified();
         model.fireTableDataChanged();
         labelCount.setValue(Integer.toString(model.getRowCount()));

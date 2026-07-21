@@ -30,8 +30,8 @@ import static mycellar.ProgramConstants.UNTITLED1_SINFO;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 25/10/22
+ * @version 0.8
+ * @since 30/06/26
  */
 public class MyCellarFile {
 
@@ -74,8 +74,9 @@ public class MyCellarFile {
    */
   private static void zip(File fileName) {
 
-    final String workDir = getWorkDir(false);
-    Debug("zip: Zipping in " + workDir + " with archive " + fileName);
+    final String workDirWithoutEndSlash = getWorkDir(false);
+    final String workDirWithEndSlash = getWorkDir(true);
+    Debug("zip: Zipping in " + workDirWithoutEndSlash + " with archive " + fileName);
     try {
       // creation d'un flux d'ecriture sur fichier
       var dest = new FileOutputStream(fileName);
@@ -91,20 +92,19 @@ public class MyCellarFile {
         out.setLevel(Deflater.BEST_COMPRESSION);
 
         // extraction de la liste des fichiers du repertoire courant
-        File f = new File(workDir);
-        String[] files = f.list();
+        String[] files = new File(workDirWithoutEndSlash).list();
         // pour chacun des fichiers de la liste
         if (files != null) {
           LinkedList<String> zipEntryList = new LinkedList<>();
           int BUFFER = 2048;
           for (String file : files) {
-            final String workDir1 = getWorkDir(true);
-            f = new File(workDir1 + file);
+
+            File f = new File(workDirWithEndSlash + file);
             if (f.isDirectory() || UNTITLED1_SINFO.compareTo(file) == 0) {
               continue;
             }
             // creation d'un flux de lecture
-            var inputStream = new FileInputStream(workDir1 + file);
+            var inputStream = new FileInputStream(workDirWithEndSlash + file);
             // creation d'un tampon de lecture sur ce flux
             try (var bufferedInputStream = new BufferedInputStream(inputStream, BUFFER)) {
               // creation d'en entree Zip pour ce fichier

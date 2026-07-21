@@ -38,8 +38,8 @@ import static mycellar.general.ResourceKey.MAIN_DELETE;
  * Societe : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 12.8
- * @since 13/03/25
+ * @version 13.0
+ * @since 27/06/26
  */
 
 public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMyCellar, IUpdatable {
@@ -76,9 +76,10 @@ public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMy
   }
 
 
+  @Override
   protected void refresh() {
     SwingUtilities.invokeLater(() -> {
-      model.setMyCellarObjects(Program.getStorage().getAllList());
+      model.setBottles(Program.getStorage().getAllList());
       labelCount.setValue(Integer.toString(model.getRowCount()));
     });
   }
@@ -91,9 +92,8 @@ public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMy
     @Override
     public void actionPerformed(ActionEvent e) {
       JPanel panel = new JPanel();
-      List<MyCellarFields> list = MyCellarFields.getFieldsList();
-      List<ShowFileColumn<?>> cols = ((ShowFileModel) model).getColumns();
-      final List<ShowFileColumn<?>> showFileColumns = cols.stream().filter(ShowFileColumn::isDefault).collect(toList());
+      List<MyCellarFields> list = MyCellarFields.getFieldsListWithoutVineyard();
+      final List<ShowFileColumn<?>> showFileColumns = ((ShowFileModel) model).getColumns().stream().filter(ShowFileColumn::isDefault).collect(toList());
       ManageColumnModel modelColumn = new ManageColumnModel(list, showFileColumns);
       JTable jTable = new JTable(modelColumn);
       TableColumnModel tcm = jTable.getColumnModel();
@@ -105,35 +105,38 @@ public class ShowFile extends AbstractShowFilePanel implements ITabListener, IMy
       panel.add(new JScrollPane(jTable));
       JOptionPane.showMessageDialog(MainFrame.getInstance(), panel, getLabel(MAIN_COLUMNS), JOptionPane.PLAIN_MESSAGE);
       List<Integer> properties = modelColumn.getSelectedColumns();
+      List<ShowFileColumn<?>> columnsToDisplay = new ArrayList<>();
       if (!properties.isEmpty()) {
-        cols = new ArrayList<>();
-        cols.add(checkBoxStartColumn);
         Program.setModified();
-        for (ShowFileColumn<?> c : columns) {
-          if (properties.contains(c.getField().getIndex())) {
-            cols.add(c);
-          }
-        }
-        cols.add(modifyButtonColumn);
+        columnsToDisplay.add(checkBoxStartColumn);
+        availableColumns.stream()
+            .filter(c -> properties.contains(c.getField().getIndex()))
+            .forEach(columnsToDisplay::add);
+        columnsToDisplay.add(modifyButtonColumn);
       }
-      int i = 0;
-      StringBuilder buffer = new StringBuilder();
-      for (ShowFileColumn<?> c : cols) {
-        if (!c.isDefault()) {
-          continue;
-        }
-        if (i > 0) {
-          buffer.append(';');
-        }
-        i++;
-        buffer.append(c.getField().name());
-      }
-      Program.saveShowColumns(buffer.toString());
-      if (!cols.isEmpty()) {
+
+      saveColumnsToDisplay(columnsToDisplay);
+      if (!columnsToDisplay.isEmpty()) {
         ((ShowFileModel) model).removeAllColumns();
-        ((ShowFileModel) model).setColumns(cols);
+        ((ShowFileModel) model).setColumns(columnsToDisplay);
         updateModel(true, false);
       }
     }
+  }
+
+  private static void saveColumnsToDisplay(List<ShowFileColumn<?>> columnsToDisplay) {
+    StringBuilder buffer = new StringBuilder();
+    int i = 0;
+    for (ShowFileColumn<?> c : columnsToDisplay) {
+      if (!c.isDefault()) {
+        continue;
+      }
+      if (i > 0) {
+        buffer.append(';');
+      }
+      i++;
+      buffer.append(c.getField().name());
+    }
+    Program.saveShowColumns(buffer.toString());
   }
 }

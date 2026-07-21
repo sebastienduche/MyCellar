@@ -1,18 +1,13 @@
 package mycellar;
 
-import mycellar.core.IMyCellarObject;
 import mycellar.core.tablecomponents.ToolTipRenderer;
 import mycellar.core.uicomponents.MyCellarLabel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +23,8 @@ import static mycellar.general.ResourceKey.LISTVIN_SELECTITEMS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.9
- * @since 21/03/25
+ * @version 5.0
+ * @since 03/10/25
  */
 final class ListVin extends JPanel {
   private final ListValues listValues;
@@ -38,9 +33,9 @@ final class ListVin extends JPanel {
   /**
    * Constructeur avec liste d'objets
    *
-   * @param myCellarObjects LinkedList<IMyCellarObject>: Liste des objets.
+   * @param myCellarObjects LinkedList<Bouteille>: Liste des objets.
    */
-  ListVin(List<? extends IMyCellarObject> myCellarObjects, final AddVin addVin) {
+  ListVin(List<Bouteille> myCellarObjects, final AddVin addVin) {
     this.addVin = addVin;
     listValues = new ListValues();
     listValues.setObjects(myCellarObjects);
@@ -58,7 +53,7 @@ final class ListVin extends JPanel {
       if (!lsm.isSelectionEmpty()) {
         int minSelectedRow = lsm.getMinSelectionIndex();
         int maxSelectedRow = lsm.getMaxSelectionIndex();
-        LinkedList<IMyCellarObject> list = new LinkedList<>();
+        LinkedList<Bouteille> list = new LinkedList<>();
         for (int x = minSelectedRow; x <= maxSelectedRow; x++) {
           if (lsm.isSelectedIndex(x)) {
             list.add(listValues.getObject(x));
@@ -83,13 +78,13 @@ final class ListVin extends JPanel {
     setVisible(true);
   }
 
-  void updateList(List<IMyCellarObject> remove) {
-    for (IMyCellarObject b : remove) {
+  void updateList(List<Bouteille> remove) {
+    for (Bouteille b : remove) {
       listValues.removeObject(b);
     }
   }
 
-  public void setObjects(List<? extends IMyCellarObject> myCellarObjects) {
+  public void setObjects(List<Bouteille> myCellarObjects) {
     listValues.setObjects(myCellarObjects);
   }
 

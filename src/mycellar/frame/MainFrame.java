@@ -8,7 +8,6 @@ import mycellar.MoveLine;
 import mycellar.MyCellarControl;
 import mycellar.MyCellarImage;
 import mycellar.Program;
-import mycellar.ProgramType;
 import mycellar.ShowHistory;
 import mycellar.Stat;
 import mycellar.actions.ExportPDFAction;
@@ -23,9 +22,7 @@ import mycellar.core.exceptions.UnableToOpenFileException;
 import mycellar.core.exceptions.UnableToOpenMyCellarFileException;
 import mycellar.core.storage.ListeBouteille;
 import mycellar.core.text.Language;
-import mycellar.core.text.MyCellarLabelManagement;
 import mycellar.core.uicomponents.MyCellarAction;
-import mycellar.core.uicomponents.MyCellarComboBox;
 import mycellar.core.uicomponents.MyCellarLabel;
 import mycellar.core.uicomponents.MyCellarMenuItem;
 import mycellar.core.uicomponents.MyCellarSimpleLabel;
@@ -39,38 +36,15 @@ import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.TrashPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 import java.util.prefs.Preferences;
 
 import static mycellar.Filtre.EXTENSION_SINFO;
@@ -86,7 +60,6 @@ import static mycellar.ProgramConstants.MAIN_VERSION;
 import static mycellar.ProgramConstants.ONE_DOT;
 import static mycellar.ProgramConstants.UNTITLED;
 import static mycellar.core.MyCellarSettings.DIR;
-import static mycellar.core.MyCellarSettings.PROGRAM_TYPE;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ProgramPanels.selectOrAddTab;
@@ -154,7 +127,6 @@ import static mycellar.general.ResourceKey.MOVELINE_TITLE;
 import static mycellar.general.ResourceKey.MOVELINE_TITLEMENU;
 import static mycellar.general.ResourceKey.MYCELLAR;
 import static mycellar.general.ResourceKey.NEW;
-import static mycellar.general.ResourceKey.PARAMETERS_TYPELABEL;
 import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
 import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENTMENU;
 import static mycellar.general.ResourceKey.PROGRAM_DEFAULTPLACE;
@@ -169,7 +141,6 @@ import static mycellar.general.ResourceKey.START_MODIFYPARAMETERMENU;
 import static mycellar.general.ResourceKey.START_NEWVERSION;
 import static mycellar.general.ResourceKey.START_NOUPDATE;
 import static mycellar.general.ResourceKey.START_PARAMETERTOMODIFY;
-import static mycellar.general.ResourceKey.START_SELECTTYPEOBJECT;
 import static mycellar.general.ResourceKey.START_VALUE;
 import static mycellar.general.ResourceKey.STAT;
 import static mycellar.general.ResourceKey.SUPPR;
@@ -183,8 +154,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.7
- * @since 18/03/25
+ * @version 0.8
+ * @since 03/10/25
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -289,7 +260,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     // Get the latest version from server
     MyCellarServer.getInstance().getServerVersion();
 
-    Program.initializeLanguageProgramType();
+    Program.initializeLanguage();
     boolean hasFile = Program.hasOpenedFile();
     if (!hasFile && !Program.getGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, false)) {
       // Langue au premier demarrage
@@ -306,7 +277,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     displayFrame();
 
     if (hasFile) {
-      Program.loadPropertiesAndSetProgramType();
+      Program.loadPropertiesAndSetLanguage();
       Program.addDefaultPlaceIfNeeded();
     }
     enableAll(hasFile);
@@ -418,7 +389,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
    * Actions to do after opening a file
    */
   private void postOpenFile() {
-    Program.loadPropertiesAndSetProgramType();
+    Program.loadPropertiesAndSetLanguage();
     Program.addDefaultPlaceIfNeeded();
     enableAll(true);
     ProgramPanels.updateAllPanels();
@@ -958,23 +929,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     Program.showException(e, true);
   }
 
-  static class ObjectType {
-    private final ProgramType type;
-
-    public ObjectType(ProgramType type) {
-      this.type = type;
-    }
-
-    @Override
-    public String toString() {
-      return MyCellarLabelManagement.getLabel(type.getResource());
-    }
-
-    public ProgramType getType() {
-      return type;
-    }
-  }
-
   static final class CutAction extends MyCellarAction {
 
     private CutAction(boolean withText) {
@@ -1020,38 +974,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
       if (ProgramPanels.isCutCopyPastTab()) {
         ProgramPanels.getSelectedComponent(ICutCopyPastable.class).paste();
       }
-    }
-  }
-
-  private static final class PanelObjectType extends JPanel {
-
-    private final MyCellarComboBox<ObjectType> types = new MyCellarComboBox<>();
-    private final List<ObjectType> objectTypes = new ArrayList<>();
-
-    private PanelObjectType() {
-      Arrays.stream(ProgramType.values())
-          .filter(type -> !type.equals(ProgramType.BOOK))
-          .forEach(type -> {
-            final ObjectType type1 = new ObjectType(type);
-            objectTypes.add(type1);
-            types.addItem(type1);
-          });
-
-      ObjectType objectType = findObjectType(ProgramType.valueOf(Program.getCaveConfigString(PROGRAM_TYPE, getGlobalConfigString(PROGRAM_TYPE, ProgramType.WINE.name()))));
-      types.setSelectedItem(objectType);
-
-      setLayout(new MigLayout("", "[grow]", "[]25px[]"));
-      add(new MyCellarLabel(START_SELECTTYPEOBJECT), "span 2, wrap");
-      add(new MyCellarLabel(PARAMETERS_TYPELABEL));
-      add(types);
-    }
-
-    private ObjectType findObjectType(ProgramType type) {
-      return objectTypes.stream().filter(objectType -> objectType.getType() == type).findFirst().orElse(null);
-    }
-
-    public ProgramType getSelectedType() {
-      return ((ObjectType) Objects.requireNonNull(types.getSelectedItem())).getType();
     }
   }
 
@@ -1102,13 +1024,6 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     @Override
     public void actionPerformed(ActionEvent arg0) {
       Debug("newFileAction: Creating a new file...");
-//			PanelObjectType panelObjectType = new PanelObjectType();
-//			if (JOptionPane.CANCEL_OPTION == JOptionPane.showConfirmDialog(getInstance(), panelObjectType,
-//					"",
-//					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE)) {
-//				return;
-//			}
-//			Program.putGlobalConfigString(PROGRAM_TYPE, panelObjectType.getSelectedType().name());
       Program.createNewFile();
       postOpenFile();
       Debug("newFileAction: Creating a new file OK");

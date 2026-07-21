@@ -1,7 +1,6 @@
 package mycellar.requester;
 
 import mycellar.Bouteille;
-import mycellar.Music;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
 import mycellar.core.IMyCellarObject;
@@ -15,10 +14,7 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.requester.ui.ValueSearch;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
@@ -28,7 +24,6 @@ import static mycellar.general.ResourceKey.ADDVIN_COLOR;
 import static mycellar.general.ResourceKey.MAIN_CAPACITYORSUPPORT;
 import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
 import static mycellar.general.ResourceKey.PREDICATES_AND;
-import static mycellar.general.ResourceKey.PREDICATES_ARTIST;
 import static mycellar.general.ResourceKey.PREDICATES_CONTAINS;
 import static mycellar.general.ResourceKey.PREDICATES_ENDWITH;
 import static mycellar.general.ResourceKey.PREDICATES_GREATER;
@@ -52,8 +47,8 @@ import static mycellar.general.ResourceKey.PREDICATES_YEAR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 21/03/25
+ * @version 2.6
+ * @since 03/10/25
  */
 
 public class Predicates {
@@ -181,66 +176,6 @@ public class Predicates {
     }
   };
 
-  public static final IPredicate<IMyCellarObject> ARTIST = new IPredicate<>() {
-
-    private int type = -1;
-
-    @Override
-    public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
-      Program.throwNotImplementedIfNotFor(myCellarObject, Music.class);
-      Music music = (Music) myCellarObject;
-      if (music.getArtist() == null) {
-        return false;
-      }
-      if (type == 0) {
-        if (compare instanceof String s) {
-          return music.getArtist().startsWith(s);
-        }
-      } else if (type == 1) {
-        if (compare instanceof String s) {
-          return music.getArtist().endsWith(s);
-        }
-      } else if (type == 2) {
-        if (compare instanceof String s) {
-          return music.getArtist().contains(s);
-        }
-      }
-      return false;
-    }
-
-    @Override
-    public int getType() {
-      return type;
-    }
-
-    @Override
-    public String getName() {
-      String label = getLabel(PREDICATES_ARTIST);
-      if (type == 0) {
-        label += getLabel(PREDICATES_STARTWITH);
-      } else if (type == 1) {
-        label += getLabel(PREDICATES_ENDWITH);
-      } else if (type == 2) {
-        label += getLabel(PREDICATES_CONTAINS);
-      }
-      return label;
-    }
-
-    @Override
-    public ValueSearch askForValue() {
-      type = 0;
-      JPanel panel = new JPanel();
-      JComboBox<String> combo = new JComboBox<>();
-      combo.addItem(getLabel(PREDICATES_STARTWITH));
-      combo.addItem(getLabel(PREDICATES_ENDWITH));
-      combo.addItem(getLabel(PREDICATES_CONTAINS));
-      combo.addItemListener((e) -> type = combo.getSelectedIndex());
-      panel.add(combo);
-      return new ValueSearch(JOptionPane.showInputDialog(panel));
-    }
-  };
-
-
   public static final IPredicate<IMyCellarObject> YEAR = new IPredicate<>() {
 
     @Override
@@ -260,7 +195,6 @@ public class Predicates {
   };
 
   public static final IPredicate<IMyCellarObject> RANGEMENT = new IPredicate<>() {
-
 
     @Override
     public boolean apply(IMyCellarObject myCellarObject, Object compare, int type) {
@@ -286,7 +220,6 @@ public class Predicates {
       return new ValueSearch(((AbstractPlace) Objects.requireNonNull(liste.getSelectedItem())).getName());
     }
   };
-
 
   public static final IPredicate<Bouteille> CAPACITY = new IPredicate<>() {
 

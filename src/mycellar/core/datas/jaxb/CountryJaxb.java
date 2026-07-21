@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
 
@@ -17,36 +18,49 @@ import static mycellar.ProgramConstants.COUNTRY_LABEL_KEY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.6
- * @since 14/03/25
+ * @version 0.9
+ * @since 19/0t/26
  */
 
 @XmlRootElement(name = "country")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class CountryJaxb implements Comparable<CountryJaxb> {
+  @Deprecated
   @XmlAttribute
   private String id;
 
   @XmlAttribute
   private String name;
 
+  @XmlAttribute(required = true)
+  private UUID uuid;
+
+  @XmlAttribute
+  private String filename;
+
   public CountryJaxb() {
   }
 
   public CountryJaxb(String name) {
     id = null;
+    filename = null;
+    uuid = UUID.randomUUID();
     this.name = name;
   }
 
-  public CountryJaxb(String id, String name) {
+  public CountryJaxb(String id, String name, UUID uuid) {
     this.id = id;
     this.name = name;
+    this.uuid = uuid;
+    filename = null;
   }
 
+  @Deprecated
   public String getId() {
     return id;
   }
 
+  @Deprecated
   public void setId(String id) {
     this.id = id;
   }
@@ -57,6 +71,22 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
   }
 
   public String getLabel() {
@@ -79,8 +109,7 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
     return result;
   }
 
@@ -96,22 +125,18 @@ public class CountryJaxb implements Comparable<CountryJaxb> {
       return false;
     }
     CountryJaxb other = (CountryJaxb) obj;
-    if (id == null) {
-      if (other.id != null) {
+    if (uuid == null) {
+      if (other.uuid != null) {
         return false;
       }
-    } else if (!id.equals(other.id)) {
+    } else if (!uuid.equals(other.uuid)) {
       return false;
     }
-    if (name == null) {
-      return other.name == null;
-    } else {
-      return name.equals(other.name);
-    }
+    return true;
   }
 
   @Override
   public int compareTo(CountryJaxb o) {
-    return getLabel().compareTo(o.getLabel());
+    return getUuid().compareTo(o.getUuid());
   }
 }

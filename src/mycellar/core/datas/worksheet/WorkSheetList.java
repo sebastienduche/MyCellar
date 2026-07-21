@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <p>Titre : Cave &agrave; vin</p>
@@ -41,8 +42,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.3
- * @since 28/01/21
+ * @version 0.4
+ * @since 06/04/26
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
@@ -98,6 +99,11 @@ public class WorkSheetList {
         final NodeList bouteilleElem = worksheetElem.getElementsByTagName("bouteilleId");
         String id = bouteilleElem.item(0).getTextContent();
         workSheetData.setBouteilleId(Integer.parseInt(id));
+        final NodeList uuidElem = worksheetElem.getElementsByTagName("uuid");
+        if (uuidElem.getLength() > 0) {
+          String uuid = uuidElem.item(0).getTextContent();
+          workSheetData.setUuid(UUID.fromString(uuid));
+        }
         listeWorksheet.getWorsheet().add(workSheetData);
       }
     }

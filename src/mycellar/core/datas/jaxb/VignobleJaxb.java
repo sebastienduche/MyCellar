@@ -8,14 +8,15 @@
 
 package mycellar.core.datas.jaxb;
 
+import mycellar.MyCellarUtils;
 import mycellar.core.IdGenerator;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.DASH;
 
@@ -26,12 +27,13 @@ import static mycellar.ProgramConstants.DASH;
  * <p>Société : Seb Informatique</p>
  *
  * @author Sébastien Duché
- * @version 1.7
- * @since 26/12/23
+ * @version 2.0
+ * @since 26/06/26
  */
 
 /**
- * <p>This class is linked to the Vignoble that contains the Bouteille object
+ * <p>This class is the Vignoble that contains the Bouteille object
+ * It's a copy of AppelationJaxb
  *
  * <pre>
  * &lt;complexType>
@@ -43,21 +45,15 @@ import static mycellar.ProgramConstants.DASH;
  *         &lt;element name="AOC" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="IGP" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="AOP" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}uuid"/>
+ *         &lt;element name="countryUuid" type="{http://www.w3.org/2001/XMLSchema}uuid"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "country",
-    "name",
-    "aoc",
-    "igp",
-    "aop",
-    "id",
-})
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "vignoble")
 public class VignobleJaxb implements Serializable {
 
@@ -67,24 +63,43 @@ public class VignobleJaxb implements Serializable {
   public String aoc;
   @XmlElement(name = "IGP")
   public String igp;
-  @XmlElement()
+  @XmlElement
   private String name;
   @XmlElement(name = "AOP")
   private String aop;
 
-  @XmlElement()
+  @Deprecated
+  @XmlElement
   private final long id;
+  @XmlElement
+  private UUID uuid;
+  @XmlElement
+  private UUID countryUuid;
 
   public VignobleJaxb() {
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
   }
 
-  public VignobleJaxb(String country, String name, String aoc, String igp) {
+  @Deprecated
+  public VignobleJaxb(String country, String name, String aoc, String igp, UUID countryUuid) {
     this.country = country;
     this.name = name;
     this.aoc = aoc;
     this.igp = igp;
     id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
+    this.countryUuid = countryUuid;
+  }
+
+  public VignobleJaxb(CountryJaxb country, String name, String aoc, String igp) {
+    this.country = country.getId();
+    this.name = name;
+    this.aoc = aoc;
+    this.igp = igp;
+    id = IdGenerator.generateID();
+    uuid = UUID.randomUUID();
+    this.countryUuid = country.getUuid();
   }
 
   public static boolean isEmpty(VignobleJaxb vignobleJaxb) {
@@ -94,14 +109,17 @@ public class VignobleJaxb implements Serializable {
         vignobleJaxb.isAppellationEmpty();
   }
 
+  @Deprecated
   public long getId() {
     return id;
   }
 
+  @Deprecated
   public String getCountry() {
     return country;
   }
 
+  @Deprecated
   public void setCountry(String country) {
     this.country = country;
   }
@@ -138,6 +156,22 @@ public class VignobleJaxb implements Serializable {
   @Deprecated
   public void setAOP(String aop) {
     this.aop = aop;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
+  }
+
+  public UUID getCountryUuid() {
+    return countryUuid;
+  }
+
+  public void setCountryUuid(UUID countryUuid) {
+    this.countryUuid = countryUuid;
   }
 
   public boolean isAppellationEmpty() {
@@ -217,18 +251,36 @@ public class VignobleJaxb implements Serializable {
         sb.append(country);
       }
     }
-    sb.append(" name=");
-    sb.append(name);
-    sb.append(" aoc=");
-    sb.append(aoc);
-    sb.append(" igp=");
-    sb.append(igp).append("]");
+    sb.append(" name=")
+        .append(name)
+        .append(" aoc=")
+        .append(aoc)
+        .append(" igp=")
+        .append(igp)
+        .append(" uuid=")
+        .append(uuid)
+        .append(" countryUuid=")
+        .append(countryUuid)
+        .append("]");
     return sb.toString();
   }
 
-  public void setValues(AppelationJaxb ap) {
-    aoc = ap.getAOC();
-    igp = ap.getIGP();
+  /*
+  This method update the bottle with the values of the AppelationJaxb, which is the reference
+   */
+  public void setValues(AppelationJaxb ap, CountryJaxb countryJaxb) {
+    if (ap != null) {
+      if (MyCellarUtils.isDefined(ap.getAOC()) && !ap.getAOC().equals(aoc)) {
+        aoc = ap.getAOC();
+      }
+      if (MyCellarUtils.isDefined(ap.getIGP()) && !ap.getIGP().equals(igp)) {
+        igp = ap.getIGP();
+      }
+      uuid = ap.getUuid();
+    }
+    if (countryJaxb != null) {
+      countryUuid = countryJaxb.getUuid();
+    }
   }
 
   public String getSearchLabel() {

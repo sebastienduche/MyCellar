@@ -20,8 +20,8 @@ import static mycellar.general.ResourceErrorKey.ERROR_ENTERNUMERICVALUE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 21/03/25
+ * @version 0.9
+ * @since 19/07/26
  */
 public final class MyCellarUtils {
 
@@ -119,6 +119,20 @@ public final class MyCellarUtils {
       return value.substring(1, value.length() - 1);
     }
     return value;
+  }
+
+  public static String removeSpaces(final String value) {
+    if (value == null || value.isEmpty()) {
+      return value;
+    }
+
+    StringBuilder buf = new StringBuilder();
+    for (int i = 0; i < value.length(); i++) {
+      if (value.charAt(i) != ' ') {
+        buf.append(value.charAt(i));
+      }
+    }
+    return buf.toString();
   }
 
   public static boolean isAnyOf(Object value, List<Object> list) {

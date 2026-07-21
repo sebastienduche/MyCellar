@@ -9,16 +9,13 @@
 package mycellar.core.datas.history;
 
 import mycellar.Bouteille;
-import mycellar.Music;
-import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
 
@@ -29,8 +26,8 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.6
- * @since 09/04/21
+ * @version 1.8
+ * @since 05/04/26
  */
 
 /**
@@ -53,44 +50,27 @@ import static mycellar.ProgramConstants.DATE_FORMATER_DDMMYYYY;
  * &lt;/complexType>
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "date",
-    "type",
-    "bouteille",
-    "totalBottle",
-    "music"
-})
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "History")
 public class History {
 
   @XmlElement(required = true)
   private String date;
+  @XmlElement
   private int type;
   @XmlElement(name = "Bouteille")
   private Bouteille bouteille;
   @XmlElement
   private int totalBottle;
   @XmlElement
-  private Music music;
+  private UUID uuid;
 
-  /**
-   * History: Contructeur avec un object et un type d'action
-   *
-   * @param myCellarObject IMyCellarObject
-   * @param type           int
-   */
-  public History(IMyCellarObject myCellarObject, int type, int totalBottle) {
-    if (myCellarObject instanceof Bouteille) {
-      bouteille = (Bouteille) myCellarObject;
-    } else if (myCellarObject instanceof Music) {
-      music = (Music) myCellarObject;
-    } else {
-      Program.throwNotImplementedForNewType();
-    }
+  public History(Bouteille myCellarObject, int type, int totalBottle) {
+    bouteille = myCellarObject;
     this.type = type;
     this.totalBottle = totalBottle;
     date = LocalDate.now().format(DATE_FORMATER_DDMMYYYY);
+    uuid = UUID.randomUUID();
   }
 
   public History() {
@@ -140,14 +120,6 @@ public class History {
     this.bouteille = bouteille;
   }
 
-  public Music getMusic() {
-    return music;
-  }
-
-  public void setMusic(Music music) {
-    this.music = music;
-  }
-
   public boolean hasTotalBottle() {
     return totalBottle > 0;
   }
@@ -158,5 +130,13 @@ public class History {
 
   public void setTotalBottle(int totalBottle) {
     this.totalBottle = totalBottle;
+  }
+
+  public UUID getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(UUID uuid) {
+    this.uuid = uuid;
   }
 }

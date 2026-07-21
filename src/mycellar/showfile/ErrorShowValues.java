@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarError;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.PanelPlacePosition;
@@ -48,8 +47,8 @@ import static mycellar.general.ResourceKey.SHOWFILE_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.0
- * @since 25/03/25
+ * @version 4.1
+ * @since 03/10/25
  */
 
 class ErrorShowValues extends TableShowValues {
@@ -115,7 +114,7 @@ class ErrorShowValues extends TableShowValues {
       return null;
     }
     MyCellarError error = errors.get(row);
-    IMyCellarObject b = error.getMyCellarObject();
+    Bouteille b = error.getBottle();
     final Column column1 = Column.fromIndex(column);
     if (column1 == null) {
       return "";
@@ -160,7 +159,7 @@ class ErrorShowValues extends TableShowValues {
   @Override
   public void setValueAt(Object value, int row, int col) {
     MyCellarError error = errors.get(row);
-    IMyCellarObject b = error.getMyCellarObject();
+    Bouteille b = error.getBottle();
     AbstractPlace abstractPlace;
     final Column column = Column.fromIndex(col);
     switch (column) {
@@ -255,7 +254,7 @@ class ErrorShowValues extends TableShowValues {
               .withNumPlace(num_empl)
               .withLine(line)
               .withColumn(column1).build())) {
-            IMyCellarObject searchObject = null;
+            Bouteille searchObject = null;
             if (abstractPlace.isComplexPlace()) {
               searchObject = ((ComplexPlace) abstractPlace).getObject(new PlacePosition.PlacePositionBuilderZeroBased(abstractPlace)
                   .withNumPlace(num_empl)
@@ -328,8 +327,8 @@ class ErrorShowValues extends TableShowValues {
   }
 
   @Override
-  public IMyCellarObject getMyCellarObject(int i) {
-    return errors.get(i).getMyCellarObject();
+  public Bouteille getBottle(int i) {
+    return errors.get(i).getBottle();
   }
 
 }

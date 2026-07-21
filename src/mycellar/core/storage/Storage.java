@@ -1,6 +1,6 @@
 package mycellar.core.storage;
 
-import mycellar.core.IMyCellarObject;
+import mycellar.Bouteille;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryList;
 import mycellar.core.datas.history.HistoryState;
@@ -16,8 +16,8 @@ import java.util.List;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.7
- * @since 21/03/25
+ * @version 2.8
+ * @since 03/10/25
  */
 
 public interface Storage {
@@ -32,13 +32,13 @@ public interface Storage {
 
   void updateDistinctNames();
 
-  void addHistory(HistoryState historyState, IMyCellarObject myCellarObject);
+  void addHistory(HistoryState historyState, Bouteille bottle);
 
-  void addToWorksheet(IMyCellarObject myCellarObject);
+  void addToWorksheet(Bouteille bottle);
 
   void removeHistory(History oB);
 
-  void removeFromWorksheet(IMyCellarObject myCellarObject);
+  void removeFromWorksheet(Bouteille bottle);
 
   void clearHistory(HistoryState historyState);
 
@@ -56,19 +56,16 @@ public interface Storage {
 
   WorkSheetList getWorksheetList();
 
-  boolean deleteWine(IMyCellarObject myCellarObject) throws MyCellarException;
+  boolean deleteWine(Bouteille bottle) throws MyCellarException;
 
-  boolean addWine(IMyCellarObject myCellarObject);
+  boolean addWine(Bouteille bottle);
 
   int getBottlesCount();
 
-  List<? extends IMyCellarObject> getAllList();
+  List<Bouteille> getAllList();
 
-  boolean add(IMyCellarObject myCellarObject);
+  boolean add(Bouteille bottle);
 
   void close();
 
-  List<String> getDistinctComposers();
-
-  List<String> getDistinctArtists();
 }

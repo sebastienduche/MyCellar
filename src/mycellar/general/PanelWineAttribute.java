@@ -3,7 +3,6 @@ package mycellar.general;
 import mycellar.Bouteille;
 import mycellar.Program;
 import mycellar.core.BottlesStatus;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.MyCellarSettings;
 import mycellar.core.common.bottle.BottleColor;
 import mycellar.core.uicomponents.JModifyComboBox;
@@ -45,8 +44,8 @@ import static mycellar.general.ResourceKey.MYCELLARMANAGEBOTTLES_STATUS;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.8
- * @since 21/03/25
+ * @version 1.9
+ * @since 03/10/25
  */
 public final class PanelWineAttribute extends JPanel {
   @Serial
@@ -103,19 +102,13 @@ public final class PanelWineAttribute extends JPanel {
     statusList.setActive(active);
   }
 
-  public void initializeExtraProperties(IMyCellarObject myCellarObject, boolean m_bmulti, boolean isEditionMode) {
+  public void initializeExtraProperties(Bouteille bouteille, boolean multiple, boolean isEditionMode) {
     setModificationDetectionActive(false);
-    enableAll(true, m_bmulti, isEditionMode);
+    enableAll(true, multiple, isEditionMode);
     nbItems.setValue(1);
     nbItems.setEnabled(false);
 
-    price.setText(convertStringFromHTMLString(myCellarObject.getPrix()));
-    if (Program.isWineType()) {
-      Bouteille bottle = (Bouteille) myCellarObject;
-      maturity.setText(bottle.getMaturity());
-      parker.setText(bottle.getParker());
-      colorList.setSelectedItem(BottleColor.getColor(bottle.getColor()));
-    }
+    price.setText(convertStringFromHTMLString(bouteille.getPrix()));
     setModificationDetectionActive(true);
   }
 
@@ -178,12 +171,12 @@ public final class PanelWineAttribute extends JPanel {
     labelStillToAdd.setText("");
   }
 
-  public void updateStatusAndTime(IMyCellarObject bottle) {
+  public void updateStatusAndTime(Bouteille bottle) {
     statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
     lastModified.setText(bottle.getLastModified());
   }
 
-  public void initStatusAndTime(IMyCellarObject bottle) {
+  public void initStatusAndTime(Bouteille bottle) {
     setModificationDetectionActive(false);
     statusList.setSelectedItem(BottlesStatus.getStatus(bottle.getStatus()));
     lastModified.setText(bottle.getLastModified());
@@ -244,9 +237,9 @@ public final class PanelWineAttribute extends JPanel {
     return null;
   }
 
-  public void setStatus(IMyCellarObject myCellarObject) {
-    statusList.setSelectedItem(BottlesStatus.getStatus(myCellarObject.getStatus()));
-    lastModified.setText(myCellarObject.getLastModified());
+  public void setStatus(Bouteille bouteille) {
+    statusList.setSelectedItem(BottlesStatus.getStatus(bouteille.getStatus()));
+    lastModified.setText(bouteille.getLastModified());
   }
 
   public void resetModified(boolean b) {

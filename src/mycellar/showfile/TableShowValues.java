@@ -4,7 +4,6 @@ import mycellar.Bouteille;
 import mycellar.Erreur;
 import mycellar.Program;
 import mycellar.actions.OpenAddVinAction;
-import mycellar.core.IMyCellarObject;
 import mycellar.frame.MainFrame;
 import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.ComplexPlace;
@@ -48,8 +47,8 @@ import static mycellar.general.ResourceKey.MYCELLARFIELDS_NUMPLACE;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.8
- * @since 03/04/25
+ * @version 6.9
+ * @since 03/10/25
  */
 
 class TableShowValues extends AbstractTableModel {
@@ -68,7 +67,8 @@ class TableShowValues extends AbstractTableModel {
   private static final int PARKER = 11;
   private final String[] columnNames = {"",
       getLabel(MAIN_ITEM),
-      getLabel(MAIN_YEAR), getLabel(MAIN_CAPACITYORSUPPORT),
+      getLabel(MAIN_YEAR),
+      getLabel(MAIN_CAPACITYORSUPPORT),
       getLabel(MAIN_STORAGE),
       getLabel(MYCELLARFIELDS_NUMPLACE),
       getLabel(MYCELLARFIELDS_LINE),
@@ -81,11 +81,11 @@ class TableShowValues extends AbstractTableModel {
 
   protected Boolean[] values = null;
 
-  List<? extends IMyCellarObject> myCellarObjects = new LinkedList<>();
+  List<Bouteille> bottles = new LinkedList<>();
 
   @Override
   public int getRowCount() {
-    return myCellarObjects.size();
+    return bottles.size();
   }
 
   @Override
@@ -95,8 +95,7 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public Object getValueAt(int row, int column) {
-    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) myCellarObjects.get(row);
+    Bouteille b = bottles.get(row);
     return switch (column) {
       case ETAT -> values[row];
       case NAME -> convertStringFromHTMLString(b.getNom());
@@ -126,8 +125,7 @@ class TableShowValues extends AbstractTableModel {
 
   @Override
   public void setValueAt(Object value, int row, int column) {
-    Program.throwNotImplementedIfNotFor(myCellarObjects.get(row), Bouteille.class);
-    Bouteille b = (Bouteille) myCellarObjects.get(row);
+    Bouteille b = bottles.get(row);
     switch (column) {
       case ETAT:
         values[row] = (Boolean) value;
@@ -214,7 +212,7 @@ class TableShowValues extends AbstractTableModel {
               .withColumn(column1).build())) {
             boolean isPresent = false;
             if (rangement.isComplexPlace()) {
-              final IMyCellarObject bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
+              final Bouteille bouteille = ((ComplexPlace) rangement).getObject(new PlacePosition.PlacePositionBuilderZeroBased(rangement)
                   .withNumPlace(num_empl)
                   .withLine(line)
                   .withColumn(column1)
@@ -260,20 +258,20 @@ class TableShowValues extends AbstractTableModel {
     }
   }
 
-  public void setMyCellarObjects(List<? extends IMyCellarObject> list) {
+  public void setBottles(List<Bouteille> list) {
     if (list == null) {
       return;
     }
     values = new Boolean[list.size()];
-    myCellarObjects = list;
+    bottles = list;
     for (int i = 0; i < list.size(); i++) {
       values[i] = false;
     }
     fireTableDataChanged();
   }
 
-  public IMyCellarObject getMyCellarObject(int i) {
-    return myCellarObjects.get(i);
+  public Bouteille getBottle(int i) {
+    return bottles.get(i);
   }
 
 }

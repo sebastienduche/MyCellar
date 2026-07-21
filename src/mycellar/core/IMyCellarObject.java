@@ -1,5 +1,6 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.core.common.MyCellarFields;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -15,12 +16,14 @@ import java.math.BigDecimal;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 1.0
- * @since 21/03/25
+ * @version 1.1
+ * @since 06/04/26
  */
 public interface IMyCellarObject {
+  @Deprecated
   int getId();
 
+  @Deprecated
   void setId(int id);
 
   void setModified();
@@ -29,6 +32,7 @@ public interface IMyCellarObject {
 
   void setEmplacement(String nom);
 
+  @Deprecated
   boolean updateID();
 
   String getNom();
@@ -95,15 +99,9 @@ public interface IMyCellarObject {
 
   IMyCellarObject fromXmlElement(Element element);
 
-  void update(IMyCellarObject object);
+  void update(Bouteille bouteille);
 
-  static void assertObjectType(IMyCellarObject myCellarObject, Class<?> aClass) {
-    if (!aClass.isInstance(myCellarObject)) {
-      throw new ClassCastException("Invalid class cast: " + aClass);
-    }
-  }
-
-   default boolean equalsValue(String value, String other) {
+  default boolean equalsValue(String value, String other) {
     if (value == null) {
       return other != null;
     } else {

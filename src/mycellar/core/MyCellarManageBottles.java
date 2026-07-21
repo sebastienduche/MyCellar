@@ -1,19 +1,17 @@
 package mycellar.core;
 
+import mycellar.Bouteille;
 import mycellar.Program;
+import mycellar.core.panel.PanelSave;
 import mycellar.core.uicomponents.JModifyTextArea;
-import mycellar.core.uicomponents.MyCellarButton;
 import mycellar.core.uicomponents.MyCellarLabel;
-import mycellar.core.uicomponents.MyCellarSimpleLabel;
 import mycellar.general.PanelGeneral;
 import mycellar.general.PanelWineAttribute;
 import mycellar.placesmanagement.PanelPlacePosition;
 import mycellar.placesmanagement.places.PlacePosition;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceKey.AJOUTER;
@@ -26,24 +24,21 @@ import static mycellar.general.ResourceKey.MAIN_COMMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 5.7
- * @since 21/03/25
+ * @version 6.0
+ * @since 30/06/26
  */
 public abstract class MyCellarManageBottles extends JPanel implements IPlacePosition, IPanelModifyable {
 
-  protected final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
-  protected final MyCellarSimpleLabel end = new MyCellarSimpleLabel();
+  private final MyCellarLabel labelComment = new MyCellarLabel(MAIN_COMMENT);
+  protected final JModifyTextArea commentTextArea = new JModifyTextArea();
   protected final PanelPlacePosition panelPlace = new PanelPlacePosition();
   protected final PanelGeneral panelGeneral = new PanelGeneral();
   protected final PanelWineAttribute panelWineAttribute = new PanelWineAttribute();
-  protected final JModifyTextArea commentTextArea = new JModifyTextArea();
-  protected final JScrollPane scrollPaneComment = new JScrollPane(commentTextArea);
   protected final char ajouterChar = getLabel(AJOUTER).charAt(0);
+  protected final PanelSave panelSave = new PanelSave();
   protected int selectedPaneIndex;
-  protected MyCellarButton addButton;
-  protected MyCellarButton cancelButton;
   protected PanelVignobles panelVignobles;
-  protected IMyCellarObject myCellarObject = null;
+  protected Bouteille bottle = null;
   protected boolean severalItems = false; //Pour ListVin
   protected boolean isEditionMode = false;
 
@@ -60,22 +55,18 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
   protected void initializeExtraProperties() {
     enableAll(true);
     panelGeneral.initializeExtraProperties();
-    panelWineAttribute.initializeExtraProperties(myCellarObject, severalItems, isEditionMode);
+    panelWineAttribute.initializeExtraProperties(bottle, severalItems, isEditionMode);
 
-    commentTextArea.setText(myCellarObject.getComment());
+    commentTextArea.setText(bottle.getComment());
   }
 
   public void enableAll(boolean enable) {
     panelPlace.setEditable(enable);
     panelGeneral.enableAll(enable);
     panelWineAttribute.enableAll(enable, severalItems, isEditionMode);
-    addButton.setEnabled(enable);
-    if (cancelButton != null) {
-      cancelButton.setEnabled(enable);
-    }
+    panelSave.enableAll(enable);
     commentTextArea.setEditable(enable);
     panelVignobles.enableAll(enable);
-    end.setVisible(enable);
   }
 
   public void setUpdateViewType(UpdateViewType updateViewType) {
@@ -142,17 +133,11 @@ public abstract class MyCellarManageBottles extends JPanel implements IPlacePosi
       add(panelGeneral, "growx, wrap");
       add(panelPlace, "growx, wrap");
       add(panelWineAttribute, "growx, split 2");
-      if (Program.isWineType()) {
-        add(panelVignobles, "growx, wrap");
-        panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
-      } else {
-        add(new JPanel(), "growx, wrap");
-      }
+      add(panelVignobles, "growx, wrap");
+      panelVignobles.setKeepPreviousVineyardSelected(Program.getCaveConfigBool(MyCellarSettings.KEEP_VINEYARD, false));
       add(labelComment, "growx, wrap");
-      add(scrollPaneComment, "grow, wrap");
-      add(end, "center, hidemode 3, wrap");
-      add(addButton, "center, split 2");
-      add(cancelButton);
+      add(new JScrollPane(commentTextArea), "grow, wrap");
+      add(panelSave, "growx");
     }
   }
 

@@ -2,7 +2,6 @@ package mycellar;
 
 import mycellar.actions.OpenAddVinAction;
 import mycellar.core.IMyCellar;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.datas.history.History;
 import mycellar.core.datas.history.HistoryState;
 import mycellar.core.tablecomponents.ButtonCellEditor;
@@ -18,18 +17,11 @@ import mycellar.placesmanagement.places.AbstractPlace;
 import mycellar.placesmanagement.places.PlaceUtils;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.AbstractAction;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.HeadlessException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.Serial;
@@ -72,8 +64,8 @@ import static mycellar.general.ResourceKey.SHOWHISTORY_CLEARHISTORY;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 6.2
- * @since 03/04/25
+ * @version 6.3
+ * @since 03/10/25
  */
 public final class ShowHistory extends JPanel implements ITabListener, IMyCellar {
 
@@ -162,18 +154,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
     model.setHistory(Program.getHistory());
   }
 
-  static class FilterItem {
-    private final HistoryState historyState;
-    private final String label;
-
-    public FilterItem(HistoryState historyState, String label) {
-      this.historyState = historyState;
-      this.label = label;
-    }
-
-    public HistoryState getHistoryState() {
-      return historyState;
-    }
+  record FilterItem(HistoryState historyState, String label) {
 
     @Override
     public String toString() {
@@ -193,7 +174,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-      LinkedList<IMyCellarObject> toRestoreList = new LinkedList<>();
+      LinkedList<Bouteille> toRestoreList = new LinkedList<>();
 
       boolean nonExit = false;
 
@@ -227,24 +208,24 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
           message = String.format("%s %s", getError(ERROR_NITEMSSELECTED, toRestoreList.size()), getLabel(SHOWFILE_RESTORESEVERAL));
         }
         if (JOptionPane.YES_OPTION == Erreur.showAskConfirmationMessage(message)) {
-          LinkedList<IMyCellarObject> cantRestoreList = new LinkedList<>();
-          for (IMyCellarObject myCellarObject : toRestoreList) {
-            if (myCellarObject.isInExistingPlace()) {
-              AbstractPlace rangement = myCellarObject.getAbstractPlace();
+          LinkedList<Bouteille> cantRestoreList = new LinkedList<>();
+          for (var bottle : toRestoreList) {
+            if (bottle.isInExistingPlace()) {
+              AbstractPlace rangement = bottle.getAbstractPlace();
               if (rangement.isSimplePlace()) {
-                Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
-                Program.getStorage().addWine(myCellarObject);
+                Program.getStorage().addHistory(HistoryState.ADD, bottle);
+                Program.getStorage().addWine(bottle);
               } else {
-                if (rangement.canAddObjectAt(myCellarObject.getPlacePosition())) {
-                  Program.getStorage().addHistory(HistoryState.ADD, myCellarObject);
-                  Program.getStorage().addWine(myCellarObject);
+                if (rangement.canAddObjectAt(bottle.getPlacePosition())) {
+                  Program.getStorage().addHistory(HistoryState.ADD, bottle);
+                  Program.getStorage().addWine(bottle);
                 } else {
-                  cantRestoreList.add(myCellarObject);
+                  cantRestoreList.add(bottle);
                 }
               }
             }
-            if (!cantRestoreList.contains(myCellarObject)) {
-              Program.getTrash().remove(myCellarObject);
+            if (!cantRestoreList.contains(bottle)) {
+              Program.getTrash().remove(bottle);
             }
           }
 
@@ -321,7 +302,7 @@ public final class ShowHistory extends JPanel implements ITabListener, IMyCellar
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      Program.getStorage().clearHistory(((FilterItem) Objects.requireNonNull(filterCbx.getSelectedItem())).getHistoryState());
+      Program.getStorage().clearHistory(((FilterItem) Objects.requireNonNull(filterCbx.getSelectedItem())).historyState());
       filterCbx.setSelectedIndex(0);
       refresh();
     }

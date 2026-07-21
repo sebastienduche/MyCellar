@@ -1,11 +1,12 @@
 package test;
 
 import mycellar.Bouteille;
-import mycellar.core.IMyCellarObject;
 import mycellar.core.exceptions.MyCellarException;
 import mycellar.core.storage.SerializedStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -32,7 +33,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
 
     Bouteille bouteille1 = new Bouteille.BouteilleBuilder("bouteille1")
@@ -47,7 +48,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
 
     Bouteille bouteille2 = new Bouteille.BouteilleBuilder("bouteille2")
@@ -62,7 +63,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
 
     bouteille3 = new Bouteille.BouteilleBuilder("bouteille3")
@@ -75,7 +76,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
     bouteille4 = new Bouteille.BouteilleBuilder("bouteille4")
         .place("place3")
@@ -87,7 +88,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
     bouteille5 = new Bouteille.BouteilleBuilder("bouteille4")
         .place("place3")
@@ -99,7 +100,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
     serializedStorage.getListMyCellarObject().getBouteille().add(bouteille);
     serializedStorage.getListMyCellarObject().getBouteille().add(bouteille1);
@@ -115,7 +116,7 @@ class SerializedStorageTest {
     assertEquals(7, serializedStorage.getListMyCellarObject().getBouteille().size());
     serializedStorage.deleteWine(bouteille3);
     assertEquals(6, serializedStorage.getListMyCellarObject().getBouteille().size());
-    for (IMyCellarObject b : serializedStorage.getListMyCellarObject().getBouteille()) {
+    for (Bouteille b : serializedStorage.getListMyCellarObject().getBouteille()) {
       assertNotEquals("bouteille3", b.getNom());
     }
     final Bouteille bouteille6 = new Bouteille.BouteilleBuilder("bouteille6")
@@ -128,7 +129,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
     serializedStorage.addWine(bouteille6);
     final Bouteille bouteille7 = new Bouteille.BouteilleBuilder("bouteille7")
@@ -143,7 +144,7 @@ class SerializedStorageTest {
         .maturity("maturity")
         .parker("100")
         .price("123")
-        .vignoble("fr", "vignoble", "aoc", "igp")
+        .vignoble("fr", "vignoble", "aoc", "igp", UUID.randomUUID(), UUID.randomUUID())
         .build();
     serializedStorage.addWine(bouteille7);
     assertEquals(8, serializedStorage.getListMyCellarObject().getBouteille().size());

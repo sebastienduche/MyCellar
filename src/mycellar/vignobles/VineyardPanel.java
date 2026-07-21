@@ -41,7 +41,7 @@ import java.util.Objects;
 
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.Program.NO_COUNTRY;
-import static mycellar.core.datas.jaxb.VignobleListJaxb.findCountyVignobleByName;
+import static mycellar.core.datas.jaxb.VignobleListJaxb.findCountryVignobleByName;
 import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
 import static mycellar.general.ResourceErrorKey.ERROR_COUNTRYEXIST;
@@ -218,7 +218,7 @@ public final class VineyardPanel extends JPanel implements ITabListener, IMyCell
         countryVignobleJaxb.setName(val);
         var countryVignobleFound = vignobleListJaxb.getCountryVignobleJaxbList().stream()
             .filter(Objects::nonNull)
-            .anyMatch(findCountyVignobleByName(val));
+            .anyMatch(findCountryVignobleByName(val));
         if (!countryVignobleFound) {
           countryVignobleJaxb = vignobleListJaxb.createCountryVignoble(val);
           comboVignoble.setEnabled(true);

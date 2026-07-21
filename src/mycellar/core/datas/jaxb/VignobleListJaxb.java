@@ -231,7 +231,7 @@ public class VignobleListJaxb {
     countryVignobleJaxbList.remove(vigne);
   }
 
-  public static Predicate<CountryVignobleJaxb> findCountyVignobleByName(String val) {
+  public static Predicate<CountryVignobleJaxb> findCountryVignobleByName(String val) {
     return countryJaxb -> countryJaxb.getName().equals(val);
   }
 }

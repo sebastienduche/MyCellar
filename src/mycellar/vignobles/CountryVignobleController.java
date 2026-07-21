@@ -256,25 +256,6 @@ public final class CountryVignobleController {
     if (!INSTANCE.countryToVignobles.containsKey(countryJaxb)) {
       Debug("WARNING: Old file loaded for for the country " + name + " file " + f.getName());
       INSTANCE.countryToVignobles.put(countryJaxb, load(f));
-    } else {
-//      var loadedUserVignobleListJaxb = load(f);
-//      if (loadedUserVignobleListJaxb != null) {
-//        VignobleListJaxb vignobleListJaxb = INSTANCE.countryToVignobles.get(countryJaxb);
-//        for (var systemCountryVignobleJaxb : vignobleListJaxb.getCountryVignobleJaxbList()) {
-//          if (!loadedUserVignobleListJaxb.getCountryVignobleJaxbList().contains(systemCountryVignobleJaxb)) {
-//            // Can't we delete Systen Countries
-//            loadedUserVignobleListJaxb.getCountryVignobleJaxbList().add(systemCountryVignobleJaxb);
-//          } else {
-//            var systemCountryVignobleJaxbFromUser = loadedUserVignobleListJaxb.getCountryVignobleJaxbList().get(loadedUserVignobleListJaxb.getCountryVignobleJaxbList().indexOf(systemCountryVignobleJaxb));
-//            if (systemCountryVignobleJaxb.getUnmodifiableAppelation() != null) {
-//              // Add the new system appellation to user !!
-//              systemCountryVignobleJaxb.getUnmodifiableAppelation().forEach(systemCountryVignobleJaxbFromUser::add);
-//            } else {
-//              systemCountryVignobleJaxb.setAppelation(new LinkedList<>());
-//            }
-//          }
-//        }
-//      }
     }
   }
 

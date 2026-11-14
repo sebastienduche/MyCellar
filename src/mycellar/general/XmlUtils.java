@@ -1,6 +1,7 @@
 package mycellar.general;
 
 import mycellar.Bouteille;
+import mycellar.Erreur;
 import mycellar.MyCellarUtils;
 import mycellar.Program;
 import mycellar.placesmanagement.places.AbstractPlace;
@@ -30,12 +31,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
 import static mycellar.MyCellarUtils.isNullOrEmpty;
 import static mycellar.ProgramConstants.DASH;
+import static mycellar.core.text.MyCellarLabelManagement.getError;
 import static mycellar.core.text.MyCellarLabelManagement.getLabel;
+import static mycellar.general.ResourceErrorKey.ERROR_UNABLETOGENERATEPREVIEW;
 import static mycellar.general.ResourceKey.MYXMLDOM_ITEMHERE;
 import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
 
@@ -46,8 +50,8 @@ import static mycellar.general.ResourceKey.STORAGE_SHELVENUMBER;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 4.6
- * @since 18/03/25
+ * @version 4.7
+ * @since 14/11/26
  */
 
 public class XmlUtils {
@@ -214,7 +218,12 @@ public class XmlUtils {
     writePlacesToXML(Program.getPreviewXMLFileName(), abstractPlaces, preview);
     TransformerFactory tFactory = TransformerFactory.newInstance();
 
-    StreamSource xslDoc = new StreamSource("resources/Rangement.xsl");
+    URL stream = XmlUtils.class.getClassLoader().getResource("resources/Rangement.xsl");
+    if (stream == null) {
+      Debug("ERROR: writePlacesToHTML: Missing resource 'resources/Rangement.xsl'");
+      Erreur.showSimpleErreur(getError(ERROR_UNABLETOGENERATEPREVIEW));
+      return;
+    }
     StreamSource xmlDoc = new StreamSource(Program.getPreviewXMLFileName());
 
     if (isNullOrEmpty(filename)) {
@@ -222,7 +231,7 @@ public class XmlUtils {
     }
 
     try (var htmlFile = new FileOutputStream(filename)) {
-      var transformer = tFactory.newTransformer(xslDoc);
+      var transformer = tFactory.newTransformer(new StreamSource(stream.openStream()));
       transformer.transform(xmlDoc, new StreamResult(htmlFile));
     } catch (FileNotFoundException e1) {
       Debug("ERROR: File not found : " + e1.getMessage());

@@ -42,10 +42,19 @@ import mycellar.requester.ui.PanelRequest;
 import mycellar.vignobles.CountryVignobleController;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -115,8 +124,8 @@ import static mycellar.general.ResourceKey.SUPPR;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 25.6
- * @since 03/10/25
+ * @version 25.7
+ * @since 14/11/26
  */
 public final class Search extends JPanel implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -311,8 +320,8 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
     // Replace $ in the regexp
     regex = replaceCharInSearch(regex, "$", "\\$");
     regex = replaceCharInSearch(regex, "^", "\\^");
-    regex = replaceCharInSearch(regex, "(", "\\(");
-    regex = replaceCharInSearch(regex, ")", "\\)");
+    regex = replaceCharInSearch(regex, "(", " ");
+    regex = replaceCharInSearch(regex, ")", " ");
     regex = replaceCharInSearch(regex, "\\", "\\\\");
 
     final String regexToSearch = regex.toString();
@@ -324,7 +333,10 @@ public final class Search extends JPanel implements Runnable, ITabListener, ICut
         alreadyFoundItems = false;
         List<Bouteille> list = new LinkedList<>();
         for (var bottle : Program.getStorage().getAllList()) {
-          Matcher m = p.matcher(bottle.getNom());
+          // Prevent issue met parenthesis in search
+          String name = bottle.getNom().replaceAll("\\(", " ");
+          name = name.replaceAll("\\)", " ");
+          Matcher m = p.matcher(name);
           if (m.matches()) {
             if (searchTableModel.doesNotContain(bottle)) {
               list.add(bottle);

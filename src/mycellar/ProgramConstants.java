@@ -18,7 +18,7 @@ import java.util.UUID;
 public final class ProgramConstants {
 
   public static final String INFOS_VERSION = " 2026 v";
-  public static final String INTERNAL_VERSION = "5.5.6.0";
+  public static final String INTERNAL_VERSION = "5.5.6.1";
   public static final int VERSION = 82;
   public static final String MAIN_VERSION = VERSION + " NO";
 

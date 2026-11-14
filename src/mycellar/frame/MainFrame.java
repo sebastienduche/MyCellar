@@ -36,8 +36,27 @@ import mycellar.placesmanagement.places.PlaceUtils;
 import mycellar.showfile.TrashPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -52,6 +71,7 @@ import static mycellar.MyCellarUtils.getShortFilename;
 import static mycellar.MyCellarUtils.isDefined;
 import static mycellar.MyCellarUtils.toCleanString;
 import static mycellar.Program.getGlobalConfigString;
+import static mycellar.Program.hasOpenedFile;
 import static mycellar.ProgramConstants.DASH;
 import static mycellar.ProgramConstants.FR;
 import static mycellar.ProgramConstants.INFOS_VERSION;
@@ -154,8 +174,8 @@ import static mycellar.general.ResourceKey.VISUAL;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 0.8
- * @since 03/10/25
+ * @version 0.9
+ * @since 14/11/26
  */
 public final class MainFrame extends JFrame implements Thread.UncaughtExceptionHandler {
 
@@ -261,7 +281,7 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     MyCellarServer.getInstance().getServerVersion();
 
     Program.initializeLanguage();
-    boolean hasFile = Program.hasOpenedFile();
+    boolean hasFile = hasOpenedFile();
     if (!hasFile && !Program.getGlobalConfigBool(MyCellarSettings.GLOBAL_STARTUP, false)) {
       // Langue au premier demarrage
       String lang = System.getProperty("user.language");
@@ -989,7 +1009,11 @@ public final class MainFrame extends JFrame implements Thread.UncaughtExceptionH
     public void actionPerformed(ActionEvent arg0) {
       try {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        JFileChooser boiteFichier = new JFileChooser(Program.getCaveConfigString(DIR));
+        String dir = null;
+        if (hasOpenedFile()) {
+          dir = Program.getCaveConfigString(DIR);
+        }
+        JFileChooser boiteFichier = new JFileChooser(dir);
         boiteFichier.removeChoosableFileFilter(boiteFichier.getFileFilter());
         boiteFichier.addChoosableFileFilter(Filtre.FILTRE_SINFO);
         if (JFileChooser.APPROVE_OPTION == boiteFichier.showOpenDialog(null)) {

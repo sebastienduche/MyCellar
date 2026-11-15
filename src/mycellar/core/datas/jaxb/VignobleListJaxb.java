@@ -33,8 +33,8 @@ import static mycellar.ProgramConstants.TEXT;
  * <p>Soci&eacute;t&eacute; : Seb Informatique</p>
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 3.3
- * @since 19/07/26
+ * @version 3.4
+ * @since 15/11/26
  */
 
 @XmlRootElement(name = "vignobles")
@@ -194,16 +194,16 @@ public class VignobleListJaxb {
   }
 
   public AppelationJaxb addVignoble(final VignobleJaxb vignobleJaxb) {
-    Debug("Add Vignoble " + vignobleJaxb);
     CountryVignobleJaxb vigne = new CountryVignobleJaxb();
     vigne.setName(vignobleJaxb.getName());
     AppelationJaxb appelationJaxb = new AppelationJaxb();
     appelationJaxb.setAOC(vignobleJaxb.getAOC());
     appelationJaxb.setIGP(vignobleJaxb.getIGP());
     if (vigne.getName().isBlank() && appelationJaxb.isEmpty()) {
-      Debug("Add Vignoble cancelled");
+      Debug("Add Vignoble cancelled: " + vignobleJaxb);
       return null;
     }
+    Debug("Add Vignoble " + vignobleJaxb);
     LinkedList<AppelationJaxb> list = new LinkedList<>();
     if (!appelationJaxb.isEmpty()) {
       list.add(appelationJaxb);

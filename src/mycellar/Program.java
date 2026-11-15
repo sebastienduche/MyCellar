@@ -122,7 +122,7 @@ public final class Program {
 
   public static final CountryJaxb NO_COUNTRY = new CountryJaxb("no_country", "", UUID.fromString("d356ec3c-7059-4855-8efb-be92ce189042"));
   public static final CountryVignobleJaxb NO_VIGNOBLE = new CountryVignobleJaxb();
-  public static final AppelationJaxb NO_APPELATION = new AppelationJaxb();
+  public static final AppelationJaxb NO_APPELLATION = new AppelationJaxb();
   public static final MyClipBoard CLIPBOARD = new MyClipBoard();
   public static final CountryListJaxb COUNTRY_LIST = loadResourceFile();
 
@@ -579,14 +579,14 @@ public final class Program {
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN2));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN3));
     list.addLast(getGlobalConfigString(MyCellarSettings.GLOBAL_LAST_OPEN4));
-    Debug("Program: -------------------");
+    Debug("Program: --------------------------------------");
     if (myCellarFile.isNewFile()) {
       Debug("Program: openFile: Creating new file");
     } else {
       Debug("Program: openFile: Opening file: " + myCellarFile.getFile().getAbsolutePath());
       list.remove(myCellarFile.getFile().getAbsolutePath());
     }
-    Debug("Program: -------------------");
+    Debug("Program: --------------------------------------");
 
     // Sauvegarde avant de charger le nouveau fichier
     closeFile();
@@ -692,7 +692,6 @@ public final class Program {
 
     getErrors().clear();
 
-    //Tri du tableau et ecriture du fichier XML
     if (bSave) {
       ListeBouteille.writeXML();
 

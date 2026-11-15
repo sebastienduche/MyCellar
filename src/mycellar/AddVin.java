@@ -65,8 +65,8 @@ import static mycellar.general.ResourceKey.MAIN_TABADD;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 33.5
- * @since 26/06/26
+ * @version 33.6
+ * @since 15/11/26
  */
 public final class AddVin extends MyCellarManageBottles implements Runnable, ITabListener, ICutCopyPastable, IMyCellar, IUpdatable {
 
@@ -647,6 +647,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       panelSave.setFirstButtonText(getLabel(MAIN_ADD));
     } else if (listVin.isEmpty()) {
       reInitAddVin();
+      MainFrame.getInstance().removeCurrentTab();
     }
 
     Debug("Do After Run... Done");
@@ -722,6 +723,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       }
 
       Debug("Adding / Modifying...");
+      String annee = panelGeneral.updateYear(); // Keep it here before it become not editable
       if (isModify) {
         //On grise les champs en cours de modif
         Debug("Modifying in Progress...");
@@ -733,14 +735,13 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       AbstractPlace abstractPlace = place.getAbstractPlace();
       Objects.requireNonNull(abstractPlace);
       if (!place.hasPlace() && isModify) {
-        //Si aucun emplacement n'a ete selectionne (modif du nom)
+        //Si aucun emplacement n'a ete sélectionné (modif du nom)
         place = bottle.getPlacePosition();
         if (placeInModification != null) {
           abstractPlace = placeInModification;
         }
       }
 
-      String annee = panelGeneral.updateYear(); // Keep it here before it become not editable
       panelSave.setEndText(getLabel(ADDVIN_ADDINGINPROGRESS));
       Result result;
       if (!panelPlace.isPlaceModified() && isModify) {

@@ -49,8 +49,8 @@ import static mycellar.general.ResourceKey.PARAMETER_CAPACITIESMANAGEMENT;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.5
- * @since 03/10/25
+ * @version 2.6
+ * @since 15/11/26
  */
 public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPanelModifyable {
 
@@ -303,8 +303,10 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
         year.setEditable(true);
         return false;
       }
-      annee = getYear();
-      year.setText(annee);
+      String yearUpdated = getYear();
+      if (!annee.equalsIgnoreCase(yearUpdated)) {
+        year.setText(annee);
+      }
     }
     return true;
   }
@@ -334,7 +336,7 @@ public final class PanelGeneral extends JPanel implements ICutCopyPastable, IPan
   }
 
   public boolean askForQuit(boolean modify) {
-    if (isModified()/*!name.getText().isEmpty()*/) {
+    if (isModified()) {
       String label;
       if (modify) {
         label = getError(name.isEnabled() ? ERROR_MODIFICATIONINCOMPLETED : ERROR_MODIFICATIONSINCOMPLETED);

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static mycellar.MyCellarUtils.toCleanString;
-import static mycellar.Program.NO_APPELATION;
+import static mycellar.Program.NO_APPELLATION;
 import static mycellar.Program.NO_COUNTRY;
 import static mycellar.Program.NO_VIGNOBLE;
 import static mycellar.ProgramConstants.FR;
@@ -127,17 +127,17 @@ public final class PanelVignobles extends JPanel {
           comboAppellationAOC.removeAllItems();
           comboAppellationIGP.removeAllItems();
           comboVignoble.addItem(NO_VIGNOBLE);
-          comboAppellationAOC.addItem(NO_APPELATION);
+          comboAppellationAOC.addItem(NO_APPELLATION);
           comboAppellationIGP.addItem("");
           comboVignoble.setSelectedItem("");
-          comboAppellationAOC.setSelectedItem(NO_APPELATION);
+          comboAppellationAOC.setSelectedItem(NO_APPELLATION);
           comboAppellationIGP.setSelectedItem("");
         } else if (e.getItem() instanceof CountryJaxb countryJaxb) {
           comboVignoble.removeAllItems();
           comboAppellationAOC.removeAllItems();
           comboAppellationIGP.removeAllItems();
           comboVignoble.addItem(NO_VIGNOBLE);
-          comboAppellationAOC.addItem(NO_APPELATION);
+          comboAppellationAOC.addItem(NO_APPELLATION);
           comboAppellationIGP.addItem("");
           CountryVignobleController.getVignobles(countryJaxb)
               .ifPresent(vignobleListJaxb -> vignobleListJaxb.getCountryVignobleJaxbList()
@@ -150,12 +150,12 @@ public final class PanelVignobles extends JPanel {
 
       if (e.getStateChange() == ItemEvent.SELECTED) {
         if (e.getItem() instanceof String) {
-          comboAppellationAOC.setSelectedItem(NO_APPELATION);
+          comboAppellationAOC.setSelectedItem(NO_APPELLATION);
           comboAppellationIGP.setSelectedItem("");
         } else if (e.getItem() instanceof CountryVignobleJaxb vignoble) {
           comboAppellationAOC.removeAllItems();
           comboAppellationIGP.removeAllItems();
-          comboAppellationAOC.addItem(NO_APPELATION);
+          comboAppellationAOC.addItem(NO_APPELLATION);
           comboAppellationIGP.addItem("");
           List<String> itemsIGP = new ArrayList<>();
           for (AppelationJaxb appelationJaxb : vignoble.getSortedUnmodifiableAppelation()) {

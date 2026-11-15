@@ -153,6 +153,7 @@ public final class AddVin extends MyCellarManageBottles implements Runnable, ITa
       @Override
       protected void done() {
         Debug("Set Bottle...");
+        panelVignobles.setKeepPreviousVignobleVisible(listVin == null);
         bottle = cellarObject;
         panelGeneral.setSeveralItems(false);
         panelGeneral.setBottle(bottle);

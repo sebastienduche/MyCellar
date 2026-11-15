@@ -48,8 +48,8 @@ import static mycellar.general.ResourceKey.PANELVIGNOBLES_KEEPVALUES;
  * Soci&eacute;t&eacute; : Seb Informatique
  *
  * @author S&eacute;bastien Duch&eacute;
- * @version 2.3
- * @since 26/06/26
+ * @version 2.4
+ * @since 15/11/26
  */
 public final class PanelVignobles extends JPanel {
 
@@ -221,6 +221,10 @@ public final class PanelVignobles extends JPanel {
 
   public void setKeepPreviousVineyardSelected(boolean selected) {
     keepPreviousVignoble.setSelected(selected);
+  }
+
+  public void setKeepPreviousVignobleVisible(boolean visible) {
+    keepPreviousVignoble.setVisible(visible);
   }
 
   private void Debug(String text) {
